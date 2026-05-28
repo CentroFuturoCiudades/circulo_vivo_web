@@ -1,0 +1,38 @@
+[
+  {
+    "id": "init-001",
+    "title": "Huertos Urbanos CDMX",
+    "description": "Red de huertos comunitarios en colonias de alta densidad de la Ciudad de México.",
+    "category": "agricultura",
+    "region": "Centro",
+    "state": "Ciudad de México",
+    "coordinates": [-99.1332, 19.4326],
+    "year": 2022,
+    "status": "active",
+    "tags": ["urbano", "comunidad", "hortalizas"]
+  },
+  {
+    "id": "init-002",
+    "title": "Pesca Sostenible Veracruz",
+    "description": "Programa de pesca artesanal sostenible en el Golfo de México.",
+    "category": "pesca",
+    "region": "Sur",
+    "state": "Veracruz",
+    "coordinates": [-96.1342, 19.1738],
+    "year": 2021,
+    "status": "active",
+    "tags": ["pesca", "sostenibilidad", "golfo"]
+  },
+  {
+    "id": "init-003",
+    "title": "Mercado Local Oaxaca",
+    "description": "Sistema de distribución directa de productores locales a consumidores.",
+    "category": "distribucion",
+    "region": "Sur",
+    "state": "Oaxaca",
+    "coordinates": [-96.7266, 17.0732],
+    "year": 2023,
+    "status": "active",
+    "tags": ["mercado", "local", "distribución"]
+  }
+]

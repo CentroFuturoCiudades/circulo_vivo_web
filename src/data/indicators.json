@@ -1,0 +1,38 @@
+[
+  {
+    "id": "ind-001",
+    "name": "Seguridad Alimentaria Nacional",
+    "description": "Porcentaje de población con acceso seguro a alimentos nutritivos.",
+    "value": 72.4,
+    "unit": "%",
+    "category": "seguridad_alimentaria",
+    "trend": "up",
+    "changePercent": 2.3,
+    "year": 2024,
+    "historicalData": [
+      { "year": 2020, "value": 65.1 },
+      { "year": 2021, "value": 67.8 },
+      { "year": 2022, "value": 69.2 },
+      { "year": 2023, "value": 70.9 },
+      { "year": 2024, "value": 72.4 }
+    ]
+  },
+  {
+    "id": "ind-002",
+    "name": "Pérdida y Desperdicio Alimentario",
+    "description": "Toneladas de alimentos desperdiciadas por año.",
+    "value": 20.4,
+    "unit": "millones de ton",
+    "category": "sostenibilidad",
+    "trend": "down",
+    "changePercent": -1.8,
+    "year": 2024,
+    "historicalData": [
+      { "year": 2020, "value": 22.1 },
+      { "year": 2021, "value": 21.8 },
+      { "year": 2022, "value": 21.3 },
+      { "year": 2023, "value": 20.8 },
+      { "year": 2024, "value": 20.4 }
+    ]
+  }
+]

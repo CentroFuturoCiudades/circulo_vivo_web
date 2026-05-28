@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+/* ─── DESIGN SYSTEM TOKENS ──────────────────────────────────────────────── */
+@theme inline {
+
+  /* ── Fonts (already loaded via next/font in layout.tsx) ── */
+  --font-sans:    var(--font-poppins), system-ui, sans-serif;
+  --font-display: var(--font-playfair), Georgia, serif;
+
+  /* ── Colors ────────────────────────────────────────────── */
+
+  /* Primary = teal (the #708b8d family) */
+  --color-primary-50:  #e8eeef;
+  --color-primary-100: #c3d2d9;
+  --color-primary-200: #9eb6bf;
+  --color-primary-300: #7999a4;
+  --color-primary-400: #708b8d;
+  --color-primary-500: #466062;
+  --color-primary-600: #303f40;
+  --color-primary-700: #1a1c1c;
+  --color-primary-800: #0f1112;
+  --color-primary-900: #050a0a;
+  --color-primary:     #708b8d;
+
+  /* Crimson — deep red accent */
+  --color-crimson-50:  #f5e8ea;
+  --color-crimson-100: #e4b8bf;
+  --color-crimson-200: #d38894;
+  --color-crimson-300: #c2586a;
+  --color-crimson-400: #852038;
+  --color-crimson-500: #561427;
+  --color-crimson-600: #450f20;
+  --color-crimson-700: #350b18;
+  --color-crimson-800: #240710;
+  --color-crimson-900: #140408;
+  --color-crimson:     #561427;
+
+  /* Secondary — navy blue */
+  --color-secondary-50:  #e8edf5;
+  --color-secondary-100: #c3d2e6;
+  --color-secondary-200: #9eb7d7;
+  --color-secondary-300: #789cc8;
+  --color-secondary-400: #5380b9;
+  --color-secondary-500: #395284;
+  --color-secondary-600: #2e4269;
+  --color-secondary-700: #23324f;
+  --color-secondary-800: #182234;
+  --color-secondary-900: #0d1219;
+  --color-secondary:     #395284;
+
+  /* Gold — warm khaki/olive accent */
+  --color-gold-50:  #fef4ce;
+  --color-gold-100: #f8eec9;
+  --color-gold-200: #ded4b0;
+  --color-gold-300: #ccc498;
+  --color-gold-400: #bcb884;
+  --color-gold-500: #a8a46c;
+  --color-gold-600: #8a8654;
+  --color-gold-700: #6c683c;
+  --color-gold-800: #4e4a24;
+  --color-gold-900: #303008;
+  --color-gold:     #bcb884;
+
+  /* Neutral — warm gray scale */
+  --color-neutral-0:   #ffffff;
+  --color-neutral-50:  #faf8f5;
+  --color-neutral-100: #f0efef;
+  --color-neutral-200: #e4e2df;
+  --color-neutral-300: #d4d2cf;
+  --color-neutral-400: #b4b2af;
+  --color-neutral-500: #747474;
+  --color-neutral-600: #5e5e5e;
+  --color-neutral-700: #444748;
+  --color-neutral-800: #2c2c2c;
+  --color-neutral-900: #211f19;
+  --color-neutral-950: #050a0a;
+
+  /* Surface / background tokens */
+  --color-surface:        #faf8f5;
+  --color-surface-cream:  #fff9ed;
+  --color-surface-sand:   #fcfbf7;
+  --color-surface-warm:   #f8eec9;
+  --color-surface-blue:   #e8edf5;
+  --color-surface-teal:   #e8eeef;
+  --color-surface-purple: #f0e8f0;
+  --color-surface-rose:   #f5e8ea;
+
+  /* ── Font sizes ─────────────────────────────────────────── */
+  --text-2xs:    9px;
+  --text-xs:     10px;
+  --text-xs\+:   11px;
+  --text-sm:     12px;
+  --text-sm\+:   14px;
+  --text-base:   16px;
+  --text-lg:     18px;
+  --text-xl:     20px;
+  --text-2xl:    24px;
+  --text-3xl:    30px;
+  --text-4xl:    32px;
+  --text-5xl:    36px;
+  --text-6xl:    48px;
+  --text-7xl:    60px;
+  --text-8xl:    84px;
+
+  /* ── Letter spacing ─────────────────────────────────────── */
+  --tracking-tightest: -0.04em;
+  --tracking-tighter:  -0.03em;
+  --tracking-tight:    -0.02em;
+  --tracking-normal:    0em;
+  --tracking-wide:      0.025em;
+  --tracking-wider:     0.05em;
+  --tracking-widest:    0.15em;
+
+  /* ── Border radius ──────────────────────────────────────── */
+  --radius-none: 0px;
+  --radius-xs:   2px;
+  --radius-sm:   4px;
+  --radius:      8px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-2xl:  18px;
+  --radius-3xl:  24px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ────────────────────────────────────────────── */
+  --shadow-card:    0 1px 4px rgba(0,0,0,0.06);
+  --shadow-card-md: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-card-lg: 0 4px 20px rgba(0,0,0,0.10);
+  --shadow-inner:   inset 0 1px 3px rgba(0,0,0,0.06);
+
+  /* ── Spacing extras ─────────────────────────────────────── */
+  --spacing-4_5: 18px;
+  --spacing-5_5: 22px;
+  --spacing-15:  60px;
+  --spacing-18:  72px;
+  --spacing-22:  88px;
+  --spacing-26:  104px;
+  --spacing-30:  120px;
+  --spacing-34:  136px;
+  --spacing-38:  152px;
+  --spacing-50:  200px;
+}
+
+/* ─── BASE ───────────────────────────────────────────────────────────────── */
+:root {
+  --background: #faf8f5;
+  --foreground: #211f19;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
