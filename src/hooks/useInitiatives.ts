@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import type { Initiative } from "@/types/initiative";
 import { useMapStore } from "@/stores/useMapStore";
 import data from "@/data/initiatives.json";
