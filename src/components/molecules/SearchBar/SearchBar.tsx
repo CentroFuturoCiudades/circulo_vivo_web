@@ -3,32 +3,22 @@ import { useState, useRef } from "react";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type SearchBarSize = "sm" | "md" | "lg";
-
-const sizeMap: Record<SearchBarSize, { height: string; text: string; icon: number }> = {
-  sm: { height: "h-9",      text: "text-[12px]", icon: 14 },
-  md: { height: "h-[44px]", text: "text-[13px]", icon: 16 },
-  lg: { height: "h-[52px]", text: "text-[15px]", icon: 18 },
-};
-
 export interface SearchBarProps {
   placeholder?: string;
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
   onSearch?: (value: string) => void;
-  size?: SearchBarSize;
   disabled?: boolean;
   className?: string;
 }
 
 export function SearchBar({
-  placeholder = "Buscar...",
+  placeholder = "Muéstrame iniciativas de producción agroecológica en el centro del país...",
   value,
   defaultValue = "",
   onChange,
   onSearch,
-  size = "md",
   disabled,
   className,
 }: SearchBarProps) {
@@ -36,7 +26,6 @@ export function SearchBar({
   const isControlled = value !== undefined;
   const current = isControlled ? value : internal;
   const inputRef = useRef<HTMLInputElement>(null);
-  const { height, text, icon } = sizeMap[size];
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const v = e.target.value;
@@ -57,14 +46,14 @@ export function SearchBar({
   return (
     <div
       className={cn(
-        "relative flex items-center w-full bg-white rounded-md border-[1.5px] border-neutral-300",
-        "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all",
+        "relative flex items-center w-full h-16 bg-white rounded-full transition-all",
+        "border-2 border-[#708b8d1a] shadow-[0_1px_1.75px_#0000000d]",
+        "focus-within:border-[#708b8d40] focus-within:shadow-[0_0_0_3px_#708b8d14]",
         disabled && "opacity-60 pointer-events-none",
-        height,
         className
       )}
     >
-      <Search size={icon} className="absolute left-3 text-neutral-400 pointer-events-none" />
+      <Search size={20} className="absolute left-6 text-[#747878] pointer-events-none" />
 
       <input
         ref={inputRef}
@@ -74,11 +63,7 @@ export function SearchBar({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={disabled}
-        className={cn(
-          "w-full h-full bg-transparent font-sans text-neutral-900 placeholder:text-neutral-400",
-          "focus:outline-none pl-9 pr-9",
-          text
-        )}
+        className="w-full h-full bg-transparent font-sans text-[18px] text-neutral-900 placeholder:text-[#747878] focus:outline-none pl-16 pr-10"
       />
 
       {current && (
@@ -86,9 +71,9 @@ export function SearchBar({
           type="button"
           onClick={handleClear}
           aria-label="Limpiar búsqueda"
-          className="absolute right-3 text-neutral-400 hover:text-neutral-700 transition-colors"
+          className="absolute right-6 text-[#747878] hover:text-[#211f19] transition-colors"
         >
-          <X size={icon - 2} />
+          <X size={18} />
         </button>
       )}
     </div>

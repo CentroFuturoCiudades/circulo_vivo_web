@@ -1,5 +1,6 @@
 import { type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/atoms/Badge";
 
 export interface NavItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
@@ -48,13 +49,14 @@ export function NavItem({
         <>
           <span className="flex-1 text-left truncate">{label}</span>
           {badge !== undefined && (
-            <span className={cn(
-              "ml-auto inline-flex items-center justify-center min-w-[20px] h-5 rounded-full px-1.5",
-              "font-sans text-[10px] font-bold",
-              active ? "bg-primary text-white" : "bg-neutral-200 text-neutral-600"
-            )}>
-              {badge}
-            </span>
+            <Badge
+              variant="count"
+              count={Number(badge)}
+              className={cn(
+                "ml-auto",
+                !active && "bg-neutral-200 text-neutral-600"
+              )}
+            />
           )}
         </>
       )}
