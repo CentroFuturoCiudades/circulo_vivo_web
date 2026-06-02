@@ -36,7 +36,7 @@ function DirectivoCard({ name, role, description, src, className }: TeamMemberDi
   return (
     <div
       className={cn(
-        "bg-white flex flex-col gap-6 p-12",
+        "bg-white flex flex-col gap-6 p-12 transition-shadow duration-200 hover:shadow-md",
         className
       )}
     >
@@ -75,7 +75,7 @@ function TecnicoCard({ name, role, tag, src, className }: TeamMemberTecnicoProps
     <div
       className={cn(
         "flex flex-col items-center gap-4 p-6 bg-white rounded-xl text-center",
-        "shadow-[0_2px_7px_#00000014]",
+        "shadow-[0_2px_7px_#00000014] hover:shadow-md transition-shadow duration-200",
         className
       )}
     >

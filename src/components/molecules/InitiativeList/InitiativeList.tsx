@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { ListFilter, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Select } from "@/components/atoms/Select";
@@ -73,22 +74,30 @@ export function InitiativeList({
       </div>
 
       {/* ── Filter panel ── */}
-      {filtersOpen && (
-        <div className="flex items-center gap-2.5 px-4 py-4 border-b border-[#c4c7c7] bg-white/80">
-          {filters.map((f) => (
-            <div key={f.label} className="w-[90px]">
-              <Select
-                size="sm"
-                value={filterValues[f.label] ?? f.options[0]}
-                options={f.options.map((o) => ({ value: o, label: o }))}
-                onChange={(e) =>
-                  setFilterValues((prev) => ({ ...prev, [f.label]: e.target.value }))
-                }
-              />
-            </div>
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {filtersOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="flex items-center gap-2.5 px-4 py-4 border-b border-[#c4c7c7] bg-white/80"
+          >
+            {filters.map((f) => (
+              <div key={f.label} className="w-[90px]">
+                <Select
+                  size="sm"
+                  value={filterValues[f.label] ?? f.options[0]}
+                  options={f.options.map((o) => ({ value: o, label: o }))}
+                  onChange={(e) =>
+                    setFilterValues((prev) => ({ ...prev, [f.label]: e.target.value }))
+                  }
+                />
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── List — scrollable ── */}
       <div className="flex flex-col overflow-y-auto flex-1 bg-white/5">

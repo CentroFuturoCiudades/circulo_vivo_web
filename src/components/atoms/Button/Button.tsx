@@ -121,6 +121,7 @@ export function Button({
         "inline-flex items-center justify-center font-sans font-bold tracking-[0.1em] uppercase",
         "transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
         "select-none disabled:pointer-events-none disabled:opacity-40",
+        !isLink && "active:scale-[0.97]",
         // size
         isIcon ? iconDims : isLink ? "gap-1" : base,
         // color × variant

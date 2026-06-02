@@ -1,6 +1,7 @@
 "use client";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { InitiativeDrawer } from "./InitiativeDrawer";
 import { InitiativeDetailCard } from "@/components/molecules/InitiativeDetailCard";
 import { InitiativeList } from "@/components/molecules/InitiativeList";
@@ -119,40 +120,42 @@ function FullFlowDemo() {
     <div className="flex items-start h-[700px] bg-neutral-100 rounded-xl overflow-hidden">
 
       {/* ── Left: InitiativeList ── */}
-      <InitiativeList
-        items={initiatives}
-        selectedId={selectedId}
-        onSelect={handleSelect}
-        className="h-full flex-shrink-0 rounded-none"
-        style={{ width: 280 } as React.CSSProperties}
-      />
+      <div className="h-full shrink-0" style={{ width: 280 }}>
+        <InitiativeList
+          items={initiatives}
+          selectedId={selectedId}
+          onSelect={handleSelect}
+          className="h-full rounded-none"
+        />
+      </div>
 
       {/* ── Center: map + floating card ── */}
       <div className="flex-1 h-full flex items-center justify-center text-neutral-400 font-sans text-sm relative select-none bg-neutral-200">
         <span>[ Mapa interactivo ]</span>
 
-        {/* InitiativeDetailCard — visible when an initiative is selected */}
-        {selected && (
-          <div className="absolute top-6 right-6" style={{ zIndex: 10 }}>
+        {/* InitiativeDetailCard — crossfades when switching initiative */}
+        <AnimatePresence mode="wait">
+          {selected && (
             <InitiativeDetailCard
+              key={selected.id}
               title={selected.title}
               description={selected.description}
               chips={selected.chips}
               websiteUrl={selected.websiteUrl}
               onClose={handleCloseCard}
               onProfileClick={() => setDrawerOpen(true)}
+              className="absolute top-6 right-6 z-10"
             />
-          </div>
-        )}
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* ── Right: InitiativeDrawer — opens on VER FICHA ── */}
       {selected && drawerOpen && (
         <InitiativeDrawer
           {...selected}
           open={drawerOpen}
           onClose={() => setDrawerOpen(false)}
-          className="h-full flex-shrink-0"
+          className="h-full shrink-0"
         />
       )}
 

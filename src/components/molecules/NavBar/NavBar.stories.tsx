@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import logoSrc from "@/assets/logos/logo.svg";
-import { cn } from "@/lib/utils";
 import { NavBar } from "./NavBar";
 
 const LINKS = [
@@ -10,20 +8,6 @@ const LINKS = [
   { label: "Chatbot",     href: "/chatbot" },
   { label: "Indicadores", href: "/indicadores" },
 ];
-
-// Logo with white or black color via CSS filter
-const Logo = ({ color = "white" }: { color?: "white" | "black" }) => (
-  // eslint-disable-next-line @next/next/no-img-element
-  <img
-    src={logoSrc}
-    alt="Círculo Vivo"
-    draggable={false}
-    className={cn(
-      "h-9 w-auto object-contain select-none",
-      color === "white" && "brightness-0 invert"
-    )}
-  />
-);
 
 const meta: Meta<typeof NavBar> = {
   title: "Molecules/NavBar",
@@ -56,6 +40,7 @@ const meta: Meta<typeof NavBar> = {
     activeLinkTextColor: { control: "color" },
     linkTextColor:       { control: "color" },
     pillBgColor:         { control: "color" },
+    logoColor:           { control: "color" },
     blur:                { control: "boolean" },
   },
 };
@@ -66,7 +51,7 @@ type Story = StoryObj<typeof NavBar>;
 export const Default: Story = {
   args: {
     links: LINKS,
-    logo: <Logo color="white" />,
+    logoColor: "#ffffff",
     bgColor: "#708b8d",
     bgOpacity: 50,
     blur: true,
@@ -83,7 +68,7 @@ export const CrimsonVariant: Story = {
   parameters: { backgrounds: { default: "crimson" } },
   args: {
     links: LINKS,
-    logo: <Logo color="white" />,
+    logoColor: "#ffffff",
     bgColor: "#561427",
     bgOpacity: 60,
     blur: true,
@@ -99,7 +84,7 @@ export const NavyVariant: Story = {
   parameters: { backgrounds: { default: "dark" } },
   args: {
     links: LINKS,
-    logo: <Logo color="white" />,
+    logoColor: "#ffffff",
     bgColor: "#395284",
     bgOpacity: 70,
     blur: true,
@@ -115,7 +100,7 @@ export const LightVariant: Story = {
   parameters: { backgrounds: { default: "white" } },
   args: {
     links: LINKS,
-    logo: <Logo color="black" />,
+    logoColor: "#1a1c1c",
     bgColor: "#faf8f5",
     bgOpacity: 95,
     blur: false,
@@ -131,7 +116,7 @@ export const SolidNoBlur: Story = {
   parameters: { backgrounds: { default: "teal" } },
   args: {
     links: LINKS,
-    logo: <Logo color="white" />,
+    logoColor: "#ffffff",
     bgColor: "#708b8d",
     bgOpacity: 100,
     blur: false,

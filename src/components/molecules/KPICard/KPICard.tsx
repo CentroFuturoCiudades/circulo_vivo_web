@@ -39,7 +39,7 @@ export function KPICard({
   return (
     <div
       className={cn(
-        "bg-white rounded-xl p-6 shadow-sm border-l-4 flex flex-col justify-between gap-1",
+        "bg-white rounded-xl p-6 shadow-sm border-l-4 flex flex-col justify-between gap-1 transition-shadow duration-200 hover:shadow-md",
         accentBorder[accent],
         className
       )}

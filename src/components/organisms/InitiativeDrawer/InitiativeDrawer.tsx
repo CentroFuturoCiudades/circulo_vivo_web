@@ -1,4 +1,5 @@
 "use client";
+import { motion } from "framer-motion";
 import { ExternalLink, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Chip } from "@/components/atoms/Chip";
@@ -73,7 +74,10 @@ export function InitiativeDrawer({
   if (!open) return null;
 
   return (
-    <div
+    <motion.div
+      initial={{ x: "100%", opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ type: "spring", damping: 30, stiffness: 300 }}
       className={cn(
         "flex flex-col overflow-hidden border-l border-[#c4c7c7]",
         className
@@ -182,6 +186,6 @@ export function InitiativeDrawer({
         </div>
 
       </div>
-    </div>
+    </motion.div>
   );
 }

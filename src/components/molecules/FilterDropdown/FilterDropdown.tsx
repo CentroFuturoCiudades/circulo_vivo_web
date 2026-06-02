@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -50,7 +51,7 @@ export function FilterDropdown({
         onClick={() => setOpen((v) => !v)}
         className={cn(
           "inline-flex items-center gap-1.5 h-8 px-3 rounded-full font-sans text-[11px] font-medium",
-          "border transition-all select-none",
+          "border transition-all select-none active:scale-[0.96]",
           selected
             ? "bg-primary text-white border-primary"
             : "bg-white text-neutral-700 border-neutral-300 hover:border-neutral-400"
@@ -59,31 +60,39 @@ export function FilterDropdown({
         {selected ? selected.label : label}
         <ChevronDown
           size={12}
-          className={cn("transition-transform", open && "rotate-180")}
+          className={cn("transition-transform duration-200", open && "rotate-180")}
         />
       </button>
 
-      {open && (
-        <div className="absolute top-full left-0 mt-1 z-50 min-w-[160px] bg-white rounded-xl shadow-lg border border-neutral-100 py-1 overflow-hidden">
-          {options.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => handleSelect(opt.value)}
-              className={cn(
-                "w-full flex items-center justify-between gap-3 px-4 py-2.5",
-                "font-sans text-[13px] text-left transition-colors",
-                opt.value === value
-                  ? "bg-primary-50 text-primary font-semibold"
-                  : "text-neutral-700 hover:bg-neutral-50"
-              )}
-            >
-              {opt.label}
-              {opt.value === value && <Check size={13} />}
-            </button>
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: -4 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -4 }}
+            transition={{ duration: 0.12, ease: "easeOut" }}
+            className="absolute top-full left-0 mt-1 z-50 min-w-[160px] bg-white rounded-xl shadow-lg border border-neutral-100 py-1 overflow-hidden"
+          >
+            {options.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => handleSelect(opt.value)}
+                className={cn(
+                  "w-full flex items-center justify-between gap-3 px-4 py-2.5",
+                  "font-sans text-[13px] text-left transition-colors",
+                  opt.value === value
+                    ? "bg-primary-50 text-primary font-semibold"
+                    : "text-neutral-700 hover:bg-neutral-50"
+                )}
+              >
+                {opt.label}
+                {opt.value === value && <Check size={13} />}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

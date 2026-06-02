@@ -30,7 +30,7 @@ export function DataCard({
   return (
     <div
       className={cn(
-        "bg-white rounded-2xl border border-[#d1c6cf] overflow-hidden",
+        "bg-white rounded-2xl border border-[#d1c6cf] overflow-hidden transition-shadow duration-200 hover:shadow-lg",
         className
       )}
       style={{ boxShadow: "0 1px 2px #0000000a, 0 2px 10px #39528412" }}

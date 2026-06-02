@@ -26,7 +26,7 @@ export function InitiativeCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "w-full text-left flex flex-col gap-1 p-4 transition-colors",
+        "w-full text-left flex flex-col gap-1 p-4 transition-all duration-150 active:scale-[0.99]",
         "border-b border-neutral-200 last:border-b-0",
         selected
           ? "bg-white"

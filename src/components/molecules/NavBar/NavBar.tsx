@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { CirculoVivoLogo } from "@/components/atoms/CirculoVivoLogo";
 
 export interface NavLink {
   label: string;
@@ -29,6 +30,8 @@ export interface NavBarProps {
   linkTextColor?: string;
   /** Hex for nav pill container bg. Default: #ffffff */
   pillBgColor?: string;
+  /** CSS color for the default logo. Default: #000000 */
+  logoColor?: string;
   /** 0-100 opacity for nav pill container. Default: 90 */
   pillBgOpacity?: number;
 
@@ -57,6 +60,7 @@ export function NavBar({
   linkTextColor       = "#000000",
   pillBgColor         = "#ffffff",
   pillBgOpacity       = 90,
+  logoColor           = "#000000",
   fixed               = false,
   className,
 }: NavBarProps) {
@@ -79,7 +83,7 @@ export function NavBar({
     >
       {/* Logo — left */}
       <div className="flex items-center flex-shrink-0">
-        {logo}
+        {logo ?? <CirculoVivoLogo color={logoColor} />}
       </div>
 
       {/* Nav pill — center

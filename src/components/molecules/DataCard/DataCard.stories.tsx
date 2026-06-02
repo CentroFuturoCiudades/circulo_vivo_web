@@ -19,8 +19,8 @@ export const Default: Story = {
     badgeColor: "purple",
     miniStats: [
       { label: "Correlación", value: "0.84", color: "gold" },
-      { label: "Desv. Est.",  value: "14.8", color: "navy" },
-      { label: "Mínimo",     value: "15.1", color: "crimson" },
+      { label: "Desv. Est.",  value: "14.8", color: "blue" },
+      { label: "Mínimo",     value: "15.1", color: "rose" },
       { label: "Máximo",     value: "95.2", color: "teal" },
     ],
   },

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,46 +30,51 @@ export function DataSourcesBar({
 
   return (
     <div
-      className={cn(
-        "w-full border-t border-[#e5e7eb]",
-        className
-      )}
+      className={cn("w-full border-t border-[#e5e7eb]", className)}
       style={{ backgroundColor: "#f0f2f5" }}
     >
-      {/* ── Main row — visible when not collapsed ── */}
-      {!collapsed && (
-        <div className="flex items-center justify-between px-8 py-4">
-          {/* Left: label + sources text */}
-          <div className="flex flex-col gap-1 flex-1 min-w-0">
-            <span
-              className="font-sans font-normal text-secondary leading-[1.5]"
-              style={{ fontSize: "10px" }}
-            >
-              FUENTES DE INFORMACIÓN
-            </span>
-            <p
-              className="font-sans font-normal text-[#6b7280] leading-[1.625]"
-              style={{ fontSize: "12px" }}
-            >
-              {sources}
-            </p>
-          </div>
-
-          {/* Right: action links */}
-          <nav className="flex items-center gap-6 flex-shrink-0 ml-6">
-            {links.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="font-sans font-normal text-[#6b7280] hover:text-[#374151] transition-colors leading-[1.5]"
-                style={{ fontSize: "10px" }}
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-        </div>
-      )}
+      {/* ── Main row — animated collapse ── */}
+      <AnimatePresence initial={false}>
+        {!collapsed && (
+          <motion.div
+            key="content"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="flex items-center justify-between px-8 py-4">
+              <div className="flex flex-col gap-1 flex-1 min-w-0">
+                <span
+                  className="font-sans font-normal text-secondary leading-[1.5]"
+                  style={{ fontSize: "10px" }}
+                >
+                  FUENTES DE INFORMACIÓN
+                </span>
+                <p
+                  className="font-sans font-normal text-[#6b7280] leading-[1.625]"
+                  style={{ fontSize: "12px" }}
+                >
+                  {sources}
+                </p>
+              </div>
+              <nav className="flex items-center gap-6 flex-shrink-0 ml-6">
+                {links.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    className="font-sans font-normal text-[#6b7280] hover:text-[#374151] transition-colors leading-[1.5]"
+                    style={{ fontSize: "10px" }}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Collapse toggle ── */}
       <button
@@ -77,13 +83,12 @@ export function DataSourcesBar({
         aria-label={collapsed ? "Expandir fuentes" : "Colapsar fuentes"}
         className="flex items-center justify-center w-full py-1 hover:bg-[#e5e7eb] transition-colors"
       >
-        <ChevronDown
-          size={7}
-          className={cn(
-            "text-[#9ca3af] transition-transform",
-            collapsed && "rotate-180"
-          )}
-        />
+        <motion.div
+          animate={{ rotate: collapsed ? 180 : 0 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
+        >
+          <ChevronDown size={7} className="text-[#9ca3af]" />
+        </motion.div>
       </button>
     </div>
   );

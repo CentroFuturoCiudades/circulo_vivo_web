@@ -44,7 +44,7 @@ export function ChatbotButton({
 
   const cls = cn(
     "flex items-center justify-between w-full rounded-xl",
-    "bg-[#708b8d] hover:bg-[#5f7c7e] active:bg-[#536d6f] transition-colors",
+    "bg-[#708b8d] hover:bg-[#5f7c7e] active:bg-[#536d6f] transition-all duration-150 active:scale-[0.98]",
     "px-6 py-4 cursor-pointer",
     className
   );

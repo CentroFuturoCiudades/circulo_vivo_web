@@ -17,9 +17,9 @@ const base = {
   title: "Del Comalli Nixtamal",
   description: "Producción de tortillas y derivados de maíz criollo mediante procesos tradicionales de nixtamalización, preservando la biodiversidad local.",
   chips: [
-    { label: "CDMX",         color: "gold"   },
-    { label: "ALIMENTACIÓN", color: "purple" },
-    { label: "PRIVADA",      color: "teal"   },
+    { label: "CDMX",         color: "gold"   as const },
+    { label: "ALIMENTACIÓN", color: "purple" as const },
+    { label: "PRIVADA",      color: "teal"   as const },
   ],
   profileUrl: "#",
   websiteUrl: "#",
@@ -52,8 +52,7 @@ function PaginatorDemo() {
       onClose={() => {}}
       total={initiatives.length}
       current={idx + 1}
-      onPrev={() => setIdx((i) => Math.max(0, i - 1))}
-      onNext={() => setIdx((i) => Math.min(initiatives.length - 1, i + 1))}
+      onPageChange={(page) => setIdx(page - 1)}
     />
   );
 }
