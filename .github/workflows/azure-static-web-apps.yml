@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - storybook
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
@@ -47,7 +48,8 @@ jobs:
           action: 'upload'
           app_location: '/'
           api_location: ''
-          output_location: ''
+          output_location: ${{ github.ref_name == 'storybook' && 'storybook-static' || '' }}
+          app_build_command: ${{ github.ref_name == 'storybook' && 'npm run build-storybook' || '' }}
           production_branch: 'main'
 
   # ── Close PR preview ─────────────────────────────────────
