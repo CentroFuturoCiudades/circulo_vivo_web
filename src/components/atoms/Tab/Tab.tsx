@@ -14,7 +14,7 @@ export function Tab({ active = false, icon: Icon, children, className, disabled,
       aria-selected={active}
       disabled={disabled}
       className={cn(
-        "inline-flex items-center justify-center gap-1.5 font-sans font-bold text-[12px] tracking-[0.1em] uppercase transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary select-none whitespace-nowrap",
+        "inline-flex items-center justify-center gap-1.5 font-sans font-bold text-[12px] tracking-[0.1em] uppercase transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary select-none whitespace-nowrap active:scale-[0.97]",
         active
           ? "bg-primary/20 text-primary border-b-2 border-primary px-5 py-4"
           : "text-[#9ca3af] hover:text-neutral-700 px-5 py-[20.5px]",
