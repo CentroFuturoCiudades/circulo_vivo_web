@@ -1,4 +1,4 @@
-import { X, Link2, Code2 } from "lucide-react";
+import { Globe, MessagesSquare, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/atoms/Logo";
 
@@ -91,19 +91,19 @@ export function Footer({
           {/* Social icons — gap 16, mt 8 */}
           <div className="flex items-center gap-4 mt-2">
             {socialLinks.twitter !== undefined ? (
-              <a href={socialLinks.twitter} aria-label="X / Twitter" className={iconCls}><X size={18} /></a>
+              <a href={socialLinks.twitter} aria-label="Web" className={iconCls}><Globe size={18} /></a>
             ) : (
-              <span className={iconCls}><X size={18} /></span>
+              <span className={iconCls}><Globe size={18} /></span>
             )}
             {socialLinks.linkedin !== undefined ? (
-              <a href={socialLinks.linkedin} aria-label="LinkedIn" className={iconCls}><Link2 size={17} /></a>
+              <a href={socialLinks.linkedin} aria-label="Messages" className={iconCls}><MessagesSquare size={18} /></a>
             ) : (
-              <span className={iconCls}><Link2 size={17} /></span>
+              <span className={iconCls}><MessagesSquare size={18} /></span>
             )}
             {socialLinks.github !== undefined ? (
-              <a href={socialLinks.github} aria-label="GitHub" className={iconCls}><Code2 size={16} /></a>
+              <a href={socialLinks.github} aria-label="Share" className={iconCls}><Share2 size={18} /></a>
             ) : (
-              <span className={iconCls}><Code2 size={16} /></span>
+              <span className={iconCls}><Share2 size={18} /></span>
             )}
           </div>
         </div>
