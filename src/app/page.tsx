@@ -88,7 +88,7 @@ function HeroSection() {
 
             {/* Decorative sphere rings */}
             <div
-                className="absolute pointer-events-none select-none"
+                className="absolute pointer-events-none select-none hidden lg:block"
                 style={{ right: -80, top: 0, width: 760, height: 760 }}
             >
                 {[320, 390, 460, 530, 600, 670, 740].map((size, i) => (
@@ -107,7 +107,7 @@ function HeroSection() {
             </div>
 
             {/* NavBar */}
-            <div className="relative z-20 px-9 pt-5">
+            <div className="relative z-20 px-6 md:px-9 pt-5">
                 <NavBar
                     links={NAV_LINKS}
                     logoColor="#ffffff"
@@ -125,22 +125,17 @@ function HeroSection() {
 
             {/* Hero content */}
             <div
-                className="relative z-10 flex-1 mx-auto w-full max-w-[1280px] px-16 flex items-center justify-between"
-                style={{ paddingTop: 80, paddingBottom: 80, gap: 80 }}
+                className="relative z-10 flex-1 w-full px-6 md:px-9 flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-10 lg:gap-20 py-16 lg:py-[80px]"
             >
                 {/* Left column */}
                 <motion.div
                     initial={{ opacity: 0, x: -24 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.75, ease: "easeOut", delay: 0.1 }}
-                    className="flex flex-col gap-6 max-w-[540px]"
+                    className="flex flex-col gap-6 w-full"
                 >
                     <h1
-                        className="font-sans font-semibold text-white"
-                        style={{
-                            fontSize: 48,
-                            lineHeight: "60px",
-                        }}
+                        className="font-sans font-semibold text-white text-[28px] leading-[36px] md:text-[36px] md:leading-[46px] lg:text-[48px] lg:leading-[60px]"
                     >
                         Transformando los{" "}
                         <span
@@ -160,7 +155,7 @@ function HeroSection() {
                         regenerar el territorio. Una plataforma para mapear,
                         analizar y conectar.
                     </p>
-                    <div className="flex items-center gap-3 pt-2">
+                    <div className="flex flex-wrap items-center gap-3 pt-2">
                         <motion.div
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
@@ -192,7 +187,7 @@ function HeroSection() {
 
                 {/* Right — floating stat cards */}
                 <div
-                    className="relative flex-shrink-0"
+                    className="relative flex-shrink-0 hidden lg:block"
                     style={{ width: 466, height: 390 }}
                 >
                     {/* Card navy */}
@@ -316,7 +311,7 @@ const FEATURES = [
 function FeatureCardsSection() {
     const router = useRouter();
     return (
-        <section className="relative w-full" style={{ padding: "120px 64px" }}>
+        <section className="relative w-full py-16 md:py-20 lg:py-[120px]">
             {/* Subtle bg gradient */}
             <div
                 className="absolute inset-0 pointer-events-none"
@@ -325,8 +320,8 @@ function FeatureCardsSection() {
                         "linear-gradient(135deg, rgba(222,212,176,0.12) 0%, rgba(209,198,207,0.12) 100%)",
                 }}
             />
-            <div className="relative mx-auto max-w-[1280px]">
-                <div className="grid grid-cols-3 gap-16">
+            <div className="relative px-6 md:px-9">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-16">
                     {FEATURES.map((feature, i) => (
                         <FadeUp
                             key={feature.title}
@@ -363,7 +358,7 @@ function FeatureCardsSection() {
                                 variant="primary"
                                 iconRight={ArrowRight}
                                 onClick={() => router.push(feature.href)}
-                                className="normal-case tracking-normal font-normal text-base h-auto py-1.5 px-2"
+                                className="normal-case tracking-normal font-normal text-base h-auto py-1.5 px-4 w-fit"
                             >
                                 {feature.cta}
                             </Button>
@@ -645,42 +640,34 @@ function ChatbotHighlightSection() {
                 }}
             />
 
-            <div
-                className="relative mx-auto max-w-[1280px] flex items-start gap-0"
-                style={{ minHeight: 813 }}
-            >
-                {/* Left — chatbot preview */}
-                <FadeUp
-                    delay={0}
-                    className="flex items-center justify-center px-8 py-20 flex-shrink-0"
-                >
-                    <ChatbotMock />
+            <div className="relative px-6 md:px-9 flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-20 py-16 md:py-20 lg:py-[120px]">
+                {/* Col izquierda — mock, mismo patrón que Indicators */}
+                <FadeUp delay={0} className="hidden md:flex items-center justify-center lg:shrink-0">
+                    {/* Tablet: escala 0.67 */}
+                    <div className="md:block lg:hidden" style={{ width: 383, height: 437, overflow: "hidden" }}>
+                        <div style={{ transform: "scale(0.67)", transformOrigin: "top left", width: 572, height: 653 }}>
+                            <ChatbotMock />
+                        </div>
+                    </div>
+                    {/* Desktop: tamaño completo */}
+                    <div className="hidden lg:block">
+                        <ChatbotMock />
+                    </div>
                 </FadeUp>
 
-                {/* Right — text content */}
+                {/* Col derecha — texto */}
                 <div
-                    className="flex flex-col justify-center px-8 py-20"
+                    className="flex flex-col w-full lg:w-auto"
                     style={{ gap: 24 }}
                 >
                     <FadeUp delay={0.1}>
                         <h2
-                            className="font-sans font-semibold text-[#395284]"
-                            style={{
-                                fontSize: 38.67,
-                                maxWidth: 552,
-                                color: "#BCB884",
-                                lineHeight: "50.27px",
-                            }}
+                            className="font-sans font-semibold text-[#BCB884] text-[24px] leading-[32px] md:text-[32px] md:leading-[42px] lg:text-[38.67px] lg:leading-[50.27px] lg:max-w-[552px]"
                         >
                             La información que necesitas, al
                             <br />
                             <span
-                                className="font-serif font-medium italic"
-                                style={{
-                                    fontSize: 38.67,
-                                    color: "#395284",
-                                    lineHeight: "50.27px",
-                                }}
+                                className="font-serif font-medium italic text-[#395284] text-[24px] leading-[32px] md:text-[32px] md:leading-[42px] lg:text-[38.67px] lg:leading-[50.27px]"
                             >
                                 alcance de una pregunta.
                             </span>
@@ -754,8 +741,7 @@ function EcosystemMapSection() {
     const router = useRouter();
     return (
         <section
-            className="relative w-full overflow-hidden"
-            style={{ height: 640 }}
+            className="relative w-full overflow-hidden h-[480px] md:h-[560px] lg:h-[640px]"
         >
             <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -776,30 +762,19 @@ function EcosystemMapSection() {
                     <motion.div
                         whileHover={{ scale: 1.01 }}
                         transition={{ type: "spring", stiffness: 200 }}
-                        className="relative overflow-hidden"
-                        style={{ width: 512, borderRadius: 8 }}
+                        className="relative overflow-hidden w-[calc(100vw-48px)] lg:w-[512px] rounded-[8px]"
                     >
                         {/* Crimson bg */}
                         <div className="absolute inset-0 bg-[#561427]" />
                         {/* Content */}
-                        <div className="relative z-10 p-12 flex flex-col items-center gap-2">
+                        <div className="relative z-10 p-6 md:p-8 lg:p-12 flex flex-col items-center gap-2">
                             <h2
-                                className="font-serif font-semibold text-white text-center"
-                                style={{
-                                    fontSize: 32,
-                                    lineHeight: "40px",
-                                    marginBottom: 12,
-                                }}
+                                className="font-serif font-semibold text-white text-center text-xl leading-7 lg:text-[32px] lg:leading-[40px] mb-3"
                             >
                                 Navega el ecosistema
                             </h2>
                             <p
-                                className="font-sans font-regular text-white text-center"
-                                style={{
-                                    fontSize: 16,
-                                    lineHeight: "24px",
-                                    paddingBottom: 40,
-                                }}
+                                className="font-sans font-regular text-white text-center text-sm lg:text-base pb-8 lg:pb-10"
                             >
                                 Visualiza la distribución geográfica de los
                                 esfuerzos ciudadanos y encuentra colaboradores
@@ -850,23 +825,18 @@ function IndicatorsDashboardSection() {
     const router = useRouter();
     const maxVal = Math.max(...CHART_DATA.map((d) => d.value));
     return (
-        <section className="w-full" style={{ padding: "120px 0" }}>
+        <section className="w-full py-16 md:py-20 lg:py-[120px]">
             <div
-                className="mx-auto flex items-center justify-center gap-20"
-                style={{ maxWidth: 1280, padding: "0 32px" }}
+                className="flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-20 px-6 md:px-9"
             >
                 {/* Left — text */}
                 <FadeUp
                     delay={0}
-                    className="flex flex-col gap-5 shrink-0 w-[379px]"
+                    className="flex flex-col gap-5 w-full lg:shrink-0 lg:w-[379px]"
                 >
                     <h2
-                        className="font-sans font-semibold text-[#1a1c1c]"
-                        style={{
-                            fontSize: 32,
-                            letterSpacing: "-0.32px",
-                            lineHeight: "40px",
-                        }}
+                        className="font-sans font-semibold text-[#1a1c1c] text-2xl lg:text-[32px] lg:leading-[40px]"
+                        style={{ letterSpacing: "-0.32px" }}
                     >
                         Visualiza lo{" "}
                         <em
@@ -898,17 +868,9 @@ function IndicatorsDashboardSection() {
                 {/* Right — chart card */}
                 <FadeUp delay={0.15}>
                     <div
-                        className="bg-white"
+                        className="bg-white w-full lg:w-[565px] flex flex-col gap-5 rounded-2xl border border-[#d1c6cf] p-5 lg:p-[25px]"
                         style={{
-                            width: 565,
-                            borderRadius: 16,
-                            border: "1px solid #d1c6cf",
-                            boxShadow:
-                                "0 1px 2.625px rgba(0,0,0,0.04), 0 2px 10.5px rgba(57,82,132,0.07)",
-                            padding: "25px 25px 20px 25px",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 20,
+                            boxShadow: "0 1px 2.625px rgba(0,0,0,0.04), 0 2px 10.5px rgba(57,82,132,0.07)",
                         }}
                     >
                         {/* Chart header */}
@@ -1013,8 +975,7 @@ function ConversionBannerSection() {
     const router = useRouter();
     return (
         <section
-            className="relative overflow-hidden"
-            style={{ margin: "0 36px", padding: "60px 0" }}
+            className="relative overflow-hidden py-[60px] mx-6 md:mx-9 mb-12"
         >
             <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -1027,18 +988,12 @@ function ConversionBannerSection() {
             />
 
             <div
-                className="relative z-10 mx-auto flex items-center justify-between"
-                style={{ maxWidth: 1216, padding: 80, gap: 329 }}
+                className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-0 px-6 md:px-9 py-10 md:py-16 lg:py-[80px]"
             >
                 <FadeUp delay={0} className="flex flex-col gap-2">
                     <h2
-                        className="font-sans font-semibold text-white"
-                        style={{
-                            fontSize: 32,
-                            letterSpacing: "-0.32px",
-                            lineHeight: 1.2,
-                            maxWidth: 544,
-                        }}
+                        className="font-sans font-semibold text-white text-2xl lg:text-[32px] max-w-full lg:max-w-[544px]"
+                        style={{ letterSpacing: "-0.32px", lineHeight: 1.2 }}
                     >
                         Únete a la red de transformación
                     </h2>
@@ -1069,7 +1024,7 @@ function ConversionBannerSection() {
 // ── PAGE ──────────────────────────────────────────────────────────────────────
 export default function HomePage() {
     return (
-        <main className="w-full">
+        <main className="w-full bg-white">
             <HeroSection />
             <FeatureCardsSection />
             <ChatbotHighlightSection />

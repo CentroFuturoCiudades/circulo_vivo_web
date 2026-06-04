@@ -74,16 +74,15 @@ export function Footer({
 
       {/* ── Main row ── */}
       <div
-        className="flex items-start justify-between px-8"
+        className="flex flex-col md:flex-row items-start md:justify-between px-6 md:px-9 gap-8 md:gap-0"
         style={{ paddingTop: 48, paddingBottom: 48 }}
       >
         {/* Left: logo + tagline + social icons */}
-        <div className="flex flex-col items-start gap-4" style={{ maxWidth: 299 }}>
+        <div className="flex flex-col items-start gap-4 w-full md:max-w-[299px]">
           <Logo className="h-[53px] w-auto self-start" />
 
           <p
-            className="font-sans text-[12px] text-[#52525b] leading-[1.625]"
-            style={{ width: 299 }}
+            className="font-sans text-[12px] text-[#52525b] leading-[1.625] max-w-[299px]"
           >
             {tagline}
           </p>
@@ -108,8 +107,8 @@ export function Footer({
           </div>
         </div>
 
-        {/* Right: link columns — gap 44 between columns */}
-        <div className="flex gap-11">
+        {/* Right: link columns — 2 cols on mobile, row on desktop */}
+        <div className="grid grid-cols-2 md:flex md:gap-11 gap-8">
           {columns.map((col) => (
             <div key={col.heading} className="flex flex-col gap-4">
               <span className="font-sans font-normal text-[16px] text-[#18181b] leading-[1.5] uppercase">
@@ -131,14 +130,14 @@ export function Footer({
 
       {/* ── Bottom bar ── */}
       <div
-        className="flex items-center justify-between px-8 bg-white border-t border-[#e4e4e7]"
+        className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 md:px-9 bg-white border-t border-[#e4e4e7] gap-3 md:gap-0"
         style={{ paddingTop: 24, paddingBottom: 24 }}
       >
         <span className="font-sans font-normal text-[12px] text-[#52525b] leading-[1.333]">
           {copyright}
         </span>
 
-        <nav className="flex items-center gap-6">
+        <nav className="flex flex-wrap items-center gap-4 md:gap-6">
           {legalLinks.map((link) => (
             <a
               key={link.label}

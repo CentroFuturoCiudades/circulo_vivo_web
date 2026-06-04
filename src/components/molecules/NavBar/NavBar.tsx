@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CirculoVivoLogo } from "@/components/atoms/CirculoVivoLogo";
 
@@ -13,28 +15,16 @@ export interface NavBarProps {
   logo?: React.ReactNode;
   action?: React.ReactNode;
 
-  // ── Appearance — editable per-instance ────────────────
-  /** Hex for bar background. Default: #708b8d */
   bgColor?: string;
-  /** 0-100 opacity for bar background. Default: 50 */
   bgOpacity?: number;
-  /** Enable backdrop blur 3.5px. Default: true */
   blur?: boolean;
-  /** Hex for active pill bg. Default: #708b8d */
   activeLinkColor?: string;
-  /** 0-100 opacity for active pill bg. Default: 100 */
   activeLinkOpacity?: number;
-  /** Hex for active link text. Default: #ffffff */
   activeLinkTextColor?: string;
-  /** Hex for inactive link text. Default: #000000 */
   linkTextColor?: string;
-  /** Hex for nav pill container bg. Default: #ffffff */
   pillBgColor?: string;
-  /** CSS color for the default logo. Default: #000000 */
   logoColor?: string;
-  /** 0-100 opacity for nav pill container. Default: 90 */
   pillBgOpacity?: number;
-
   fixed?: boolean;
   className?: string;
 }
@@ -64,50 +54,45 @@ export function NavBar({
   fixed               = false,
   className,
 }: NavBarProps) {
-  return (
-    <nav
-      className={cn(
-        // Design: width 1216, height 65, padding [6,24], cornerRadius 8
-        "w-full h-[65px] flex items-center justify-between",
-        "px-6",              // horizontal padding: 24px
-        "rounded-lg",        // cornerRadius: 8
-        "border border-white/10",
-        fixed && "fixed top-0 left-1/2 -translate-x-1/2 z-50 max-w-[1216px]",
-        className
-      )}
-      style={{
-        backgroundColor:     toRgba(bgColor, bgOpacity),
-        backdropFilter:      blur ? "blur(3.5px)" : undefined,
-        WebkitBackdropFilter:blur ? "blur(3.5px)" : undefined,
-      }}
-    >
-      {/* Logo — left */}
-      <div className="flex items-center flex-shrink-0">
-        {logo ?? <CirculoVivoLogo color={logoColor} />}
-      </div>
+  const [open, setOpen] = useState(false);
 
-      {/* Nav pill — center
-          Design measurement: NhGax height:36, width:452
-          Pill height = auto (driven by active item's py-[6px] + text 16px*1.5 + py-[6px] = 36px)
-          Inactive items: self-stretch to fill the 36px pill height
-      */}
-      <div
-        className="flex items-center h-[36px] rounded-full border border-black/5"
-        style={{ backgroundColor: toRgba(pillBgColor, pillBgOpacity) }}
+  const bgStyle = {
+    backgroundColor:      toRgba(bgColor, bgOpacity),
+    backdropFilter:       blur ? "blur(3.5px)" : undefined,
+    WebkitBackdropFilter: blur ? "blur(3.5px)" : undefined,
+  };
+
+  return (
+    <div className="relative">
+      {/* ── Bar ── */}
+      <nav
+        className={cn(
+          "w-full h-[65px] flex items-center justify-between",
+          "px-6",
+          "rounded-lg",
+          "border border-white/10",
+          fixed && "fixed top-0 left-1/2 -translate-x-1/2 z-50 max-w-[1216px]",
+          className
+        )}
+        style={bgStyle}
       >
-        {links.map((link) => {
-          if (link.active) {
-            return (
+        {/* Logo */}
+        <div className="flex items-center flex-shrink-0">
+          {logo ?? <CirculoVivoLogo color={logoColor} />}
+        </div>
+
+        {/* Nav pill — desktop only */}
+        <div
+          className="hidden md:flex items-center h-[36px] rounded-full border border-black/5"
+          style={{ backgroundColor: toRgba(pillBgColor, pillBgOpacity) }}
+        >
+          {links.map((link) =>
+            link.active ? (
               <a
                 key={link.href}
                 href={link.href}
                 aria-current="page"
-                className={cn(
-                  "flex items-center self-stretch rounded-full",
-                  "px-4",
-                  "font-sans font-medium text-[12px] tracking-[0.1em] uppercase leading-[1.333]",
-                  "whitespace-nowrap select-none"
-                )}
+                className="flex items-center self-stretch rounded-full px-4 font-sans font-medium text-[12px] tracking-[0.1em] uppercase leading-[1.333] whitespace-nowrap select-none"
                 style={{
                   backgroundColor: toRgba(activeLinkColor, activeLinkOpacity),
                   color: activeLinkTextColor,
@@ -115,33 +100,58 @@ export function NavBar({
               >
                 {link.label}
               </a>
-            );
-          }
+            ) : (
+              <a
+                key={link.href}
+                href={link.href}
+                className="flex items-center self-stretch px-4 font-sans font-light text-[12px] tracking-[0.1em] uppercase leading-[1.333] whitespace-nowrap select-none hover:opacity-60 transition-opacity"
+                style={{ color: linkTextColor }}
+              >
+                {link.label}
+              </a>
+            )
+          )}
+        </div>
 
-          return (
+        {/* Right: action + hamburger */}
+        <div className="flex items-center gap-3 flex-shrink-0 md:w-[76px] justify-end">
+          {action}
+          {/* Hamburger — mobile only */}
+          <button
+            className="md:hidden flex items-center justify-center w-9 h-9 rounded-md"
+            style={{ color: logoColor }}
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Cerrar menú" : "Abrir menú"}
+          >
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </nav>
+
+      {/* ── Mobile dropdown ── */}
+      {open && (
+        <div
+          className="md:hidden absolute top-[69px] left-0 right-0 z-50 rounded-lg border border-white/10 overflow-hidden"
+          style={bgStyle}
+        >
+          {links.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className={cn(
-                // Inactive: self-stretch fills the 36px pill height
-                "flex items-center self-stretch",
-                "px-4",
-                "font-sans font-light text-[12px] tracking-[0.1em] uppercase leading-[1.333]",
-                "whitespace-nowrap select-none",
-                "hover:opacity-60 transition-opacity"
-              )}
-              style={{ color: linkTextColor }}
+              onClick={() => setOpen(false)}
+              className="flex items-center px-6 py-4 font-sans font-medium text-[13px] tracking-[0.1em] uppercase border-b border-white/10 last:border-0 transition-opacity hover:opacity-70"
+              style={{
+                color: link.active ? activeLinkTextColor : linkTextColor,
+                backgroundColor: link.active
+                  ? toRgba(activeLinkColor, activeLinkOpacity)
+                  : "transparent",
+              }}
             >
               {link.label}
             </a>
-          );
-        })}
-      </div>
-
-      {/* Action slot — right (design: width 76, height 37) */}
-      <div className="flex items-center justify-end flex-shrink-0 w-[76px]">
-        {action}
-      </div>
-    </nav>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
