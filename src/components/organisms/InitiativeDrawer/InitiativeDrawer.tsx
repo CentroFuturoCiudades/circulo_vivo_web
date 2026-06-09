@@ -75,14 +75,15 @@ export function InitiativeDrawer({
 
   return (
     <motion.div
-      initial={{ x: "100%", opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ type: "spring", damping: 30, stiffness: 300 }}
+      initial={{ width: 0, opacity: 0 }}
+      animate={{ width: 319, opacity: 1 }}
+      exit={{ width: 0, opacity: 0 }}
+      transition={{ type: "spring", damping: 32, stiffness: 320 }}
       className={cn(
-        "flex flex-col overflow-hidden border-l border-[#c4c7c7]",
+        "flex flex-col overflow-hidden rounded-xl border border-[#c4c7c7]",
         className
       )}
-      style={{ width: 319, backgroundColor: "#fcfbf7" }}
+      style={{ minWidth: 0, backgroundColor: "#fcfbf7" }}
     >
       {/* ── Image ── */}
       <div

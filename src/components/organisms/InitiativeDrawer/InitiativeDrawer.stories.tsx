@@ -135,7 +135,7 @@ function FullFlowDemo() {
 
         {/* InitiativeDetailCard — crossfades when switching initiative */}
         <AnimatePresence mode="wait">
-          {selected && (
+          {selected && !drawerOpen && (
             <InitiativeDetailCard
               key={selected.id}
               title={selected.title}
@@ -150,14 +150,17 @@ function FullFlowDemo() {
         </AnimatePresence>
       </div>
 
-      {selected && drawerOpen && (
-        <InitiativeDrawer
-          {...selected}
-          open={drawerOpen}
-          onClose={() => setDrawerOpen(false)}
-          className="h-full shrink-0"
-        />
-      )}
+      <AnimatePresence>
+        {selected && drawerOpen && (
+          <InitiativeDrawer
+            key={selected?.id}
+            {...selected}
+            open
+            onClose={() => setDrawerOpen(false)}
+            className="h-full shrink-0"
+          />
+        )}
+      </AnimatePresence>
 
     </div>
   );
