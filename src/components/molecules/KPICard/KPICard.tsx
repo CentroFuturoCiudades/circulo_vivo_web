@@ -3,25 +3,24 @@ import { cn } from "@/lib/utils";
 type KPIAccent = "teal" | "navy" | "gold";
 
 const accentBorder: Record<KPIAccent, string> = {
-  teal: "border-l-primary",
-  navy: "border-l-secondary",
+  teal: "border-l-[#708b8d]",
+  navy: "border-l-[#395284]",
   gold: "border-l-[#bcb884]",
 };
 
 const accentValue: Record<KPIAccent, string> = {
-  teal: "text-primary",
-  navy: "text-secondary",
-  gold: "text-[#1c1c18]",
+  teal: "text-[#708b8d]",
+  navy: "text-[#395284]",
+  gold: "text-[#bcb884]",
 };
 
 export interface KPICardProps {
   label: string;
   value: string;
   change?: string;
-  changeSuffix?: string;
-  subtext?: string;
-  /** 0–100, renders a progress bar below value */
-  progress?: number;
+  target?: string;
+  sourcesLabel?: string;
+  sources?: string;
   accent?: KPIAccent;
   className?: string;
 }
@@ -30,66 +29,82 @@ export function KPICard({
   label,
   value,
   change,
-  changeSuffix,
-  subtext,
-  progress,
+  target,
+  sourcesLabel,
+  sources,
   accent = "teal",
   className,
 }: KPICardProps) {
+  const hasBottom = target || sourcesLabel || sources;
+
   return (
     <div
       className={cn(
-        "bg-white rounded-xl p-6 shadow-sm border-l-4 flex flex-col justify-between gap-1 transition-shadow duration-200 hover:shadow-md",
+        "bg-white rounded-xl border-l-4 flex flex-col gap-4",
+        "shadow-[0_1px_1.75px_rgba(0,0,0,0.05)]",
         accentBorder[accent],
         className
       )}
+      style={{ padding: 24 }}
     >
-      {/* Label */}
-      <p className="font-sans font-bold text-[12px] tracking-[0.1em] uppercase text-neutral-400 leading-none">
-        {label}
-      </p>
-
-      {/* Value + change */}
-      <div className="relative flex items-end gap-0 mt-1">
-        <span
-          className={cn(
-            "font-serif font-bold text-[36px] leading-none",
-            accentValue[accent]
-          )}
+      {/* Label + value */}
+      <div className="flex flex-col gap-1">
+        <p
+          className="font-sans font-bold uppercase text-[#6b7280] leading-none"
+          style={{ fontSize: 12, letterSpacing: 1.2 }}
         >
-          {value}
-        </span>
-        {change && (
-          <span className="font-sans font-bold text-[14px] text-[#1c1c18] leading-none ml-2 mb-0.5">
-            {change}
+          {label}
+        </p>
+
+        <div className="flex items-end gap-2 mt-1">
+          <span
+            className={cn("font-serif font-bold leading-none", accentValue[accent])}
+            style={{ fontSize: 36 }}
+          >
+            {value}
           </span>
-        )}
-        {changeSuffix && (
-          <span className="font-sans text-[14px] text-neutral-400 leading-none ml-1 mb-0.5">
-            {changeSuffix}
-          </span>
-        )}
+          {change && (
+            <span
+              className="font-sans font-bold text-[#1c1c18] leading-none mb-0.5"
+              style={{ fontSize: 14 }}
+            >
+              {change}
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* Progress bar */}
-      {progress !== undefined && (
-        <div className="mt-2 w-full h-2 bg-neutral-100 rounded-full overflow-hidden">
-          <div
-            className={cn("h-full rounded-full", {
-              "bg-primary": accent === "teal",
-              "bg-secondary": accent === "navy",
-              "bg-[#bcb884]": accent === "gold",
-            })}
-            style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
-          />
-        </div>
-      )}
+      {hasBottom && <div className="border-t border-[#e5e7eb]" />}
 
-      {/* Subtext */}
-      {subtext && (
-        <p className="font-sans text-[14px] text-neutral-400 leading-snug mt-1">
-          {subtext}
-        </p>
+      {hasBottom && (
+        <div className="flex flex-col gap-4">
+          {target && (
+            <p className="font-sans text-[#9ca3af]" style={{ fontSize: 14, lineHeight: 1.43 }}>
+              {target}
+            </p>
+          )}
+
+          {(sourcesLabel || sources) && (
+            <div className="flex flex-col gap-1">
+              {sourcesLabel && (
+                <p
+                  className="font-sans text-[#395284] uppercase"
+                  style={{ fontSize: 10, lineHeight: 1.5, letterSpacing: 0.6 }}
+                >
+                  {sourcesLabel}
+                </p>
+              )}
+              {sources && (
+                <p
+                  className="font-sans text-[#6b7280]"
+                  style={{ fontSize: 12, lineHeight: 1.625 }}
+                >
+                  {sources}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
