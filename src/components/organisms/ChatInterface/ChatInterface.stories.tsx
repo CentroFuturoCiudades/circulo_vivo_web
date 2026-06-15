@@ -10,7 +10,7 @@ const PAGE_BG: React.CSSProperties = {
   height: "100vh",
   padding: "0 36px",
   backgroundImage:
-    "linear-gradient(rgba(255,255,255,0.30), rgba(255,255,255,0.30)), url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1600')",
+    "linear-gradient(rgba(255,255,255,0.30), rgba(255,255,255,0.30)), url('/bg-images/chat-bg.jpg')",
   backgroundSize: "cover",
   backgroundPosition: "center",
   overflow: "hidden",

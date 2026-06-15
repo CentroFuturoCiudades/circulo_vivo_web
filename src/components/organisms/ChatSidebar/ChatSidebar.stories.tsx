@@ -6,6 +6,7 @@ const meta: Meta<typeof ChatSidebar> = {
   component: ChatSidebar,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
+  decorators: [(Story) => <div className="h-[600px]"><Story /></div>],
 };
 export default meta;
 type Story = StoryObj<typeof ChatSidebar>;
@@ -19,20 +20,12 @@ const topics = [
 ];
 
 export const Default: Story = {
-  render: (args) => (
-    <div className="h-[600px]">
-      <ChatSidebar {...args} topics={topics} />
-    </div>
-  ),
+  args: { topics },
 };
 
 export const WithActive: Story = {
-  render: (args) => (
-    <div className="h-[600px]">
-      <ChatSidebar
-        {...args}
-        topics={topics.map((t, i) => ({ ...t, active: i === 0 }))}
-      />
-    </div>
-  ),
+  args: {
+    topics: topics.map((t, i) => ({ ...t, active: i === 0 })),
+  },
 };
+

@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Download } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/atoms/Button";
 import { ChatSidebar } from "@/components/organisms/ChatSidebar";
 import { ChatWelcomePrompt } from "@/components/molecules/ChatWelcomePrompt";
 import { ChatUserMessage } from "@/components/molecules/ChatUserMessage";
@@ -47,6 +49,12 @@ export interface ChatInterfaceProps {
    */
   onSend?: (message: string) => Promise<Omit<AssistantEntry, "id" | "role"> | null | undefined>;
   onTopicSelect?: (topic: string) => void;
+  /**
+   * Called when the user clicks "Descargar conversación".
+   * Receives the current message list so the caller can generate a PDF or summary.
+   * If omitted, the download button is hidden.
+   */
+  onDownload?: (messages: ChatEntry[]) => void;
   methodologyNote?: string;
   methodologyLink?: string;
   onMethodologyClick?: () => void;
@@ -69,6 +77,7 @@ export function ChatInterface({
   initialMessages = [],
   onSend,
   onTopicSelect,
+  onDownload,
   methodologyNote,
   methodologyLink,
   onMethodologyClick,
@@ -140,6 +149,31 @@ export function ChatInterface({
 
       {/* ── Main content — bg #ffffffe5 (~90% white), rounded, clips overflow ── */}
       <div className="flex flex-1 flex-col overflow-hidden rounded-2xl bg-[#ffffffe5]">
+
+        {/* Download button — top-right, only when conversation has messages */}
+        <AnimatePresence>
+          {hasMessages && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="flex justify-end px-6 pt-4"
+            >
+              <Button
+                variant="outline"
+                color="neutral"
+                radius="full"
+                iconLeft={Download}
+                disabled={!onDownload}
+                onClick={() => onDownload?.(messages)}
+                className="h-8 gap-1.5 px-4 text-xs font-medium text-[#444748] border-[#c4c7c7] hover:border-[#708b8d] hover:text-[#708b8d] normal-case tracking-normal"
+              >
+                Descargar conversación
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Scrollable content */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto">

@@ -1,7 +1,10 @@
+"use client";
+import { useState } from "react";
+import { Check, Copy, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/atoms/Button";
 import { FilterPill } from "@/components/atoms/FilterPill";
 import { ChatMarkdownContent } from "@/components/molecules/ChatMarkdownContent";
-import { Sparkles } from "lucide-react";
 
 export interface ChatAssistantItem {
   number: string;
@@ -26,6 +29,17 @@ export interface ChatAssistantMessageProps {
   className?: string;
 }
 
+function buildPlainText(props: Pick<ChatAssistantMessageProps, "markdown" | "intro" | "items" | "citation">): string {
+  if (props.markdown) return props.markdown;
+  const parts: string[] = [];
+  if (props.intro) parts.push(props.intro);
+  if (props.items?.length) {
+    parts.push(props.items.map((i) => `${i.number} ${i.title}${i.description ? `\n${i.description}` : ""}`).join("\n"));
+  }
+  if (props.citation) parts.push(props.citation);
+  return parts.join("\n\n");
+}
+
 export function ChatAssistantMessage({
   markdown,
   intro,
@@ -35,6 +49,16 @@ export function ChatAssistantMessage({
   isLoading = false,
   className,
 }: ChatAssistantMessageProps) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    const text = buildPlainText({ markdown, intro, items, citation });
+    if (!text) return;
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
   return (
     <div
       className={cn(
@@ -42,16 +66,32 @@ export function ChatAssistantMessage({
         className
       )}
     >
-      <div className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded-full bg-[#708b8d] flex items-center justify-center flex-shrink-0">
-          <Sparkles size={11} color="white" />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-full bg-[#708b8d] flex items-center justify-center flex-shrink-0">
+            <Sparkles size={11} color="white" />
+          </div>
+          <span
+            className="font-sans font-bold text-[#708b8d] text-xs"
+            style={{ letterSpacing: "1.2px" }}
+          >
+            ASISTENTE CÍRCULO VIVO
+          </span>
         </div>
-        <span
-          className="font-sans font-bold text-[#708b8d] text-xs"
-          style={{ letterSpacing: "1.2px" }}
-        >
-          ASISTENTE CÍRCULO VIVO
-        </span>
+
+        {!isLoading && (
+          <Button
+            variant="icon"
+            color="neutral"
+            iconLeft={copied ? Check : Copy}
+            aria-label="Copiar respuesta"
+            onClick={handleCopy}
+            className={cn(
+              "border-none bg-transparent w-7 h-7 hover:bg-transparent",
+              copied ? "text-[#708b8d]" : "text-[#a1a1aa] hover:text-[#708b8d]"
+            )}
+          />
+        )}
       </div>
 
       {isLoading ? (

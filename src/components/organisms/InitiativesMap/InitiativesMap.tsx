@@ -85,6 +85,17 @@ export function InitiativesMap({ initiatives = [], onChatbotClick, className }: 
   const selected = initiatives.find((i) => i.id === activeSelectedId);
   const effectiveDrawerOpen = drawerOpen && !!activeSelectedId;
 
+  // All visible initiatives in the same state as the selected one — drives the paginator
+  const stateGroup = useMemo(() => {
+    if (!selected) return [];
+    if (!selected.state) return [selected];
+    return filteredMarkers
+      .map((m) => initiatives.find((i) => i.id === m.id)!)
+      .filter((i) => i.state === selected.state);
+  }, [selected, filteredMarkers, initiatives]);
+
+  const currentPage = Math.max(1, stateGroup.findIndex((i) => i.id === activeSelectedId) + 1);
+
   // Active location filter label (Estado) shown as overlay chip on the map
   const activeLocation =
     filterValues["Estado"] && filterValues["Estado"] !== ALL
@@ -153,7 +164,7 @@ export function InitiativesMap({ initiatives = [], onChatbotClick, className }: 
         <AnimatePresence mode="wait">
           {selected && !effectiveDrawerOpen && (
             <InitiativeDetailCard
-              key={selected.id}
+              key={selected.state ?? selected.id}
               title={selected.title}
               description={selected.description}
               chips={selected.chips}
@@ -161,6 +172,9 @@ export function InitiativesMap({ initiatives = [], onChatbotClick, className }: 
               websiteUrl={selected.websiteUrl}
               onClose={handleCloseCard}
               onProfileClick={() => setDrawerOpen(true)}
+              total={stateGroup.length > 1 ? stateGroup.length : undefined}
+              current={currentPage}
+              onPageChange={(page) => handleSelect(stateGroup[page - 1].id)}
               className="absolute top-6 right-6 z-10"
             />
           )}
