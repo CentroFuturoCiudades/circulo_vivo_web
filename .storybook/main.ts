@@ -25,6 +25,13 @@ const config: StorybookConfig = {
       "next/navigation",
       "next/router",
     ];
+    // Polyfill process.env.NEXT_PUBLIC_* so components using Next.js env vars work in Storybook
+    config.define = {
+      ...config.define,
+      "process.env.NEXT_PUBLIC_DEV_ENVIRONMENT": JSON.stringify(
+        process.env.NEXT_PUBLIC_DEV_ENVIRONMENT ?? "dev"
+      ),
+    };
     return config;
   },
 };

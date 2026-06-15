@@ -110,22 +110,24 @@ export function ChatInputBar({
           </div>
 
           <div className="flex items-center justify-between px-4 pb-2">
-            <div className="flex items-center gap-2">
-              <Button
-                variant="icon"
-                color="neutral"
-                iconLeft={Mic}
-                aria-label="Micrófono"
-                className="border-none bg-transparent text-[#a1a1aa] hover:bg-transparent hover:text-[#708b8d] w-9 h-9"
-              />
-              <Button
-                variant="icon"
-                color="neutral"
-                iconLeft={Paperclip}
-                aria-label="Adjuntar archivo"
-                className="border-none bg-transparent text-[#a1a1aa] hover:bg-transparent hover:text-[#708b8d] w-9 h-9"
-              />
-            </div>
+            {typeof process !== "undefined" && process.env.NEXT_PUBLIC_DEV_ENVIRONMENT === "dev" ? (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="icon"
+                  color="neutral"
+                  iconLeft={Mic}
+                  aria-label="Micrófono"
+                  className="border-none bg-transparent text-[#a1a1aa] hover:bg-transparent hover:text-[#708b8d] w-9 h-9"
+                />
+                <Button
+                  variant="icon"
+                  color="neutral"
+                  iconLeft={Paperclip}
+                  aria-label="Adjuntar archivo"
+                  className="border-none bg-transparent text-[#a1a1aa] hover:bg-transparent hover:text-[#708b8d] w-9 h-9"
+                />
+              </div>
+            ) : <div />}
 
             <Button
               color="teal"

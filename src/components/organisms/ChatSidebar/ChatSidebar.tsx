@@ -64,9 +64,7 @@ export function ChatSidebar({
         </div>
       </div>
 
-      <div
-        className="mt-auto flex flex-col gap-3 border-t border-[#e4e4e7] pt-6"
-      >
+      <div className="mt-auto flex flex-col gap-3 border-t border-[#e4e4e7] pt-6">
         <p
           className="font-sans font-normal text-[#71717a]"
           style={{ fontSize: "16px", lineHeight: "1.625" }}

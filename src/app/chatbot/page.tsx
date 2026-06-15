@@ -1,7 +1,17 @@
+import { ChatInterface } from "@/components/organisms/ChatInterface";
+
 export default function ChatbotPage() {
   return (
-    <main className="container mx-auto px-4 py-12 max-w-2xl">
-      <h1 className="font-serif text-4xl font-bold">Asistente</h1>
+    <main
+      className="h-screen w-full overflow-hidden px-9"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(255,255,255,0.30), rgba(255,255,255,0.30)), url('/bg-images/chat-bg.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <ChatInterface />
     </main>
   );
 }
