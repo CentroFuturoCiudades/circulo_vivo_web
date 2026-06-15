@@ -9,11 +9,13 @@ import { ChatSidebar } from "@/components/organisms/ChatSidebar";
 import { ChatWelcomePrompt } from "@/components/molecules/ChatWelcomePrompt";
 import { ChatUserMessage } from "@/components/molecules/ChatUserMessage";
 import { ChatAssistantMessage } from "@/components/molecules/ChatAssistantMessage";
+import { ChatFallbackMessage } from "@/components/molecules/ChatFallbackMessage";
 import { ChatInputBar } from "@/components/molecules/ChatInputBar";
 import type { ChatTopic } from "@/components/organisms/ChatSidebar";
 import type { ChatSuggestion } from "@/components/molecules/ChatWelcomePrompt";
 import type { ChatChip } from "@/components/molecules/ChatInputBar";
 import type { ChatAssistantItem, ChatFollowUp } from "@/components/molecules/ChatAssistantMessage";
+import type { ChatFallbackVariant } from "@/components/molecules/ChatFallbackMessage";
 
 // ── Message types ──────────────────────────────────────────
 
@@ -32,6 +34,8 @@ export interface AssistantEntry {
   citation?: string;
   followUps?: ChatFollowUp[];
   isLoading?: boolean;
+  /** When set, renders a ChatFallbackMessage instead of a normal response bubble */
+  error?: ChatFallbackVariant;
 }
 
 export type ChatEntry = UserEntry | AssistantEntry;
@@ -45,14 +49,15 @@ export interface ChatInterfaceProps {
   initialMessages?: ChatEntry[];
   /**
    * Called when the user sends a message. Return the assistant reply to
-   * replace the loading bubble. Returning null/undefined leaves it loading.
+   * replace the loading bubble, or an object with `error` to show a fallback.
+   * Returning null/undefined leaves it loading.
    */
   onSend?: (message: string) => Promise<Omit<AssistantEntry, "id" | "role"> | null | undefined>;
   onTopicSelect?: (topic: string) => void;
   /**
    * Called when the user clicks "Descargar conversación".
    * Receives the current message list so the caller can generate a PDF or summary.
-   * If omitted, the download button is hidden.
+   * If omitted, the download button is disabled.
    */
   onDownload?: (messages: ChatEntry[]) => void;
   methodologyNote?: string;
@@ -122,15 +127,43 @@ export function ChatInterface({
       setMessages((prev) =>
         prev.map((m) =>
           m.id === loadingId
-            ? {
-                id: loadingId,
-                role: "assistant" as const,
-                ...(reply ?? { markdown: "Sin respuesta disponible." }),
-              }
+            ? { id: loadingId, role: "assistant" as const, ...(reply ?? { error: "no-response" as ChatFallbackVariant }) }
             : m
         )
       );
     }
+  }
+
+  // Retry: replace the fallback entry with a loader and resend the preceding user message
+  async function retry(entryId: string) {
+    setMessages((prev) => {
+      const idx = prev.findIndex((m) => m.id === entryId);
+      const preceding = prev.slice(0, idx).reverse().find((m) => m.role === "user") as UserEntry | undefined;
+      if (!preceding) return prev;
+      return prev.map((m) =>
+        m.id === entryId ? { id: entryId, role: "assistant" as const, isLoading: true } : m
+      );
+    });
+
+    // Find the preceding user message from current state snapshot
+    setMessages((prev) => {
+      const idx = prev.findIndex((m) => m.id === entryId);
+      const preceding = prev.slice(0, idx).reverse().find((m) => m.role === "user") as UserEntry | undefined;
+      if (!preceding || !onSend) return prev;
+
+      // Kick off async reply outside setState
+      onSend(preceding.message).then((reply) => {
+        setMessages((cur) =>
+          cur.map((m) =>
+            m.id === entryId
+              ? { id: entryId, role: "assistant" as const, ...(reply ?? { error: "no-response" as ChatFallbackVariant }) }
+              : m
+          )
+        );
+      });
+
+      return prev;
+    });
   }
 
   const hasMessages = messages.length > 0;
@@ -139,7 +172,7 @@ export function ChatInterface({
     // py-9 = 36px top/bottom padding (from design VbxuJ), gap-9 = 36px between panels
     <div className={cn("flex h-full gap-9 py-9 overflow-hidden", className)}>
 
-      {/* ── Sidebar — bg #ffffffcc (80% white) ── */}
+      {/* ── Sidebar ── */}
       <ChatSidebar
         topics={resolvedTopics}
         methodologyNote={methodologyNote}
@@ -147,7 +180,7 @@ export function ChatInterface({
         onMethodologyClick={onMethodologyClick}
       />
 
-      {/* ── Main content — bg #ffffffe5 (~90% white), rounded, clips overflow ── */}
+      {/* ── Main content ── */}
       <div className="flex flex-1 flex-col overflow-hidden rounded-2xl bg-[#ffffffe5]">
 
         {/* Download button — top-right, only when conversation has messages */}
@@ -205,10 +238,20 @@ export function ChatInterface({
                 transition={{ duration: 0.2 }}
                 className="mx-auto flex w-full max-w-[860px] flex-col gap-4 px-8 py-8"
               >
-                {messages.map((entry) =>
-                  entry.role === "user" ? (
-                    <ChatUserMessage key={entry.id} message={entry.message} />
-                  ) : (
+                {messages.map((entry) => {
+                  if (entry.role === "user") {
+                    return <ChatUserMessage key={entry.id} message={entry.message} />;
+                  }
+                  if (entry.error) {
+                    return (
+                      <ChatFallbackMessage
+                        key={entry.id}
+                        variant={entry.error}
+                        onRetry={onSend ? () => retry(entry.id) : undefined}
+                      />
+                    );
+                  }
+                  return (
                     <ChatAssistantMessage
                       key={entry.id}
                       markdown={entry.markdown}
@@ -224,8 +267,8 @@ export function ChatInterface({
                       }))}
                       isLoading={entry.isLoading}
                     />
-                  )
-                )}
+                  );
+                })}
               </motion.div>
             )}
           </AnimatePresence>
