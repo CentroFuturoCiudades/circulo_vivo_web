@@ -93,7 +93,7 @@ export default function MapaPage() {
       />
 
       {/* NavBar */}
-      <div className="relative z-20 px-6 pt-4">
+      <div className="relative z-20 px-6 md:px-9 pt-5">
         <NavBar
           links={NAV_LINKS}
           bgColor="#708B8D"
@@ -105,7 +105,7 @@ export default function MapaPage() {
       </div>
 
       {/* Search + filter bar */}
-      <div className="relative z-20 flex items-center gap-4 px-8 py-3">
+      <div className="relative z-20 flex items-center gap-4 px-6 md:px-9 py-3">
         <SearchBar
           size="sm"
           className="flex-1"
