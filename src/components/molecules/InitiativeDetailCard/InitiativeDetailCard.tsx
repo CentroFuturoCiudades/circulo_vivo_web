@@ -84,6 +84,7 @@ export function InitiativeDetailCard({
       transition={{ type: "spring", damping: 28, stiffness: 320 }}
       className={cn(
         "flex flex-col rounded-xl border border-[#c4c7c7] bg-white overflow-hidden",
+        "max-h-[calc(100%-3rem)]",
         className
       )}
       style={{ width: 320 }}
@@ -113,52 +114,54 @@ export function InitiativeDetailCard({
 
       {/* ── Content ── */}
       <div
-        className="flex flex-col gap-1 p-5 overflow-hidden"
+        className="flex flex-col flex-1 min-h-0 overflow-hidden"
         style={{ background: "linear-gradient(180deg, #ffffff 0%, #ded4b01a 100%)" }}
       >
-        {/* Animated page content — slides on page change */}
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.div
-            key={current}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="flex flex-col gap-1"
-          >
-            {chips.length > 0 && (
-              <div className="flex flex-wrap gap-[5px]">
-                {chips.map((chip, i) => (
-                  <Chip
-                    key={i}
-                    color={chip.color ?? "neutral"}
-                    selected
-                    className="pointer-events-none text-[9.43px] h-[22px] px-[6.86px]"
-                  >
-                    {chip.label}
-                  </Chip>
-                ))}
-              </div>
-            )}
-            <h3
-              className="font-serif font-bold text-black leading-[1.5]"
-              style={{ fontSize: "16px" }}
+        {/* Scrollable area — chips + title + description */}
+        <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-5 pb-2">
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={current}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="flex flex-col gap-1"
             >
-              {title}
-            </h3>
-            <p
-              className="font-sans font-normal text-[#a8a8a8] leading-[1.5]"
-              style={{ fontSize: "16px", paddingTop: 4, paddingBottom: 12 }}
-            >
-              {description}
-            </p>
-          </motion.div>
-        </AnimatePresence>
+              {chips.length > 0 && (
+                <div className="flex flex-wrap gap-[5px]">
+                  {chips.map((chip, i) => (
+                    <Chip
+                      key={i}
+                      color={chip.color ?? "neutral"}
+                      selected
+                      className="pointer-events-none text-[9.43px] h-[22px] px-[6.86px]"
+                    >
+                      {chip.label}
+                    </Chip>
+                  ))}
+                </div>
+              )}
+              <h3
+                className="font-serif font-bold text-black leading-[1.5]"
+                style={{ fontSize: "16px" }}
+              >
+                {title}
+              </h3>
+              <p
+                className="font-sans font-normal text-[#a8a8a8] leading-[1.5]"
+                style={{ fontSize: "16px", paddingTop: 4, paddingBottom: 12 }}
+              >
+                {description}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-        {/* ── Actions ── */}
-        <div className="flex items-center gap-4 pt-4 border-t border-[#c4c7c7]">
+        {/* ── Actions — always visible at bottom ── */}
+        <div className="flex items-center gap-4 px-5 py-4 border-t border-[#c4c7c7] shrink-0">
           {(profileUrl || onProfileClick) && (
             <Button
               iconRight={ArrowRight}
@@ -180,10 +183,10 @@ export function InitiativeDetailCard({
           )}
         </div>
 
-        {/* ── Paginator ── */}
+        {/* ── Paginator — always visible at bottom ── */}
         {showPaginator && (
           <div
-            className="flex items-center justify-center pt-4"
+            className="flex items-center justify-center px-5 pb-4 shrink-0"
             style={{ gap: "3.35px" }}
           >
             {/* Prev */}
