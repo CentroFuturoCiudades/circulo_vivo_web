@@ -93,7 +93,7 @@ export function HeroSection({
           activeLinkTextColor="#ffffff"
           linkTextColor="#000000"
           pillBgColor="#ffffff"
-          pillBgOpacity={90}
+          pillBgOpacity={50}
         />
       </div>
 
