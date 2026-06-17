@@ -53,7 +53,7 @@ export function InitiativeList({
   onFilterChange,
   className,
 }: InitiativeListProps) {
-  const [filtersOpen, setFiltersOpen] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<Record<string, string>>(
     Object.fromEntries(filterDefs.map((f) => [f.label, ALL]))
   );

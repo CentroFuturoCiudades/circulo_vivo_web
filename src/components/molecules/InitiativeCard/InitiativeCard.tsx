@@ -41,7 +41,7 @@ export function InitiativeCard({
       {chips.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mt-1">
           {chips.map((chip, i) => (
-            <Chip key={i} color={chip.color ?? "teal"} className="pointer-events-none text-[9px] h-[22px] px-2">
+            <Chip key={i} as="span" color={chip.color ?? "teal"} className="text-[9px] h-[22px] px-2">
               {chip.label}
             </Chip>
           ))}

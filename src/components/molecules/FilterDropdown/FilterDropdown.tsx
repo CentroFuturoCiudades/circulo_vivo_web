@@ -14,6 +14,7 @@ export interface FilterDropdownProps {
   options: FilterOption[];
   value?: string;
   onChange?: (value: string | undefined) => void;
+  align?: "left" | "right";
   className?: string;
 }
 
@@ -22,6 +23,7 @@ export function FilterDropdown({
   options,
   value,
   onChange,
+  align = "left",
   className,
 }: FilterDropdownProps) {
   const [open, setOpen] = useState(false);
@@ -71,7 +73,7 @@ export function FilterDropdown({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -4 }}
             transition={{ duration: 0.12, ease: "easeOut" }}
-            className="absolute top-full left-0 mt-1 z-50 min-w-[160px] bg-white rounded-xl shadow-lg border border-neutral-100 py-1 overflow-hidden"
+            className={cn("absolute top-full mt-1 z-50 min-w-[160px] bg-white rounded-xl shadow-lg border border-neutral-100 py-1 overflow-hidden", align === "right" ? "right-0" : "left-0")}
           >
             {options.map((opt) => (
               <button

@@ -35,9 +35,18 @@ export interface ChipProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonEle
   color?: "teal" | "crimson" | "gold" | "secondary" | "neutral" | "purple";
   selected?: boolean;
   icon?: LucideIcon;
+  as?: "button" | "span";
 }
 
-export function Chip({ className, color = "teal", selected = false, icon: Icon, children, ...props }: ChipProps) {
+export function Chip({ className, color = "teal", selected = false, icon: Icon, children, as: Tag = "button", ...props }: ChipProps) {
+  if (Tag === "span") {
+    return (
+      <span className={cn(chipVariants({ color, selected }), className)}>
+        {Icon && <Icon size={11} />}
+        {children}
+      </span>
+    );
+  }
   return (
     <button
       type="button"
