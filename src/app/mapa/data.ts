@@ -2,11 +2,14 @@ import type { Initiative } from "@/components/organisms/InitiativesMap";
 import { type InitiativeData, toInitiative } from "./types";
 
 const RAW: InitiativeData[] = [
+  // ── Demo entries — all 5 combinations of city/presenceType ────────────────
   {
+    // [1] city + presenceType: "sede"
     id: "1",
     title: "Red Socioambiental de Amealco",
     city: "Amealco",
     geoState: "Querétaro",
+    presenceType: "sede",
     actorType: "Sociedad civil",
     component: "Consumo y acceso",
     scale: "Regional",
@@ -17,10 +20,12 @@ const RAW: InitiativeData[] = [
     lng: -100.1476,
   },
   {
+    // [2] city + presenceType: "presencia"
     id: "2",
     title: "Del comalli nixtamali",
     city: "Milpa Alta",
     geoState: "Ciudad de México",
+    presenceType: "presencia",
     actorType: "Sector privado",
     component: "Producción",
     scale: "Local",
@@ -31,6 +36,7 @@ const RAW: InitiativeData[] = [
     lng: -99.0234,
   },
   {
+    // [3] city + sin presenceType
     id: "3",
     title: "Mercado alternativo Tlalpan",
     city: "Ciudad de México",
@@ -45,10 +51,11 @@ const RAW: InitiativeData[] = [
     lng: -99.1632,
   },
   {
+    // [4] sin city + presenceType: "sede"
     id: "4",
     title: "NUUP",
-    city: "Ciudad de México",
     geoState: "Ciudad de México",
+    presenceType: "sede",
     actorType: "Sociedad civil",
     component: "Producción",
     scale: "Regional",
@@ -59,9 +66,9 @@ const RAW: InitiativeData[] = [
     lng: -99.1532,
   },
   {
+    // [5] sin city + sin presenceType
     id: "5",
     title: "Huerto Roma Verde",
-    city: "Ciudad de México",
     geoState: "Ciudad de México",
     actorType: "Sociedad civil",
     component: "Consumo y acceso",

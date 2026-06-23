@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { ExternalLink, X } from "lucide-react";
+import { ExternalLink, MapPin, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Chip } from "@/components/atoms/Chip";
 import { Button } from "@/components/atoms/Button";
@@ -54,6 +54,7 @@ export interface InitiativeDrawerProps {
   description?: string;
   whatTheyDo?: string[];
   websiteUrl?: string;
+  location?: string;
   onClose?: () => void;
   className?: string;
 }
@@ -68,6 +69,7 @@ export function InitiativeDrawer({
   description,
   whatTheyDo = [],
   websiteUrl,
+  location,
   className,
   onClose,
 }: InitiativeDrawerProps) {
@@ -143,6 +145,17 @@ export function InitiativeDrawer({
           >
             {title}
           </h2>
+          {location && (
+            <div className="flex items-center gap-1.5" style={{ paddingTop: 4 }}>
+              <MapPin style={{ width: 13, height: 13, color: "#b4b2af", flexShrink: 0, strokeWidth: 2 }} />
+              <span
+                className="font-sans text-[#b4b2af]"
+                style={{ fontSize: "12px", letterSpacing: "0.02em" }}
+              >
+                {location}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Descripción general */}

@@ -16,8 +16,10 @@ const MEXICO_CENTER = { longitude: -102.5, latitude: 23.6, zoom: 5 };
 const MEXICO_STATES_URL =
   "https://raw.githubusercontent.com/angelnmara/geojson/master/mexicoHigh.json";
 
-// Project palette — teal, crimson, gold, secondary-blue, purple
-const STATE_PALETTE = ["#708b8d", "#852038", "#a8a46c", "#5380b9", "#7a3a78"];
+// Project palette — neutral-gray (no-type default), crimson (sede), secondary-navy (presencia), gold, purple
+const STATE_PALETTE = ["#747474", "#852038", "#395284", "#a8a46c", "#7a3a78"];
+
+const DEFAULT_MARKER_COLOR = "#747474";
 
 // ── Types ──────────────────────────────────────────────────
 
@@ -30,6 +32,8 @@ export interface InitiativeMarker {
   stateName?: string;
   /** Hex color for the dot. Defaults to teal #708b8d */
   color?: string;
+  /** sede → filled dot + ring; presencia → hollow ring; undefined → plain dot */
+  presenceType?: "sede" | "presencia";
 }
 
 export interface InteractiveMapProps {
@@ -49,13 +53,15 @@ interface DotProps {
   color: string;
   selected: boolean;
   hovered: boolean;
+  presenceType?: "sede" | "presencia";
   onClick: () => void;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
 }
 
-function MarkerDot({ color, selected, hovered, onClick, onMouseEnter, onMouseLeave }: DotProps) {
-  const scale = selected ? 1.5 : hovered ? 1.2 : 1;
+function MarkerDot({ color, selected, hovered, presenceType, onClick, onMouseEnter, onMouseLeave }: DotProps) {
+  const scale = selected ? 1.45 : hovered ? 1.2 : 1;
+  const isPresencia = presenceType === "presencia";
 
   return (
     <div
@@ -67,30 +73,58 @@ function MarkerDot({ color, selected, hovered, onClick, onMouseEnter, onMouseLea
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       className="relative flex items-center justify-center cursor-pointer"
-      style={{ width: 24, height: 24 }}
+      style={{ width: 28, height: 28 }}
     >
+      {/* Pulse ring on select — always circular regardless of shape */}
       {selected && (
         <span
           className="absolute inset-0 rounded-full animate-ping"
-          style={{ backgroundColor: color, opacity: 0.25 }}
+          style={{ backgroundColor: color, opacity: 0.22 }}
         />
       )}
-      {(selected || hovered) && (
+
+      {isPresencia ? (
+        // ── Presencia: diamond (rotated square) ──────────────────
         <span
-          className="absolute rounded-full transition-all duration-150"
-          style={{ width: 20, height: 20, border: `2px solid ${color}`, opacity: selected ? 0.45 : 0.3 }}
+          className="transition-transform duration-150"
+          style={{
+            display: "block",
+            width: 11,
+            height: 11,
+            backgroundColor: color,
+            border: "2px solid white",
+            borderRadius: 2,
+            boxShadow: "0 1px 4px rgba(0,0,0,0.30)",
+            transform: `rotate(45deg) scale(${scale})`,
+            opacity: 0.85,
+          }}
         />
+      ) : (
+        // ── Sede / sin tipo: circle ───────────────────────────────
+        <>
+          {(selected || hovered) && (
+            <span
+              className="absolute rounded-full transition-all duration-150"
+              style={{
+                width: 22,
+                height: 22,
+                border: `2px solid ${color}`,
+                opacity: selected ? 0.5 : 0.28,
+              }}
+            />
+          )}
+          <span
+            className="rounded-full border-2 border-white transition-transform duration-150"
+            style={{
+              width: 13,
+              height: 13,
+              backgroundColor: color,
+              boxShadow: "0 1px 4px rgba(0,0,0,0.30)",
+              transform: `scale(${scale})`,
+            }}
+          />
+        </>
       )}
-      <span
-        className="rounded-full border-2 border-white transition-transform duration-150"
-        style={{
-          width: 12,
-          height: 12,
-          backgroundColor: color,
-          boxShadow: "0 1px 4px rgba(0,0,0,0.28)",
-          transform: `scale(${scale})`,
-        }}
-      />
     </div>
   );
 }
@@ -214,9 +248,10 @@ export function InteractiveMap({
             anchor="center"
           >
             <MarkerDot
-              color={marker.color ?? STATE_PALETTE[0]}
+              color={marker.color ?? DEFAULT_MARKER_COLOR}
               selected={marker.id === selectedId}
               hovered={marker.id === hoveredId}
+              presenceType={marker.presenceType}
               onClick={() => onMarkerClick?.(marker.id)}
               onMouseEnter={() => setHoveredId(marker.id)}
               onMouseLeave={() => setHoveredId(null)}

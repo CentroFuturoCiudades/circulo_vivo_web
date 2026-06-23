@@ -20,12 +20,15 @@ export interface Initiative {
   lat: number;
   lng: number;
   markerColor?: string;
+  presenceType?: "sede" | "presencia";
   // Shared across list / card / drawer
   title: string;
   chips?: Array<{ label: string; color?: ChipColor }>;
   description: string;
   imageUrl?: string;
   websiteUrl?: string;
+  /** Pre-formatted "City, State" location string */
+  location?: string;
   /** Full Spanish state name matching the GeoJSON (e.g. "Ciudad de México", "Jalisco") */
   state?: string;
   // Drawer-only
@@ -64,7 +67,8 @@ export function InitiativesMap({ initiatives = [], onChatbotClick, className }: 
         lng: i.lng,
         title: i.title,
         stateName: i.state,
-        color: i.markerColor ?? "#708b8d",
+        color: i.markerColor ?? "#747474",
+        presenceType: i.presenceType,
       })),
     [initiatives, filterValues]
   );
@@ -170,6 +174,7 @@ export function InitiativesMap({ initiatives = [], onChatbotClick, className }: 
               chips={selected.chips}
               imageUrl={selected.imageUrl}
               websiteUrl={selected.websiteUrl}
+              location={selected.location}
               onClose={handleCloseCard}
               onProfileClick={() => setDrawerOpen(true)}
               total={stateGroup.length > 1 ? stateGroup.length : undefined}
@@ -193,6 +198,7 @@ export function InitiativesMap({ initiatives = [], onChatbotClick, className }: 
             description={selected.description}
             whatTheyDo={selected.whatTheyDo}
             websiteUrl={selected.websiteUrl}
+            location={selected.location}
             onClose={() => setDrawerOpen(false)}
             className="h-full shrink-0"
           />

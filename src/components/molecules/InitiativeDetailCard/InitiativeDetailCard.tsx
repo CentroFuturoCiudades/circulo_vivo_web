@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, ArrowRight, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ArrowRight, ExternalLink, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Chip } from "@/components/atoms/Chip";
 import { Button } from "@/components/atoms/Button";
@@ -19,6 +19,8 @@ export interface InitiativeDetailCardProps {
   profileUrl?: string;
   onProfileClick?: () => void;
   websiteUrl?: string;
+  /** Pre-formatted location string, e.g. "Amealco, Querétaro" */
+  location?: string;
   onClose?: () => void;
   total?: number;
   current?: number;
@@ -59,6 +61,7 @@ export function InitiativeDetailCard({
   profileUrl,
   onProfileClick,
   websiteUrl,
+  location,
   onClose,
   total,
   current = 1,
@@ -128,7 +131,7 @@ export function InitiativeDetailCard({
               animate="center"
               exit="exit"
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="flex flex-col gap-1"
+              className="flex flex-col gap-3"
             >
               {chips.length > 0 && (
                 <div className="flex flex-wrap gap-[5px]">
@@ -144,15 +147,28 @@ export function InitiativeDetailCard({
                   ))}
                 </div>
               )}
-              <h3
-                className="font-serif font-bold text-black leading-[1.5]"
-                style={{ fontSize: "16px" }}
-              >
-                {title}
-              </h3>
+              <div className="flex flex-col gap-1">
+                {location && (
+                  <div className="flex items-center gap-[5px]">
+                    <MapPin style={{ width: 11, height: 11, color: "#b4b2af", flexShrink: 0, strokeWidth: 2 }} />
+                    <span
+                      className="font-sans text-[#b4b2af] leading-none truncate"
+                      style={{ fontSize: "11px", letterSpacing: "0.03em" }}
+                    >
+                      {location}
+                    </span>
+                  </div>
+                )}
+                <h3
+                  className="font-serif font-bold text-black leading-[1.3]"
+                  style={{ fontSize: "16px" }}
+                >
+                  {title}
+                </h3>
+              </div>
               <p
                 className="font-sans font-normal text-[#a8a8a8] leading-[1.5]"
-                style={{ fontSize: "16px", paddingTop: 4, paddingBottom: 12 }}
+                style={{ fontSize: "14px", paddingBottom: 4 }}
               >
                 {description}
               </p>
