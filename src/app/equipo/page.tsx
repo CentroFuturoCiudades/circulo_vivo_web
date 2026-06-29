@@ -10,6 +10,7 @@ import { IniciativasEnCursoSection }     from "@/components/organisms/Iniciativa
 import { ProductosInvestigacionSection } from "@/components/organisms/ProductosInvestigacionSection";
 import { ColaboraCTASection }            from "@/components/organisms/ColaboraCTASection";
 import pattern                           from "@/assets/pattern/pattern.svg";
+import { DIRECTIVOS, EQUIPO_TECNICO }    from "./data";
 
 export default function EquipoPage() {
   return (
@@ -26,8 +27,8 @@ export default function EquipoPage() {
           className="absolute top-0 left-0 h-3/4 w-auto pointer-events-none select-none"
           style={{ zIndex: -1, opacity: 0.12 }}
         />
-        <DirectivosSection />
-        <EquipoTecnicoSection />
+        <DirectivosSection directivos={DIRECTIVOS} />
+        <EquipoTecnicoSection members={EQUIPO_TECNICO} />
         <ColaboracionesSection />
       </div>
 
