@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { ExternalLink, MapPin, X } from "lucide-react";
+import { ExternalLink, ImageOff, MapPin, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Chip } from "@/components/atoms/Chip";
 import { Button } from "@/components/atoms/Button";
@@ -92,7 +92,7 @@ export function InitiativeDrawer({
         className="relative flex-shrink-0 overflow-hidden bg-neutral-200"
         style={{ height: 160 }}
       >
-        {imageUrl && (
+        {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={imageUrl}
@@ -100,6 +100,11 @@ export function InitiativeDrawer({
             className="w-full h-full object-cover"
             style={{ filter: "saturate(0)" }}
           />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center gap-1.5">
+            <ImageOff style={{ width: 24, height: 24, color: "#b4b2af", strokeWidth: 1.5 }} />
+            <span className="font-sans text-[10px] text-[#b4b2af] uppercase tracking-[0.1em]">Sin imagen</span>
+          </div>
         )}
         {/* Gradient overlay */}
         <div
