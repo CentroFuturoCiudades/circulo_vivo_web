@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
@@ -27,7 +28,14 @@ function FadeUp({
   );
 }
 
-const DIRECTIVOS = [
+export interface Directivo {
+  name: string;
+  role: string;
+  description: string;
+  imageUrl?: string;
+}
+
+const DEFAULT_DIRECTIVOS: Directivo[] = [
   {
     name: "Dra. Elena Rivas",
     role: "DIRECTORA DE PROYECTO",
@@ -42,7 +50,15 @@ const DIRECTIVOS = [
   },
 ];
 
-export function DirectivosSection() {
+export interface DirectivosSectionProps {
+  directivos?: Directivo[];
+}
+
+export function DirectivosSection({ directivos = DEFAULT_DIRECTIVOS }: DirectivosSectionProps) {
+  const validDirectivos = (directivos ?? []).filter((d) => d && d.name?.trim());
+
+  if (validDirectivos.length === 0) return null;
+
   return (
     <section className="py-16 px-6 md:px-16 lg:px-24">
       <FadeUp delay={0}>
@@ -55,16 +71,20 @@ export function DirectivosSection() {
       </FadeUp>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
-        {DIRECTIVOS.map((d, i) => (
-          <FadeUp key={d.name} delay={0.1 + i * 0.15}>
+        {validDirectivos.map((d, i) => (
+          <FadeUp key={d.name ?? i} delay={0.1 + i * 0.15}>
             <div className="flex flex-col sm:flex-row gap-6">
-              {/* Photo placeholder */}
+              {/* Photo */}
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.2 }}
-                className="w-full sm:w-[200px] h-[200px] sm:h-[250px] flex-shrink-0 rounded-xl overflow-hidden bg-neutral-200"
+                className="w-full sm:w-[200px] h-[200px] sm:h-[250px] flex-shrink-0 rounded-xl overflow-hidden bg-neutral-200 relative"
                 style={{ boxShadow: "0 2px 7px rgba(0,0,0,0.08)" }}
-              />
+              >
+                {d.imageUrl?.trim() && (
+                  <Image src={d.imageUrl.trim()} alt={d.name} fill className="object-cover" />
+                )}
+              </motion.div>
 
               {/* Text */}
               <div className="flex flex-col sm:pt-1.5">
@@ -74,18 +94,22 @@ export function DirectivosSection() {
                 >
                   {d.name}
                 </h3>
-                <p
-                  className="font-sans font-bold uppercase text-[#747780]"
-                  style={{ fontSize: 12, letterSpacing: "1.2px", lineHeight: 1.2 }}
-                >
-                  {d.role}
-                </p>
-                <p
-                  className="font-sans font-normal text-[#44474f] mt-1.5"
-                  style={{ fontSize: 16, lineHeight: 1.375 }}
-                >
-                  {d.description}
-                </p>
+                {d.role?.trim() && (
+                  <p
+                    className="font-sans font-bold uppercase text-[#747780]"
+                    style={{ fontSize: 12, letterSpacing: "1.2px", lineHeight: 1.2 }}
+                  >
+                    {d.role.trim()}
+                  </p>
+                )}
+                {d.description?.trim() && (
+                  <p
+                    className="font-sans font-normal text-[#44474f] mt-1.5"
+                    style={{ fontSize: 16, lineHeight: 1.375 }}
+                  >
+                    {d.description.trim()}
+                  </p>
+                )}
               </div>
             </div>
           </FadeUp>
