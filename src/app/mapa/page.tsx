@@ -56,12 +56,13 @@ export default function MapaPage() {
 
   const filtered = useMemo(() => {
     return INITIATIVES.filter((i) => {
+      if (!i?.id) return false;
       if (search) {
         const q = search.toLowerCase();
         const hit =
-          i.title.toLowerCase().includes(q) ||
-          i.description.toLowerCase().includes(q) ||
-          i.chips?.some((c) => c.label.toLowerCase().includes(q));
+          i.title?.toLowerCase().includes(q) ||
+          i.description?.toLowerCase().includes(q) ||
+          i.chips?.some((c) => c.label?.toLowerCase().includes(q));
         if (!hit) return false;
       }
       if (actor    && !i.chips?.some((c) => c.label === actor))    return false;

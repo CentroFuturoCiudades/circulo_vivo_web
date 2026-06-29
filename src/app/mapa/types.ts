@@ -73,24 +73,36 @@ const COMPONENT_COLOR: Record<SystemComponent, ChipColor> = {
 
 // ── Converter ──────────────────────────────────────────────────────────────
 
-export function toInitiative(d: InitiativeData): Initiative {
-  const chips: Array<{ label: string; color?: ChipColor }> = [
-    { label: d.geoState,  color: "gold"                       },
-    { label: d.actorType, color: ACTOR_COLOR[d.actorType]     },
-    { label: d.component, color: COMPONENT_COLOR[d.component] },
-    { label: d.scale,     color: "secondary"                  },
-  ];
+export function toInitiative(d: InitiativeData): Initiative | null {
+  // Drop entries that are missing the two fields the map absolutely requires
+  if (!d?.id?.trim() || !d?.title?.trim()) return null;
 
-  const locationParts = [d.city, d.geoState].filter(Boolean);
+  const geoState   = d.geoState?.trim()   ?? "";
+  const actorType  = d.actorType?.trim()  as ActorType;
+  const component  = d.component?.trim()  as SystemComponent;
+  const scale      = d.scale?.trim()      as Scale;
+
+  const chips: Array<{ label: string; color?: ChipColor }> = [
+    geoState  ? { label: geoState,  color: "gold"                                        } : null,
+    actorType ? { label: actorType, color: ACTOR_COLOR[actorType]   ?? "neutral"         } : null,
+    component ? { label: component, color: COMPONENT_COLOR[component] ?? "neutral"       } : null,
+    scale     ? { label: scale,     color: "secondary"                                   } : null,
+  ].filter((c): c is { label: string; color: ChipColor } => c !== null);
+
+  const presenceStates = (d.presenceStates ?? [])
+    .map((s) => s?.trim())
+    .filter((s): s is string => Boolean(s) && s !== geoState);
+
+  const locationParts = [d.city?.trim(), geoState].filter(Boolean);
 
   return {
-    id:             d.id,
-    title:          d.title,
-    description:    d.description,
-    websiteUrl:     d.websiteUrl,
-    state:          d.geoState,
-    presenceStates: d.presenceStates,
-    location:       locationParts.length > 0 ? locationParts.join(", ") : undefined,
+    id:             d.id.trim(),
+    title:          d.title.trim(),
+    description:    d.description?.trim() ?? "",
+    websiteUrl:     d.websiteUrl?.trim()  || undefined,
+    state:          geoState              || undefined,
+    presenceStates: presenceStates.length > 0 ? presenceStates : undefined,
+    location:       locationParts.length  > 0 ? locationParts.join(", ") : undefined,
     chips,
   };
 }

@@ -45,11 +45,12 @@ const ALL = "Todos";
 function matchesFilters(chips: Initiative["chips"], filterValues: Record<string, string>): boolean {
   return Object.values(filterValues).every((val) => {
     if (!val || val === ALL) return true;
-    return chips?.some((c) => c.label === val) ?? false;
+    return chips?.some((c) => c?.label === val) ?? false;
   });
 }
 
-export function InitiativesMap({ initiatives = [], onChatbotClick, className }: InitiativesMapProps) {
+export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClick, className }: InitiativesMapProps) {
+  const initiatives = (rawInitiatives ?? []).filter((i) => i?.id);
   const [selectedId, setSelectedId]     = useState<string | undefined>();
   const [drawerOpen, setDrawerOpen]     = useState(false);
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
@@ -100,6 +101,7 @@ export function InitiativesMap({ initiatives = [], onChatbotClick, className }: 
   function handleCloseCard() {
     setSelectedId(undefined);
     setDrawerOpen(false);
+    setMapSelectedState("");
   }
 
   function handleFilterChange(values: Record<string, string>) {
@@ -111,10 +113,19 @@ export function InitiativesMap({ initiatives = [], onChatbotClick, className }: 
   }
 
   function handleMapStateClick(stateName: string) {
-    // Select the state via map; clear any open initiative detail
-    setSelectedId(undefined);
+    const isDeselecting = mapSelectedState === stateName;
     setDrawerOpen(false);
-    setMapSelectedState((prev) => (prev === stateName ? "" : stateName));
+    setMapSelectedState(isDeselecting ? "" : stateName);
+
+    if (isDeselecting) {
+      setSelectedId(undefined);
+    } else {
+      // Auto-select the first visible initiative in the clicked state
+      const first = initiatives.find(
+        (i) => i.state === stateName && matchesFilters(i.chips, filterValues)
+      );
+      setSelectedId(first?.id);
+    }
   }
 
   return (
