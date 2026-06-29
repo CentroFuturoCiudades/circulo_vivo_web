@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import Map, { Layer, Marker, NavigationControl, Source, type MapRef } from "react-map-gl/maplibre";
+import { useEffect, useRef, useState } from "react";
+import Map, { Layer, NavigationControl, Source, type MapRef, type MapLayerMouseEvent } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { cn } from "@/lib/utils";
 
@@ -12,202 +12,189 @@ const MAP_STYLE =
 
 const MEXICO_CENTER = { longitude: -102.5, latitude: 23.6, zoom: 5 };
 
-// GeoJSON with Mexico state boundaries — property "name" = full Spanish state name
 const MEXICO_STATES_URL =
   "https://raw.githubusercontent.com/angelnmara/geojson/master/mexicoHigh.json";
 
-// Project palette — neutral-gray (no-type default), crimson (sede), secondary-navy (presencia), gold, purple
-const STATE_PALETTE = ["#747474", "#852038", "#395284", "#a8a46c", "#7a3a78"];
-
-const DEFAULT_MARKER_COLOR = "#747474";
+// Sede (HQ) state — crimson
+const SEDE_COLOR = "#852038";
+// Presence states — navy
+const PRESENCE_COLOR = "#395284";
+// Overview (all filtered, no selection) — teal
+const ACTIVE_COLOR = "#708b8d";
 
 // ── Types ──────────────────────────────────────────────────
 
-export interface InitiativeMarker {
-  id: string;
-  lat: number;
-  lng: number;
-  title?: string;
-  /** GeoJSON state name this marker belongs to (e.g. "Ciudad de México") */
-  stateName?: string;
-  /** Hex color for the dot. Defaults to teal #708b8d */
-  color?: string;
-  /** sede → filled dot + ring; presencia → hollow ring; undefined → plain dot */
-  presenceType?: "sede" | "presencia";
-}
-
 export interface InteractiveMapProps {
-  markers?: InitiativeMarker[];
-  selectedId?: string;
-  onMarkerClick?: (id: string) => void;
-  /** State names (GeoJSON `name` property) to fill with a light teal overlay */
+  /** Sede-state names of all currently filtered initiatives — overview fill */
   stateNames?: string[];
-  /** State name of the currently selected initiative — rendered at stronger opacity */
+  /** Sede state of the selected initiative — highlighted in crimson */
   selectedStateName?: string;
+  /** Presence states of the selected initiative — highlighted in navy */
+  selectedPresenceStates?: string[];
+  /** Called when the user clicks an active state on the map */
+  onStateClick?: (stateName: string) => void;
   className?: string;
-}
-
-// ── Marker dot ─────────────────────────────────────────────
-
-interface DotProps {
-  color: string;
-  selected: boolean;
-  hovered: boolean;
-  presenceType?: "sede" | "presencia";
-  onClick: () => void;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-}
-
-function MarkerDot({ color, selected, hovered, presenceType, onClick, onMouseEnter, onMouseLeave }: DotProps) {
-  const scale = selected ? 1.45 : hovered ? 1.2 : 1;
-  const isPresencia = presenceType === "presencia";
-
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      aria-label="Ver iniciativa"
-      onClick={(e) => { e.stopPropagation(); onClick(); }}
-      onKeyDown={(e) => { if (e.key === "Enter") onClick(); }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      className="relative flex items-center justify-center cursor-pointer"
-      style={{ width: 28, height: 28 }}
-    >
-      {/* Pulse ring on select — always circular regardless of shape */}
-      {selected && (
-        <span
-          className="absolute inset-0 rounded-full animate-ping"
-          style={{ backgroundColor: color, opacity: 0.22 }}
-        />
-      )}
-
-      {isPresencia ? (
-        // ── Presencia: diamond (rotated square) ──────────────────
-        <span
-          className="transition-transform duration-150"
-          style={{
-            display: "block",
-            width: 11,
-            height: 11,
-            backgroundColor: color,
-            border: "2px solid white",
-            borderRadius: 2,
-            boxShadow: "0 1px 4px rgba(0,0,0,0.30)",
-            transform: `rotate(45deg) scale(${scale})`,
-            opacity: 0.85,
-          }}
-        />
-      ) : (
-        // ── Sede / sin tipo: circle ───────────────────────────────
-        <>
-          {(selected || hovered) && (
-            <span
-              className="absolute rounded-full transition-all duration-150"
-              style={{
-                width: 22,
-                height: 22,
-                border: `2px solid ${color}`,
-                opacity: selected ? 0.5 : 0.28,
-              }}
-            />
-          )}
-          <span
-            className="rounded-full border-2 border-white transition-transform duration-150"
-            style={{
-              width: 13,
-              height: 13,
-              backgroundColor: color,
-              boxShadow: "0 1px 4px rgba(0,0,0,0.30)",
-              transform: `scale(${scale})`,
-            }}
-          />
-        </>
-      )}
-    </div>
-  );
 }
 
 // ── Component ──────────────────────────────────────────────
 
 export function InteractiveMap({
-  markers = [],
-  selectedId,
-  onMarkerClick,
   stateNames = [],
   selectedStateName,
+  selectedPresenceStates = [],
+  onStateClick,
   className,
 }: InteractiveMapProps) {
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
   const mapRef = useRef<MapRef>(null);
-  const markersRef = useRef(markers);
-  useLayoutEffect(() => { markersRef.current = markers; });
+  const [hoveredState, setHoveredState] = useState<string | null>(null);
+  const activeStatesSet = new Set(stateNames);
 
+  function handleMapClick(e: MapLayerMouseEvent) {
+    if (!onStateClick) return;
+    const name = e.features?.[0]?.properties?.name as string | undefined;
+    if (name && activeStatesSet.has(name)) onStateClick(name);
+  }
+
+  function handleMouseMove(e: MapLayerMouseEvent) {
+    const name = e.features?.[0]?.properties?.name as string | undefined;
+    setHoveredState((name && activeStatesSet.has(name)) ? name : null);
+  }
+
+  // Fit to the sede state's bounding box when selection changes
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    if (!selectedId) {
-      map.flyTo({ center: [MEXICO_CENTER.longitude, MEXICO_CENTER.latitude], zoom: MEXICO_CENTER.zoom, duration: 700, essential: true });
+
+    if (!selectedStateName) {
+      map.flyTo({
+        center: [MEXICO_CENTER.longitude, MEXICO_CENTER.latitude],
+        zoom: MEXICO_CENTER.zoom,
+        duration: 700,
+        essential: true,
+      });
       return;
     }
 
-    const selected = markersRef.current.find((m) => m.id === selectedId);
-    if (!selected) return;
+    function fitToStateBounds(): boolean {
+      const features = map!.querySourceFeatures("mx-states");
+      const lngs: number[] = [];
+      const lats: number[] = [];
 
-    const peers = selected.stateName
-      ? markersRef.current.filter((m) => m.stateName === selected.stateName)
-      : [selected];
+      for (const f of features) {
+        if (f.properties?.name !== selectedStateName) continue;
+        const geom = f.geometry;
+        const rings =
+          geom.type === "Polygon"      ? geom.coordinates :
+          geom.type === "MultiPolygon" ? geom.coordinates.flat(1) : [];
+        for (const ring of rings) {
+          for (const [lng, lat] of ring) {
+            lngs.push(lng as number);
+            lats.push(lat as number);
+          }
+        }
+      }
 
-    if (peers.length > 1) {
-      const lngs = peers.map((m) => m.lng);
-      const lats = peers.map((m) => m.lat);
-      map.fitBounds(
+      if (!lngs.length) return false;
+
+      map!.fitBounds(
         [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
-        { padding: 100, maxZoom: 9, duration: 700, essential: true }
+        { padding: 80, maxZoom: 8, duration: 700, essential: true }
       );
-    } else {
-      map.flyTo({ center: [selected.lng, selected.lat], zoom: 8, duration: 700, essential: true });
+      return true;
     }
-  }, [selectedId]);
 
-  // Assign a palette color to each active state by insertion order
-  const stateColorMap = useMemo(() => {
-    const map: Record<string, string> = {};
-    stateNames.forEach((name, i) => {
-      map[name] = STATE_PALETTE[i % STATE_PALETTE.length];
-    });
-    return map;
-  }, [stateNames]);
+    if (!fitToStateBounds()) {
+      const onSourceData = () => {
+        if (fitToStateBounds()) map.off("sourcedata", onSourceData);
+      };
+      map.on("sourcedata", onSourceData);
+      return () => { map.off("sourcedata", onSourceData); };
+    }
+  }, [selectedStateName]);
 
-  // MapLibre expressions — cast to satisfy strict typing
+  // ── MapLibre fill/line expressions ────────────────────────
+  // Priority: sede > presencia > overview > transparent
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const fillColor: any = stateNames.length === 0
-    ? "transparent"
-    : ["match", ["get", "name"], ...stateNames.flatMap((n) => [n, stateColorMap[n]]), "transparent"];
+  const fillColor: any = [
+    "case",
+    ...(selectedStateName
+      ? [["==", ["get", "name"], selectedStateName], SEDE_COLOR]
+      : []),
+    ...(selectedPresenceStates.length > 0
+      ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], PRESENCE_COLOR]
+      : []),
+    ...(stateNames.length > 0
+      ? [["in", ["get", "name"], ["literal", stateNames]], ACTIVE_COLOR]
+      : []),
+    "transparent",
+  ];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fillOpacity: any = [
     "case",
-    ["==", ["get", "name"], selectedStateName ?? "__none__"], 0.32,
-    ["in",  ["get", "name"], ["literal", stateNames]],        0.18,
+    ...(selectedStateName
+      ? [["==", ["get", "name"], selectedStateName], 0.50]
+      : []),
+    ...(selectedPresenceStates.length > 0
+      ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], 0.28]
+      : []),
+    ...(stateNames.length > 0
+      ? [["in", ["get", "name"], ["literal", stateNames]], 0.15]
+      : []),
     0,
+  ];
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const lineColor: any = [
+    "case",
+    ...(selectedStateName
+      ? [["==", ["get", "name"], selectedStateName], SEDE_COLOR]
+      : []),
+    ...(selectedPresenceStates.length > 0
+      ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], PRESENCE_COLOR]
+      : []),
+    ...(stateNames.length > 0
+      ? [["in", ["get", "name"], ["literal", stateNames]], ACTIVE_COLOR]
+      : []),
+    "transparent",
   ];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const lineOpacity: any = [
     "case",
-    ["in", ["get", "name"], ["literal", stateNames]], 0.45,
+    ...(selectedStateName
+      ? [["==", ["get", "name"], selectedStateName], 0.70]
+      : []),
+    ...(selectedPresenceStates.length > 0
+      ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], 0.50]
+      : []),
+    ...(stateNames.length > 0
+      ? [["in", ["get", "name"], ["literal", stateNames]], 0.35]
+      : []),
     0,
   ];
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const lineColor: any = stateNames.length === 0
-    ? "transparent"
-    : ["match", ["get", "name"], ...stateNames.flatMap((n) => [n, stateColorMap[n]]), "transparent"];
+  const showLegend = !!selectedStateName || selectedPresenceStates.length > 0;
 
   return (
     <div className={cn("relative w-full h-full", className)}>
+      {showLegend && (
+        <div className="absolute bottom-10 left-4 z-10 flex flex-col gap-1.5 rounded-lg bg-white/80 backdrop-blur-sm border border-[#c4c7c7] px-3 py-2.5 shadow-sm pointer-events-none">
+          {selectedStateName && (
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-sm shrink-0" style={{ background: SEDE_COLOR, opacity: 0.55 }} />
+              <span className="font-sans text-[11px] font-semibold text-[#3d3d30] uppercase tracking-[0.08em]">Sede</span>
+            </div>
+          )}
+          {selectedPresenceStates.length > 0 && (
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-sm shrink-0" style={{ background: PRESENCE_COLOR, opacity: 0.35 }} />
+              <span className="font-sans text-[11px] font-semibold text-[#3d3d30] uppercase tracking-[0.08em]">Presencia</span>
+            </div>
+          )}
+        </div>
+      )}
       <Map
         ref={mapRef}
         initialViewState={MEXICO_CENTER}
@@ -215,14 +202,18 @@ export function InteractiveMap({
         mapStyle={MAP_STYLE}
         attributionControl={false}
         reuseMaps
+        interactiveLayerIds={onStateClick ? ["mx-states-fill"] : []}
+        cursor={hoveredState ? "pointer" : undefined}
+        onClick={handleMapClick}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={() => setHoveredState(null)}
       >
-        {/* ── State fill layers (below markers) ── */}
         <Source id="mx-states" type="geojson" data={MEXICO_STATES_URL}>
           <Layer
             id="mx-states-fill"
             type="fill"
             paint={{
-              "fill-color": fillColor,
+              "fill-color":   fillColor,
               "fill-opacity": fillOpacity,
             }}
           />
@@ -230,34 +221,14 @@ export function InteractiveMap({
             id="mx-states-border"
             type="line"
             paint={{
-              "line-color": lineColor,
-              "line-width": 0.75,
+              "line-color":   lineColor,
+              "line-width":   0.75,
               "line-opacity": lineOpacity,
             }}
           />
         </Source>
 
         <NavigationControl position="bottom-right" showCompass={false} />
-
-        {/* ── Markers (above state fills) ── */}
-        {markers.map((marker) => (
-          <Marker
-            key={marker.id}
-            longitude={marker.lng}
-            latitude={marker.lat}
-            anchor="center"
-          >
-            <MarkerDot
-              color={marker.color ?? DEFAULT_MARKER_COLOR}
-              selected={marker.id === selectedId}
-              hovered={marker.id === hoveredId}
-              presenceType={marker.presenceType}
-              onClick={() => onMarkerClick?.(marker.id)}
-              onMouseEnter={() => setHoveredId(marker.id)}
-              onMouseLeave={() => setHoveredId(null)}
-            />
-          </Marker>
-        ))}
       </Map>
     </div>
   );

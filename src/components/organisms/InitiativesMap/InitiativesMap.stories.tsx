@@ -4,7 +4,6 @@ import { InitiativesMap } from "./InitiativesMap";
 import type { Initiative } from "./InitiativesMap";
 import { MapFooter } from "@/components/molecules/MapFooter";
 
-// Simulates the map page: background image + warm white overlay + MapFooter at bottom
 const PAGE_WRAPPER: React.CSSProperties = {
   width: "100vw",
   height: "100vh",
@@ -34,19 +33,16 @@ const meta: Meta<typeof InitiativesMap> = {
 export default meta;
 type Story = StoryObj<typeof InitiativesMap>;
 
-// ── Sample data ───────────────────────────────────────────
-
 const INITIATIVES: Initiative[] = [
   {
     id: "1",
-    lat: 19.4326,
-    lng: -99.1332,
     state: "Ciudad de México",
     title: "Del Comalli Nixtamal",
     chips: [
-      { label: "CDMX",         color: "gold"    },
-      { label: "Alimentación", color: "purple"  },
-      { label: "Privada",      color: "teal"    },
+      { label: "Ciudad de México", color: "gold"      },
+      { label: "Sector privado",   color: "teal"      },
+      { label: "Producción",       color: "teal"      },
+      { label: "Local",            color: "secondary" },
     ],
     description:
       "Producción de tortillas y derivados de maíz criollo mediante procesos tradicionales de nixtamalización, preservando la biodiversidad local y fomentando el comercio justo.",
@@ -60,98 +56,68 @@ const INITIATIVES: Initiative[] = [
   },
   {
     id: "2",
-    lat: 19.3000,
-    lng: -99.0500,
     state: "Ciudad de México",
+    presenceStates: ["Jalisco", "Oaxaca"],
     title: "microTERRA",
     chips: [
-      { label: "CDMX",         color: "gold"    },
-      { label: "Huertos",      color: "teal"    },
-      { label: "Comunitaria",  color: "secondary" },
+      { label: "Ciudad de México", color: "gold"      },
+      { label: "Sociedad civil",   color: "secondary" },
+      { label: "Producción",       color: "teal"      },
+      { label: "Nacional",         color: "secondary" },
     ],
     description:
       "Red de huertos urbanos en zonas periféricas de la CDMX con enfoque comunitario y capacitación a familias en soberanía alimentaria.",
-    whatTheyDo: [
-      "Instalación de huertos en azoteas y patios.",
-      "Talleres de composta y lombricomposta.",
-      "Distribución de alimentos en mercados locales.",
-    ],
     websiteUrl: "https://example.com",
   },
   {
     id: "3",
-    lat: 20.6597,
-    lng: -103.3496,
     state: "Jalisco",
     title: "Red Socioambiental",
     chips: [
-      { label: "Jalisco",   color: "gold"      },
-      { label: "Agua",      color: "secondary" },
-      { label: "Social",    color: "teal"      },
+      { label: "Jalisco",        color: "gold"      },
+      { label: "Sociedad civil", color: "secondary" },
+      { label: "Consumo y acceso", color: "gold"    },
+      { label: "Regional",       color: "secondary" },
     ],
     description:
       "Red de organizaciones civiles que monitorean cuencas hidrográficas y promueven la gestión comunitaria del agua en zonas rurales.",
-    whatTheyDo: [
-      "Monitoreo de calidad del agua en comunidades.",
-      "Talleres de gestión de cuencas.",
-      "Incidencia en política pública hídrica.",
-    ],
     websiteUrl: "https://example.com",
   },
   {
     id: "4",
-    lat: 17.0732,
-    lng: -96.7266,
     state: "Oaxaca",
-    markerColor: "#bc8470",
     title: "Semillas de Vida",
     chips: [
-      { label: "Oaxaca",      color: "gold"    },
-      { label: "Semillas",    color: "crimson" },
-      { label: "Comunitaria", color: "teal"    },
+      { label: "Oaxaca",         color: "gold"      },
+      { label: "Sociedad civil", color: "secondary" },
+      { label: "Producción",     color: "teal"      },
+      { label: "Local",          color: "secondary" },
     ],
     description:
       "Rescate y preservación de semillas nativas en comunidades indígenas de la Sierra Norte de Oaxaca.",
-    whatTheyDo: [
-      "Banco de semillas comunitario.",
-      "Intercambios de semillas entre comunidades.",
-      "Documentación de saberes tradicionales agrícolas.",
-    ],
     websiteUrl: "https://example.com",
     imageUrl: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=640",
   },
   {
     id: "5",
-    lat: 25.6714,
-    lng: -100.3090,
     state: "Nuevo León",
     title: "Agroecología Norte",
     chips: [
-      { label: "NL",         color: "gold"  },
-      { label: "Suelo",      color: "teal"  },
-      { label: "Educación",  color: "purple" },
+      { label: "Nuevo León",   color: "gold"      },
+      { label: "Academia",     color: "purple"    },
+      { label: "Producción",   color: "teal"      },
+      { label: "Estatal",      color: "secondary" },
     ],
     description:
       "Programa de transición agroecológica para pequeños productores del área metropolitana de Monterrey.",
-    whatTheyDo: [
-      "Diagnósticos de suelo y fertilidad.",
-      "Capacitación en agricultura regenerativa.",
-      "Vinculación con mercados orgánicos.",
-    ],
     websiteUrl: "https://example.com",
   },
 ];
 
-// ── Stories ───────────────────────────────────────────────
-
 export const Default: Story = {
-  args: {
-    initiatives: INITIATIVES,
-  },
+  args: { initiatives: INITIATIVES },
 };
 
 export const Empty: Story = {
-  args: {
-    initiatives: [],
-  },
+  args: { initiatives: [] },
 };

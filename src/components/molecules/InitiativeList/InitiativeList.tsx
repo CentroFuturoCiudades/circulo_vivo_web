@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ListFilter, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -34,6 +34,11 @@ export interface InitiativeListProps {
   onSelect?: (id: string) => void;
   /** Called whenever the active filter values change, with the full current values map. */
   onFilterChange?: (values: Record<string, string>) => void;
+  /**
+   * When set from outside (e.g. a map click), overrides the Estado filter.
+   * Pass an empty string to clear back to "Todos".
+   */
+  selectedState?: string;
   className?: string;
 }
 
@@ -51,12 +56,33 @@ export function InitiativeList({
   selectedId,
   onSelect,
   onFilterChange,
+  selectedState,
   className,
 }: InitiativeListProps) {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<Record<string, string>>(
     Object.fromEntries(filterDefs.map((f) => [f.label, ALL]))
   );
+
+  // Keep a stable ref to onFilterChange to avoid stale closure in effects
+  const onFilterChangeRef = useRef(onFilterChange);
+  useLayoutEffect(() => { onFilterChangeRef.current = onFilterChange; });
+
+  // Single source of truth: notify parent whenever filterValues changes
+  useEffect(() => {
+    onFilterChangeRef.current?.(filterValues);
+  }, [filterValues]);
+
+  // Sync external selectedState into the Estado filter (no onFilterChange call here)
+  useEffect(() => {
+    if (selectedState === undefined) return;
+    const val = selectedState === "" ? ALL : selectedState;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFilterValues((prev) => {
+      if (prev["Estado"] === val) return prev;
+      return { ...prev, Estado: val };
+    });
+  }, [selectedState]);
 
   // ── Derive options from chips ──────────────────────────
 
@@ -103,17 +129,9 @@ export function InitiativeList({
     : String(items.length);
   const displayLabel = `${label} (${countLabel})`.toUpperCase();
 
-  // Notify parent of initial filter state (all "Todos")
-  useEffect(() => {
-    onFilterChange?.(filterValues);
-    // Run once on mount — intentionally omitting filterValues from deps
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   function handleFilterChange(filterLabel: string, value: string) {
-    const next = { ...filterValues, [filterLabel]: value };
-    setFilterValues(next);
-    onFilterChange?.(next);
+    setFilterValues({ ...filterValues, [filterLabel]: value });
+    // notification sent via filterValues effect above
   }
 
   // ── Render ─────────────────────────────────────────────

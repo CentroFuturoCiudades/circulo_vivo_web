@@ -2,8 +2,6 @@ import type { Initiative } from "@/components/organisms/InitiativesMap";
 
 // ── Domain enums ───────────────────────────────────────────────────────────
 
-export type PresenceType = "sede" | "presencia";
-
 export type ActorType =
   | "Sector privado"
   | "Sociedad civil"
@@ -28,39 +26,31 @@ export type Scale =
   | "Nacional"
   | "Internacional";
 
-// ── Raw data shape (sourced from CSV) ─────────────────────────────────────
+// ── Raw data shape ─────────────────────────────────────────────────────────
 
 export interface InitiativeData {
   id: string;
   title: string;
-  /** Specific city. Omit for national-scope initiatives or when only the state is known. */
+  /** Specific city within the sede state. Optional. */
   city?: string;
-  /** Full Spanish state name matching GeoJSON — omit for purely national initiatives */
-  geoState?: string;
+  /** Full Spanish state name of the sede (HQ). Must match GeoJSON property "name". */
+  geoState: string;
+  /**
+   * Other states where this initiative has presence.
+   * Each entry must match the GeoJSON "name" property exactly.
+   * Shown on the map in a distinct color when the initiative is selected.
+   */
+  presenceStates?: string[];
   actorType: ActorType;
   component: SystemComponent;
   scale: Scale;
-  /** Whether this is the initiative's main office (sede) or a presence/branch only. Omit when not applicable. */
-  presenceType?: PresenceType;
   description: string;
   websiteUrl?: string;
-  lat: number;
-  lng: number;
 }
 
 // ── Chip color maps ────────────────────────────────────────────────────────
 
 type ChipColor = "teal" | "crimson" | "gold" | "secondary" | "neutral" | "purple";
-
-const PRESENCE_COLOR: Record<PresenceType, ChipColor> = {
-  sede:      "crimson",
-  presencia: "secondary",
-};
-
-const PRESENCE_MARKER_COLOR: Record<PresenceType, string> = {
-  sede:      "#852038",
-  presencia: "#395284",
-};
 
 const ACTOR_COLOR: Record<ActorType, ChipColor> = {
   "Sector privado": "teal",
@@ -72,45 +62,35 @@ const ACTOR_COLOR: Record<ActorType, ChipColor> = {
 };
 
 const COMPONENT_COLOR: Record<SystemComponent, ChipColor> = {
-  "Producción":                          "teal",
-  "Consumo y acceso":                    "gold",
-  "Distribución y comercialización":     "secondary",
-  "Transformación e innovación":         "purple",
-  "Gobernanza e incidencia":             "crimson",
-  "Redes y organización comunitaria":    "neutral",
+  "Producción":                             "teal",
+  "Consumo y acceso":                       "gold",
+  "Distribución y comercialización":        "secondary",
+  "Transformación e innovación":            "purple",
+  "Gobernanza e incidencia":                "crimson",
+  "Redes y organización comunitaria":       "neutral",
   "Financiamiento y soporte institucional": "neutral",
 };
 
 // ── Converter ──────────────────────────────────────────────────────────────
 
-/**
- * Converts raw CSV-sourced data into the Initiative shape expected by
- * InitiativesMap.  Chip order matters for InitiativeList's auto-derived
- * filters: chips[0] → Estado filter, chips[1+] → Tema filter.
- */
 export function toInitiative(d: InitiativeData): Initiative {
-  const chips: Array<{ label: string; color?: ChipColor }> = [];
-
-  if (d.geoState) chips.push({ label: d.geoState, color: "gold" });
-  chips.push({ label: d.actorType,  color: ACTOR_COLOR[d.actorType]     });
-  chips.push({ label: d.component,  color: COMPONENT_COLOR[d.component] });
-  chips.push({ label: d.scale,      color: "secondary"                   });
-  if (d.presenceType) chips.push({ label: d.presenceType === "sede" ? "Sede" : "Presencia", color: PRESENCE_COLOR[d.presenceType] });
+  const chips: Array<{ label: string; color?: ChipColor }> = [
+    { label: d.geoState,  color: "gold"                       },
+    { label: d.actorType, color: ACTOR_COLOR[d.actorType]     },
+    { label: d.component, color: COMPONENT_COLOR[d.component] },
+    { label: d.scale,     color: "secondary"                  },
+  ];
 
   const locationParts = [d.city, d.geoState].filter(Boolean);
-  const location = locationParts.length > 0 ? locationParts.join(", ") : undefined;
 
   return {
-    id:           d.id,
-    lat:          d.lat,
-    lng:          d.lng,
-    title:        d.title,
-    description:  d.description,
-    websiteUrl:   d.websiteUrl,
-    state:        d.geoState,
-    location,
-    presenceType: d.presenceType,
-    markerColor:  d.presenceType ? PRESENCE_MARKER_COLOR[d.presenceType] : undefined,
+    id:             d.id,
+    title:          d.title,
+    description:    d.description,
+    websiteUrl:     d.websiteUrl,
+    state:          d.geoState,
+    presenceStates: d.presenceStates,
+    location:       locationParts.length > 0 ? locationParts.join(", ") : undefined,
     chips,
   };
 }

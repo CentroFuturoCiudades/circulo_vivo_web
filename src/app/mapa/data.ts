@@ -2,41 +2,32 @@ import type { Initiative } from "@/components/organisms/InitiativesMap";
 import { type InitiativeData, toInitiative } from "./types";
 
 const RAW: InitiativeData[] = [
-  // ── Demo entries — all 5 combinations of city/presenceType ────────────────
   {
-    // [1] city + presenceType: "sede"
     id: "1",
     title: "Red Socioambiental de Amealco",
     city: "Amealco",
     geoState: "Querétaro",
-    presenceType: "sede",
+    presenceStates: ["Guanajuato", "Hidalgo", "México"],
     actorType: "Sociedad civil",
     component: "Consumo y acceso",
     scale: "Regional",
     websiteUrl: "https://www.facebook.com/groups/168313896938001/",
     description:
       "Es una iniciativa comunitaria que fortalece la sostenibilidad de los sistemas alimentarios al reunir a productores, consumidores y organizaciones locales en torno a prácticas agroecológicas, comercio justo y soberanía alimentaria. Mediante su participación en el mapeo de Redes Alimentarias Alternativas (RAA) en México, promueve el acceso a alimentos frescos, locales y libres de agroquímicos, fomentando economías locales resilientes y un consumo responsable.",
-    lat: 20.1897,
-    lng: -100.1476,
   },
   {
-    // [2] city + presenceType: "presencia"
     id: "2",
     title: "Del comalli nixtamali",
     city: "Milpa Alta",
     geoState: "Ciudad de México",
-    presenceType: "presencia",
     actorType: "Sector privado",
     component: "Producción",
     scale: "Local",
     websiteUrl: "https://www.instagram.com/delcomalli/?hl=es",
     description:
       "Del Comalli Nixtamal es una iniciativa familiar que cultiva y transforma variedades nativas de maíz —azul, blanco, amarillo y rosa— en masa nixtamalizada y productos tradicionales como tortillas, tlacoyos y sopes. Mediante prácticas de nixtamalización ancestrales conserva los sabores y texturas ligados al patrimonio cultural, mejora la calidad nutricional, fomenta la biodiversidad y apoya sistemas alimentarios locales más saludables.",
-    lat: 19.1897,
-    lng: -99.0234,
   },
   {
-    // [3] city + sin presenceType
     id: "3",
     title: "Mercado alternativo Tlalpan",
     city: "Ciudad de México",
@@ -47,26 +38,19 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://mercadoalternativo.org/pages/mercado-alternativo-de-tlalpan",
     description:
       "El Mercado Alternativo de Tlalpan ofrece un espacio comunitario donde los productores venden directamente a los consumidores, evitando intermediarios abusivos. Promueve una distribución de alimentos más justa, transparente y equitativa, al tiempo que fortalece las relaciones entre productores y consumidores locales.",
-    lat: 19.2908,
-    lng: -99.1632,
   },
   {
-    // [4] sin city + presenceType: "sede"
     id: "4",
     title: "NUUP",
     geoState: "Ciudad de México",
-    presenceType: "sede",
     actorType: "Sociedad civil",
     component: "Producción",
     scale: "Regional",
     websiteUrl: "https://nuup.org/",
     description:
       "NUUP es una ONG mexicana que diseña, impulsa y apoya iniciativas agrícolas y comerciales que buscan reinventar y transformar el sistema alimentario. Su trabajo promueve la agricultura regenerativa, que restaura paisajes y ecosistemas, genera oportunidades y prosperidad para los productores y crea canales de suministro competitivos para las empresas.",
-    lat: 19.4526,
-    lng: -99.1532,
   },
   {
-    // [5] sin city + sin presenceType
     id: "5",
     title: "Huerto Roma Verde",
     geoState: "Ciudad de México",
@@ -76,8 +60,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.instagram.com/huertoromaverde/?hl=es",
     description:
       "Huerto Roma Verde es una organización sin fines de lucro que fomenta una comunidad activa comprometida con la regeneración biosocial. Promueve la colaboración a través de proyectos y acciones que crean espacios para la reflexión, el bienestar colectivo y las prácticas regenerativas.",
-    lat: 19.4226,
-    lng: -99.1632,
   },
   {
     id: "6",
@@ -90,8 +72,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.facebook.com/BLHGto/?locale=es_LA",
     description:
       "El Banco de Leche Humana del Estado de Guanajuato (BLHGto) es una iniciativa pública única que apoya la sostenibilidad alimentaria al garantizar que los recién nacidos vulnerables tengan acceso a leche humana segura y nutritiva. Al recuperar el excedente de leche de donantes sanas y redistribuirlo a bebés en condiciones críticas, el proyecto reduce la dependencia de fórmulas y alternativas procesadas industrialmente.",
-    lat: 21.1230,
-    lng: -101.6820,
   },
   {
     id: "7",
@@ -104,8 +84,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.facebook.com/people/Cerro-Verde-Celaya/100064141749307/",
     description:
       "Contribuye a la sostenibilidad de los sistemas alimentarios al promover el cultivo orgánico de nopales nativos, ofreciendo alimentos locales y nutritivos basados en tradiciones culturales y fortaleciendo la economía local mediante la generación de empleos. Su enfoque integra la producción sostenible y la gastronomía regional, promoviendo sistemas alimentarios más resilientes, conscientes y respetuosos con el medio ambiente.",
-    lat: 20.3910,
-    lng: -100.9010,
   },
   {
     id: "8",
@@ -118,8 +96,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://ecosciencelab.com/",
     description:
       "EcoScience Lab, una empresa de biotecnología con sede en Guanajuato, desarrolla soluciones innovadoras utilizando microalgas y bioestimulantes para capturar CO₂, mejorar la salud del suelo y apoyar la agricultura regenerativa. Al integrar estas tecnologías, la empresa promueve prácticas agrícolas sostenibles, mejora la restauración de ecosistemas y contribuye a sistemas alimentarios resilientes y ambientalmente responsables.",
-    lat: 21.1450,
-    lng: -101.6630,
   },
   {
     id: "9",
@@ -132,8 +108,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.padrehuerto.com/",
     description:
       "Padre Huerto impulsa la creación de huertos urbanos y educación agroecológica en todo México. Con más de 10 años de experiencia, un equipo multidisciplinario de expertos y entusiastas del planeta, siguen sembrando conciencia y sustentabilidad, llevando su misión cada vez más lejos. Se realizan talleres de diversos temas relacionados con la salud, alimentación, sostenibilidad y otros temas, así como espacios de reflexión crítica de los sistemas alimentarios.",
-    lat: 18.9261,
-    lng: -99.2340,
   },
   {
     id: "10",
@@ -146,8 +120,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.facebook.com/mielbioflora",
     description:
       "Cooperativa de apicultores de Morelos, conformada por más de 150 pequeños productores del estado de Morelos y estados aledaños. Se dedica a la producción de miel orgánica certificada y sus derivados, diferenciados por origen floral y exportados bajo el sistema de Comercio Justo Internacional. Desde su fundación en 2001, la cooperativa ha desarrollado un modelo sustentable que combina viabilidad económica, ecológica y social.",
-    lat: 18.9461,
-    lng: -99.2140,
   },
   {
     id: "11",
@@ -160,21 +132,17 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.facebook.com/solar.centroagroecologico/",
     description:
       "El Centro Cultural Agroecológico SOLAR es un espacio de capacitación, producción y comercialización de hortalizas, flores y plantas medicinales basado en la Agricultura Sintrópica. Como uno de los pocos centros que aplican esta técnica en el centro de México, SOLAR ha conectado con éxito a productores locales y difundido conocimientos a través de cursos y talleres sobre agroecología.",
-    lat: 18.9874,
-    lng: -99.0981,
   },
   {
     id: "12",
     title: "Hagamos Composta",
-    city: "Nacional",
+    geoState: "Ciudad de México",
     actorType: "Sector privado",
     component: "Transformación e innovación",
     scale: "Internacional",
     websiteUrl: "https://hagamoscomposta.org/",
     description:
       "Hagamos Composta es un proyecto nacional con varios centros en todo México, que sirve como modelo eficaz para mejorar la sostenibilidad alimentaria al cerrar el ciclo entre los residuos orgánicos y la fertilidad del suelo. Al recolectar los residuos orgánicos de los hogares y transformarlos en compost, la iniciativa reduce los desechos que van a los vertederos y disminuye las emisiones de gases de efecto invernadero.",
-    lat: 19.4426,
-    lng: -99.1232,
   },
   {
     id: "13",
@@ -187,8 +155,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.arcatierra.com/",
     description:
       "Arca Tierra es una red alimentaria regenerativa en la Ciudad de México que revitaliza el antiguo sistema de chinampas, uno de los métodos agrícolas más antiguos y productivos del mundo. Al restaurar estos sistemas, promueve la agroecología, el comercio justo y la distribución local de alimentos, a la vez que ofrece educación y participación comunitaria.",
-    lat: 19.2626,
-    lng: -99.1032,
   },
   {
     id: "14",
@@ -201,8 +167,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://huertosmilpazul.com/",
     description:
       "Milpa Azul es una organización con más de 20 años de experiencia en educación alternativa y ambiental, impulsada por el compromiso con la infancia y con poner la vida en el centro del aprendizaje. Su equipo multidisciplinario trabaja en la intersección de la infancia, la educación y la agricultura, forjando alianzas con iniciativas educativas y agroecológicas para fortalecer el impacto colectivo.",
-    lat: 19.4126,
-    lng: -99.1432,
   },
   {
     id: "15",
@@ -215,8 +179,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.facebook.com/centroindigenaloyola/?locale=es_LA",
     description:
       "El Centro de Desarrollo Indígena Loyola contribuye a la sostenibilidad de los sistemas alimentarios apoyando a jornaleros y familias indígenas en el acceso a alimentos nutritivos y culturalmente relevantes, especialmente durante las migraciones agrícolas. Promueve la preservación de los conocimientos y prácticas alimentarias tradicionales vinculadas a la identidad cultural, defendiendo los derechos de quienes trabajan en el campo.",
-    lat: 21.1350,
-    lng: -101.6720,
   },
   {
     id: "16",
@@ -229,8 +191,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://ixtimaguey.com/",
     description:
       "IXTI es una empresa dedicada a la producción y comercialización de aguamiel, pulque, jarabe de maguey, destilado de pulque, jabones, bálsamos labiales, condimentos y productos ixtle, bajo un modelo ecológico y totalmente sostenible. Su proceso de producción utiliza el 100% de la planta de maguey, evitando el desperdicio y promoviendo la sostenibilidad, la responsabilidad social y la economía circular.",
-    lat: 18.9661,
-    lng: -99.2481,
   },
   {
     id: "17",
@@ -243,8 +203,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.elbuensocio.com.mx/",
     description:
       "El Buen Socio es una organización financiera ética dedicada a empoderar a emprendedores, especialmente en zonas rurales de México, mediante la concesión de servicios financieros dirigidos a proyectos productivos con impacto social o ambiental. A través de microcréditos, talleres de capacitación y apoyo técnico, respalda emprendimientos de producción local y fortalece los medios de vida de las comunidades.",
-    lat: 19.4326,
-    lng: -99.1532,
   },
   {
     id: "18",
@@ -257,8 +215,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://delachinampa.mx/",
     description:
       "De la Chinampa es una iniciativa agroecológica y de conservación ubicada en la zona chinampera de Xochimilco, que busca rescatar y reactivar las chinampas tradicionales mediante la producción y comercialización de alimentos agroecológicos, el trabajo con familias chinamperas y la promoción de experiencias educativas y turísticas vinculadas al territorio.",
-    lat: 19.2726,
-    lng: -99.0932,
   },
   {
     id: "19",
@@ -271,8 +227,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.velozbio.com/",
     description:
       "VelozBio es una empresa de biotecnología enfocada en fermentación de precisión y desarrollo de ingredientes proteicos y funcionales para la industria alimentaria. Utiliza microorganismos en procesos fermentativos controlados para producir moléculas específicas con funcionalidad alimentaria, buscando escalabilidad, consistencia y menor dependencia de insumos pecuarios tradicionales.",
-    lat: 25.6866,
-    lng: -100.3161,
   },
   {
     id: "20",
@@ -285,8 +239,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.apicalbio.com/",
     description:
       "Apical Biotech es una empresa mexicana de biotecnología agrícola que utiliza el análisis del microbioma del suelo y la inteligencia artificial para ayudar a los agricultores a gestionar y regenerar sus suelos. Ofrece análisis metagenómicos del suelo y productos biológicos personalizados para mejorar la productividad de los cultivos y promover una agricultura sostenible y regenerativa.",
-    lat: 25.6966,
-    lng: -100.3061,
   },
   {
     id: "21",
@@ -299,8 +251,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.linkedin.com/company/cidpro-centro-de-investigaci%C3%B3n-y-desarrollo-de-prote%C3%ADnas/posts/",
     description:
       "CIDPRO (Centro de Investigación y Desarrollo de Proteínas) es un centro de investigación con sede en Monterrey, fundado en 2013, enfocado en el desarrollo de proteínas, ingredientes funcionales y soluciones biotecnológicas para la industria alimentaria, con énfasis en la nutrición, la salud y la sostenibilidad. Diseña y obtiene proteínas con alto valor nutrimental y propiedades funcionales mejoradas para distintas aplicaciones alimentarias.",
-    lat: 25.7066,
-    lng: -100.2961,
   },
   {
     id: "22",
@@ -313,8 +263,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://laligadelaleche.org.mx/",
     description:
       "La Liga de la Leche México es una organización sin fines de lucro dedicada a promover y apoyar la lactancia materna a través de grupos de madres, educación y defensa. Como parte de La Liga de la Leche Internacional, capacita a líderes comunitarias para acompañar a las familias, brinda orientación basada en evidencia y fortalece las capacidades profesionales en el apoyo a la lactancia.",
-    lat: 19.4426,
-    lng: -99.1332,
   },
   {
     id: "23",
@@ -327,8 +275,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.instagram.com/mux_mexico/?hl=es",
     description:
       "Mux ejemplifica cómo el conocimiento culinario tradicional puede impulsar la sostenibilidad alimentaria. Al colaborar con comunidades locales en todo México, recuperar recetas ancestrales y obtener ingredientes nativos de manera responsable, el restaurante ayuda a preservar la biodiversidad, promueve dietas de temporada y fortalece las economías locales.",
-    lat: 19.4226,
-    lng: -99.1732,
   },
   {
     id: "24",
@@ -341,8 +287,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://emprendimiento.tec.mx/es/social",
     description:
       "El Instituto de Emprendimiento Eugenio Garza Lagüera del Tecnológico de Monterrey contribuye a la sostenibilidad alimentaria fomentando la innovación y el emprendimiento social en el sector agroalimentario. Mediante iniciativas como Agrohackathon y proyectos estudiantiles como AgroSetas, apoya soluciones escalables para reducir el desperdicio, mejorar la nutrición y fortalecer los sistemas alimentarios locales.",
-    lat: 25.6766,
-    lng: -100.3261,
   },
   {
     id: "25",
@@ -355,8 +299,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.sierra-encantada.com/",
     description:
       "Sierra Encantada se destaca como la primera granja caprina certificada del estado de Morelos por su inocuidad alimentaria, produciendo quesos de cabra artesanales con prácticas totalmente orgánicas, sin hormonas ni antibióticos, y con una gestión integral del ecosistema. Su queso de aguacate recibió el Super Oro en los World Cheese Awards, obteniendo reconocimiento nacional e internacional.",
-    lat: 18.9761,
-    lng: -99.2381,
   },
   {
     id: "26",
@@ -369,21 +311,17 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://www.ceprobi.ipn.mx/",
     description:
       "CEPROBI es un centro de investigación del Instituto Politécnico Nacional (IPN) especializado en biotecnología, agroecología y nutrición. Mediante el desarrollo de productos bióticos, el manejo ecológico de plagas y la investigación en alimentos funcionales, promueve prácticas agrícolas más sostenibles y dietas más saludables, capacitando especialistas con fuertes vínculos con instituciones, productores y empresas.",
-    lat: 18.9861,
-    lng: -99.2281,
   },
   {
     id: "27",
     title: "Cosechando soberanía",
-    city: "Nacional",
+    geoState: "Ciudad de México",
     actorType: "Gobierno",
     component: "Producción",
     scale: "Nacional",
     websiteUrl: "https://programasparaelbienestar.gob.mx/cosechando-soberania/",
     description:
       "Es un programa del gobierno federal que brinda apoyo integral a pequeños y medianos productores en todo el país. Ofrece asistencia técnica agroecológica, préstamos a bajo interés y seguros a los productores. El programa incluye un área de producción y conservación de semillas de alta calidad con el objetivo de aumentar el suministro nacional de alimentos básicos.",
-    lat: 19.4226,
-    lng: -99.1432,
   },
   {
     id: "28",
@@ -396,8 +334,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://theyieldlablatam.com/es/companies/microterra/",
     description:
       "microTERRA está transformando los ingredientes alimentarios con el poder de las plantas acuáticas. Su misión: limpiar el agua reciclando los nutrientes de la escorrentía, el mayor contaminante de la agricultura, y transformándolos en ingredientes funcionales de alta calidad para la industria de alimentos y bebidas.",
-    lat: 19.4126,
-    lng: -99.1632,
   },
   {
     id: "29",
@@ -410,8 +346,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://tierradetodos.com/",
     description:
       "Tierra de Todos es una comunidad de familias, productores y socios mexicanos que promueve la agricultura y ganadería regenerativa, con el objetivo de producir alimentos nutritivos mientras restaura los suelos, fomenta la biodiversidad y fortalece la relación entre las personas y la naturaleza. Trabaja con ranchos donde se aplican prácticas como el pastoreo regenerativo e integración de animales en sistemas agroecológicos.",
-    lat: 20.5888,
-    lng: -100.3899,
   },
   {
     id: "30",
@@ -424,8 +358,6 @@ const RAW: InitiativeData[] = [
     websiteUrl: "https://viaorganica.org/",
     description:
       "Vía Orgánica es una organización mexicana sin fines de lucro fundada en 2009 que promueve la alimentación saludable, la agricultura orgánica y regenerativa, el comercio justo, la justicia social y la sostenibilidad ambiental. A través de su rancho escuela en San Miguel de Allende desarrolla programas de capacitación, investigación, educación comunitaria y demostración de prácticas agroecológicas.",
-    lat: 20.9144,
-    lng: -100.7452,
   },
 ];
 
