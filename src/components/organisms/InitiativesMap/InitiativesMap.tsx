@@ -16,11 +16,6 @@ type ChipColor = "teal" | "crimson" | "gold" | "secondary" | "neutral" | "purple
 
 export interface Initiative {
   id: string;
-  // Map marker
-  lat: number;
-  lng: number;
-  markerColor?: string;
-  presenceType?: "sede" | "presencia";
   // Shared across list / card / drawer
   title: string;
   chips?: Array<{ label: string; color?: ChipColor }>;
@@ -29,8 +24,10 @@ export interface Initiative {
   websiteUrl?: string;
   /** Pre-formatted "City, State" location string */
   location?: string;
-  /** Full Spanish state name matching the GeoJSON (e.g. "Ciudad de México", "Jalisco") */
+  /** Full Spanish state name of the sede (HQ) */
   state?: string;
+  /** Other states where this initiative has presence */
+  presenceStates?: string[];
   // Drawer-only
   whatTheyDo?: string[];
 }
@@ -53,50 +50,39 @@ function matchesFilters(chips: Initiative["chips"], filterValues: Record<string,
 }
 
 export function InitiativesMap({ initiatives = [], onChatbotClick, className }: InitiativesMapProps) {
-  const [selectedId, setSelectedId] = useState<string | undefined>();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedId, setSelectedId]     = useState<string | undefined>();
+  const [drawerOpen, setDrawerOpen]     = useState(false);
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
+  const [mapSelectedState, setMapSelectedState] = useState<string | undefined>();
 
-  // Filtered markers — react to filter changes from the sidebar
-  const filteredMarkers = useMemo(() =>
-    initiatives
-      .filter((i) => matchesFilters(i.chips, filterValues))
-      .map((i) => ({
-        id: i.id,
-        lat: i.lat,
-        lng: i.lng,
-        title: i.title,
-        stateName: i.state,
-        color: i.markerColor ?? "#747474",
-        presenceType: i.presenceType,
-      })),
+  // Filtered initiatives — react to filter changes from the sidebar
+  const filteredInitiatives = useMemo(
+    () => initiatives.filter((i) => matchesFilters(i.chips, filterValues)),
     [initiatives, filterValues]
   );
 
-  // Unique state names from visible initiatives — drives the fill layer
+  // Unique sede-state names from visible initiatives — drives overview fill layer
   const stateNames = useMemo(() => {
-    const names = filteredMarkers
-      .map((m) => initiatives.find((i) => i.id === m.id)?.state)
+    const names = filteredInitiatives
+      .map((i) => i.state)
       .filter((s): s is string => Boolean(s));
     return [...new Set(names)];
-  }, [filteredMarkers, initiatives]);
+  }, [filteredInitiatives]);
 
   // Null out selection when filters hide the selected initiative
   const activeSelectedId = useMemo(
-    () => (selectedId && filteredMarkers.some((m) => m.id === selectedId) ? selectedId : undefined),
-    [selectedId, filteredMarkers]
+    () => (selectedId && filteredInitiatives.some((i) => i.id === selectedId) ? selectedId : undefined),
+    [selectedId, filteredInitiatives]
   );
   const selected = initiatives.find((i) => i.id === activeSelectedId);
   const effectiveDrawerOpen = drawerOpen && !!activeSelectedId;
 
-  // All visible initiatives in the same state as the selected one — drives the paginator
+  // All visible initiatives in the same sede state — drives the paginator
   const stateGroup = useMemo(() => {
     if (!selected) return [];
     if (!selected.state) return [selected];
-    return filteredMarkers
-      .map((m) => initiatives.find((i) => i.id === m.id)!)
-      .filter((i) => i.state === selected.state);
-  }, [selected, filteredMarkers, initiatives]);
+    return filteredInitiatives.filter((i) => i.state === selected.state);
+  }, [selected, filteredInitiatives]);
 
   const currentPage = Math.max(1, stateGroup.findIndex((i) => i.id === activeSelectedId) + 1);
 
@@ -116,23 +102,38 @@ export function InitiativesMap({ initiatives = [], onChatbotClick, className }: 
     setDrawerOpen(false);
   }
 
+  function handleFilterChange(values: Record<string, string>) {
+    setFilterValues(values);
+    // If the user manually changed the Estado filter from the sidebar, release map control
+    if (mapSelectedState !== undefined && values["Estado"] !== mapSelectedState) {
+      setMapSelectedState(undefined);
+    }
+  }
+
+  function handleMapStateClick(stateName: string) {
+    // Select the state via map; clear any open initiative detail
+    setSelectedId(undefined);
+    setDrawerOpen(false);
+    setMapSelectedState((prev) => (prev === stateName ? "" : stateName));
+  }
+
   return (
-    // p-8 = 32px padding (from M06p1), gap-8 = 32px gap between panels (from cfICJ layout)
     <div className={cn("flex h-full gap-8 p-8 overflow-hidden", className)}>
 
-      {/* ── Sidebar — list (flex-1) + chatbot button, gap-6 matches design gap:24 ── */}
+      {/* ── Sidebar ── */}
       <div className="flex flex-col gap-6 shrink-0 h-full" style={{ width: 280 }}>
         <InitiativeList
           items={initiatives}
           selectedId={activeSelectedId}
           onSelect={handleSelect}
-          onFilterChange={setFilterValues}
+          onFilterChange={handleFilterChange}
+          selectedState={mapSelectedState}
           className="flex-1 min-h-0"
         />
         <ChatbotButton onClick={onChatbotClick} />
       </div>
 
-      {/* ── Map panel — #faf8f5 solid cream, rounded-xl, border #c4c7c7, clips overflow ── */}
+      {/* ── Map panel ── */}
       <div className="relative flex-1 h-full rounded-xl bg-[#faf8f5] border border-[#c4c7c7] overflow-hidden">
 
         {/* Active location filter chip — top-left of map */}
@@ -157,11 +158,10 @@ export function InitiativesMap({ initiatives = [], onChatbotClick, className }: 
         </AnimatePresence>
 
         <InteractiveMap
-          markers={filteredMarkers}
-          selectedId={activeSelectedId}
-          onMarkerClick={handleSelect}
-          stateNames={stateNames}
+          stateNames={selected ? [] : stateNames}
           selectedStateName={selected?.state}
+          selectedPresenceStates={selected?.presenceStates}
+          onStateClick={handleMapStateClick}
           className="w-full h-full"
         />
 
