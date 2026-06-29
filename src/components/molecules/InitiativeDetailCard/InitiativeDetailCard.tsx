@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, ArrowRight, ExternalLink, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { X, ArrowRight, ExternalLink, ChevronLeft, ChevronRight, MapPin, ImageOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Chip } from "@/components/atoms/Chip";
 import { Button } from "@/components/atoms/Button";
@@ -94,7 +94,7 @@ export function InitiativeDetailCard({
     >
       {/* ── Image ── */}
       <div className="relative h-40 bg-neutral-100 shrink-0 overflow-hidden">
-        {imageUrl && (
+        {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={imageUrl}
@@ -102,6 +102,11 @@ export function InitiativeDetailCard({
             className="w-full h-full object-cover"
             style={{ filter: "saturate(0.6)" }}
           />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center gap-1.5">
+            <ImageOff style={{ width: 22, height: 22, color: "#c4c7c7", strokeWidth: 1.5 }} />
+            <span className="font-sans text-[10px] text-[#c4c7c7] uppercase tracking-[0.1em]">Sin imagen</span>
+          </div>
         )}
         {onClose && (
           <Button

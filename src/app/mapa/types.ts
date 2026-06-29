@@ -45,6 +45,7 @@ export interface InitiativeData {
   component: SystemComponent;
   scale: Scale;
   description: string;
+  imageUrl?: string;
   websiteUrl?: string;
 }
 
@@ -99,6 +100,7 @@ export function toInitiative(d: InitiativeData): Initiative | null {
     id:             d.id.trim(),
     title:          d.title.trim(),
     description:    d.description?.trim() ?? "",
+    imageUrl:       d.imageUrl?.trim()    || undefined,
     websiteUrl:     d.websiteUrl?.trim()  || undefined,
     state:          geoState              || undefined,
     presenceStates: presenceStates.length > 0 ? presenceStates : undefined,
