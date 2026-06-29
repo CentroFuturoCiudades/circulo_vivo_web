@@ -26,15 +26,18 @@ export function InitiativeCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "w-full text-left flex flex-col gap-1 p-4 transition-all duration-150 active:scale-[0.99]",
+        "w-full text-left flex flex-col gap-1 border-l-[3px] pt-4 pr-4 pb-4 pl-[13px] transition-all duration-150 active:scale-[0.99]",
         "border-b border-neutral-200 last:border-b-0",
         selected
-          ? "bg-white"
-          : "bg-transparent hover:bg-white/60",
+          ? "border-l-[#708b8d] bg-white"
+          : "border-l-transparent bg-transparent hover:bg-white/60",
         className
       )}
     >
-      <span className="font-serif font-bold text-[16px] leading-snug text-[#000000]">
+      <span className={cn(
+        "font-serif font-bold text-[16px] leading-snug transition-colors duration-150",
+        selected ? "text-[#708b8d]" : "text-[#000000]"
+      )}>
         {title}
       </span>
 

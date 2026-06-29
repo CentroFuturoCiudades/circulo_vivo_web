@@ -361,4 +361,4 @@ const RAW: InitiativeData[] = [
   },
 ];
 
-export const INITIATIVES: Initiative[] = RAW.map(toInitiative);
+export const INITIATIVES: Initiative[] = RAW.map(toInitiative).filter((i): i is Initiative => i !== null);
