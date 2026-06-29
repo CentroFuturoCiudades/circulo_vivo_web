@@ -1,0 +1,1 @@
+export { ProductosInvestigacionSection } from "./ProductosInvestigacionSection";

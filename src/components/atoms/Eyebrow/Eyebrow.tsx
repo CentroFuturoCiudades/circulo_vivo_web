@@ -1,11 +1,12 @@
 import { cn } from "@/lib/utils";
 
-type EyebrowColor = "secondary" | "teal" | "gold" | "white" | "neutral";
+type EyebrowColor = "secondary" | "teal" | "gold" | "white" | "neutral" | "purple";
 
 const colorMap: Record<EyebrowColor, { text: string; dot: string }> = {
   secondary: { text: "text-secondary",  dot: "bg-secondary" },
   teal:      { text: "text-primary",    dot: "bg-primary" },
   gold:      { text: "text-[#bcb884]",  dot: "bg-[#bcb884]" },
+  purple:    { text: "text-[#7F4D7B]",  dot: "bg-[#7F4D7B]" },
   white:     { text: "text-white",      dot: "bg-white" },
   neutral:   { text: "text-neutral-500", dot: "bg-neutral-400" },
 };
