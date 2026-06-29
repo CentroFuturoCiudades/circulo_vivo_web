@@ -1,0 +1,1 @@
+export { IniciativasEnCursoSection } from "./IniciativasEnCursoSection";
