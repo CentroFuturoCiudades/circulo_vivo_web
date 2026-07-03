@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { MoveUpRight, PlayCircle } from "lucide-react";
 import { NavBar, type NavLink } from "@/components/molecules/NavBar";
 import { Button } from "@/components/atoms/Button";
+import heroBg from "@/assets/bg-images/hero.jpg";
 
 export interface HeroSectionProps {
   links?: NavLink[];
@@ -26,7 +28,7 @@ const DEFAULT_LINKS: NavLink[] = [
 export function HeroSection({
   links = DEFAULT_LINKS,
   title,
-  subtitle = "Inteligencia sistémica y datos accionables para regenerar el territorio. Una plataforma para mapear, analizar y conectar.",
+  subtitle = "Una plataforma para mapear, analizar y conectar iniciativas, proyectos y movimientos que impulsan la transformación de los sistemas alimentarios hacia modelos más saludables, justos y sostenibles.",
   primaryCta = "Explorar Mapa",
   secondaryCta = "Ver Demostración",
   onPrimaryClick,
@@ -34,9 +36,12 @@ export function HeroSection({
 }: HeroSectionProps) {
   return (
     <section className="relative min-h-screen overflow-hidden flex flex-col">
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/hero.jpg')" }}
+      <Image
+        src={heroBg}
+        alt=""
+        fill
+        priority
+        className="object-cover object-center"
       />
       <div
         className="absolute inset-0"
@@ -81,7 +86,7 @@ export function HeroSection({
       </div>
 
       {/* NavBar */}
-      <div className="relative z-20 px-6 md:px-9 pt-5">
+      <div className="fixed top-0 inset-x-0 z-50 px-6 md:px-9 pt-5">
         <NavBar
           links={links}
           logoColor="#ffffff"
@@ -108,17 +113,16 @@ export function HeroSection({
         >
           {title ?? (
             <h1 className="font-sans font-semibold text-white text-[28px] leading-[36px] md:text-[36px] md:leading-[46px] lg:text-[48px] lg:leading-[60px]">
-              Transformando los{" "}
+              Impulsando la creación de conocimientos y espacios para la
+              transformación de los{" "}
               <span className="font-serif italic font-medium" style={{ fontWeight: 500 }}>
-                Sistemas Alimentarios
+                sistemas alimentarios
               </span>
-              <br />
-              de México
             </h1>
           )}
           <p
             className="font-sans font-normal text-white/90"
-            style={{ fontSize: 18, lineHeight: 1.6, maxWidth: 439 }}
+            style={{ fontSize: 18, lineHeight: 1.6, maxWidth: 800 }}
           >
             {subtitle}
           </p>
@@ -127,9 +131,10 @@ export function HeroSection({
               <Button
                 color="gold"
                 variant="primary"
+                radius="full"
                 iconRight={MoveUpRight}
                 onClick={onPrimaryClick}
-                className="normal-case tracking-normal font-normal text-base h-auto py-4 px-8 rounded-none text-black"
+                className="normal-case tracking-normal font-normal text-base h-auto py-4 px-8 text-black"
               >
                 {primaryCta}
               </Button>
@@ -138,9 +143,10 @@ export function HeroSection({
               <Button
                 color="white"
                 variant="outline"
+                radius="full"
                 iconRight={PlayCircle}
                 onClick={onSecondaryClick}
-                className="normal-case tracking-normal font-normal text-base h-auto py-4 px-8 rounded-none"
+                className="normal-case tracking-normal font-normal text-base h-auto py-4 px-8"
               >
                 {secondaryCta}
               </Button>
@@ -164,7 +170,7 @@ export function HeroSection({
             <motion.div
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="bg-[#395284] p-6"
+              className="bg-[#395284] p-6 rounded-xl"
             >
               <p
                 className="font-sans font-medium text-white/80 uppercase"
@@ -192,7 +198,7 @@ export function HeroSection({
             <motion.div
               animate={{ y: [0, -6, 0] }}
               transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              className="bg-[#bcb884] p-6"
+              className="bg-[#bcb884] p-6 rounded-xl"
             >
               <p
                 className="font-sans font-medium text-white/80 uppercase"

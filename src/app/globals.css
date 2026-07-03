@@ -173,3 +173,18 @@ button,
 [type="reset"] {
   cursor: pointer;
 }
+
+/* ─── MARQUEE (auto-scrolling slider, pauses on hover) ─────────────────── */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee-scroll linear infinite;
+  will-change: transform;
+}
+
+.group:hover .animate-marquee {
+  animation-play-state: paused;
+}

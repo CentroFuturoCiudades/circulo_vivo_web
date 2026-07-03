@@ -44,7 +44,7 @@ export function ConversionBannerSection({
 }: ConversionBannerSectionProps) {
   const router = useRouter();
   return (
-    <section className="relative overflow-hidden py-[60px] mx-6 md:mx-9 mb-12">
+    <section className="relative overflow-hidden rounded-2xl py-[60px] mx-6 md:mx-9 mb-12">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/join-transformation.jpg')" }}
@@ -68,6 +68,7 @@ export function ConversionBannerSection({
           <Button
             color="gold"
             variant="primary"
+            radius="full"
             onClick={() => router.push(ctaHref)}
             className="normal-case tracking-normal font-normal text-black hover:text-white h-auto py-5 px-12 bg-[#DED4B0] hover:bg-[#c9bc95]"
             style={{ fontSize: 18 }}

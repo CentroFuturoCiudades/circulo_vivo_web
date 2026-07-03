@@ -48,7 +48,7 @@ export function ProblematicaSection() {
     <section className="bg-white py-12 md:py-20 px-6 md:px-16 lg:px-24">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
         <FadeUp delay={0}>
-          <Eyebrow color="teal">PROBLEMÁTICA</Eyebrow>
+          <Eyebrow color="gold">PROBLEMÁTICA</Eyebrow>
           <h2
             className="font-sans font-semibold text-[#211f19] mt-4 leading-[1.2] text-[24px] md:text-[30px]"
           >

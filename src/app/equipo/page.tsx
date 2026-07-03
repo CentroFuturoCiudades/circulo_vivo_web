@@ -1,42 +1,29 @@
-import Image                              from "next/image";
-import { Footer }                        from "@/components/molecules/Footer";
-import { TeamHeroSection }               from "@/components/organisms/TeamHeroSection";
-import { ProblematicaSection }           from "@/components/organisms/ProblematicaSection";
-import { DirectivosSection }             from "@/components/organisms/DirectivosSection";
-import { EquipoTecnicoSection }          from "@/components/organisms/EquipoTecnicoSection";
-import { ColaboracionesSection }         from "@/components/organisms/ColaboracionesSection";
-import { TeamStatsSection }              from "@/components/organisms/TeamStatsSection";
-import { IniciativasEnCursoSection }     from "@/components/organisms/IniciativasEnCursoSection";
+import { Footer } from "@/components/molecules/Footer";
+import { TeamHeroSection } from "@/components/organisms/TeamHeroSection";
+import { ProblematicaSection } from "@/components/organisms/ProblematicaSection";
+import { EquipoTecnicoSection } from "@/components/organisms/EquipoTecnicoSection";
+import { ColaboracionesSection } from "@/components/organisms/ColaboracionesSection";
+import { TeamStatsSection } from "@/components/organisms/TeamStatsSection";
+import { IniciativasEnCursoSection } from "@/components/organisms/IniciativasEnCursoSection";
 import { ProductosInvestigacionSection } from "@/components/organisms/ProductosInvestigacionSection";
-import { ColaboraCTASection }            from "@/components/organisms/ColaboraCTASection";
-import pattern                           from "@/assets/pattern/pattern.svg";
-import { DIRECTIVOS, EQUIPO_TECNICO }    from "./data";
+import { ColaboraCTASection } from "@/components/organisms/ColaboraCTASection";
+import { EQUIPO_TECNICO, EQUIPO_COLABORADORES, INSTITUCIONES_COLABORADORAS } from "./data";
 
 export default function EquipoPage() {
-  return (
-    <main>
-      <TeamHeroSection />
-      <ProblematicaSection />
-
-      {/* Directivos → Equipo Técnico → Colaboraciones con patrón de fondo */}
-      <div className="relative" style={{ zIndex: 0 }}>
-        <Image
-          src={pattern}
-          alt=""
-          aria-hidden
-          className="absolute top-0 left-0 h-3/4 w-auto pointer-events-none select-none"
-          style={{ zIndex: -1, opacity: 0.12 }}
-        />
-        <DirectivosSection directivos={DIRECTIVOS} />
-        <EquipoTecnicoSection members={EQUIPO_TECNICO} />
-        <ColaboracionesSection />
-      </div>
-
-      <TeamStatsSection />
-      <IniciativasEnCursoSection />
-      <ProductosInvestigacionSection />
-      <ColaboraCTASection />
-      <Footer />
-    </main>
-  );
+    return (
+        <main>
+            <TeamHeroSection />
+            <ProblematicaSection />
+            <EquipoTecnicoSection members={EQUIPO_TECNICO} />
+            <ColaboracionesSection
+                colaboradores={EQUIPO_COLABORADORES}
+                instituciones={INSTITUCIONES_COLABORADORAS}
+            />
+            <TeamStatsSection />
+            <IniciativasEnCursoSection />
+            <ProductosInvestigacionSection />
+            <ColaboraCTASection />
+            <Footer />
+        </main>
+    );
 }
