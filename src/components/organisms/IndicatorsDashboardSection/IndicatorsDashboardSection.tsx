@@ -86,6 +86,7 @@ export function IndicatorsDashboardSection({
           <Button
             color="gold"
             variant="outline"
+            radius="full"
             iconRight={ChartColumn}
             onClick={() => router.push(ctaHref)}
             className="normal-case tracking-normal font-normal text-base h-auto py-3 px-8 w-fit text-[#bcb884] hover:text-white [&>svg]:text-[#bcb884] hover:[&>svg]:text-white"

@@ -284,6 +284,7 @@ export function ChatbotHighlightSection({ ctaHref = "/chatbot" }: ChatbotHighlig
             <Button
               color="navy"
               variant="primary"
+              radius="full"
               iconRight={ArrowRight}
               onClick={() => router.push(ctaHref)}
               className="normal-case tracking-normal font-normal text-base h-auto py-1.5 px-2"

@@ -118,7 +118,7 @@ export function IniciativasEnCursoSection() {
         {/* Right — Inmersión Radical card */}
         <FadeUp delay={0.2} className="w-full lg:flex-1">
           <div
-            className="flex flex-col justify-center rounded-3xl p-6 sm:p-8 md:p-12"
+            className="flex flex-col justify-center rounded-2xl p-6 sm:p-8 md:p-12"
             style={{ backgroundColor: "rgba(255,253,244,0.8)" }}
           >
             <h3

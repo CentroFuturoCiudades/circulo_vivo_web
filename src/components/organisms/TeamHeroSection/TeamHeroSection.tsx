@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { NavBar } from "@/components/molecules/NavBar";
-import { Button } from "@/components/atoms/Button";
 import heroBg from "@/assets/bg-images/hero-team.jpg";
 
 const NAV_LINKS = [
@@ -50,7 +49,7 @@ export function TeamHeroSection() {
       />
 
       {/* NavBar */}
-      <div className="relative z-20 px-6 md:px-9 pt-5">
+      <div className="fixed top-0 inset-x-0 z-50 px-6 md:px-9 pt-5">
         <NavBar
           links={NAV_LINKS}
           bgColor="#BCB88499"
@@ -100,7 +99,7 @@ export function TeamHeroSection() {
           </p>
 
           {/* Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-6">
+          {/* <div className="flex flex-wrap items-center justify-center gap-4 pt-6">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Button
                 variant="primary"
@@ -123,7 +122,7 @@ export function TeamHeroSection() {
                 Ver metodología
               </Button>
             </motion.div>
-          </div>
+          </div> */}
         </motion.div>
       </div>
     </section>

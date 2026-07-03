@@ -81,6 +81,7 @@ export function FeatureCardsSection({ features }: FeatureCardsSectionProps) {
               <Button
                 color="crimson"
                 variant="primary"
+                radius="full"
                 iconRight={ArrowRight}
                 onClick={() => router.push(feature.href)}
                 className="normal-case tracking-normal font-normal text-base h-auto py-1.5 px-4 w-fit"

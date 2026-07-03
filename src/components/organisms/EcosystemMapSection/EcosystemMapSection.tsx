@@ -58,7 +58,7 @@ export function EcosystemMapSection({
           <motion.div
             whileHover={{ scale: 1.01 }}
             transition={{ type: "spring", stiffness: 200 }}
-            className="relative overflow-hidden w-[calc(100vw-48px)] lg:w-[512px] rounded-[8px]"
+            className="relative overflow-hidden w-[calc(100vw-48px)] lg:w-[512px] rounded-2xl"
           >
             <div className="absolute inset-0 bg-[#561427]" />
             <div className="relative z-10 p-6 md:p-8 lg:p-12 flex flex-col items-center gap-2">
@@ -72,7 +72,7 @@ export function EcosystemMapSection({
                 color="gold"
                 variant="primary"
                 iconLeft={Map}
-                radius="sm"
+                radius="full"
                 onClick={() => router.push(ctaHref)}
                 className="normal-case tracking-normal font-normal text-base text-black h-auto py-4 px-8"
               >
