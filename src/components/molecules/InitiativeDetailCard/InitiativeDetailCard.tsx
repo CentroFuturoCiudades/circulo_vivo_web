@@ -87,10 +87,9 @@ export function InitiativeDetailCard({
       transition={{ type: "spring", damping: 28, stiffness: 320 }}
       className={cn(
         "flex flex-col rounded-xl border border-[#c4c7c7] bg-white overflow-hidden",
-        "max-h-[calc(100%-3rem)]",
+        "max-h-[calc(100%-3rem)] w-[320px]",
         className
       )}
-      style={{ width: 320 }}
     >
       {/* ── Image ── */}
       <div className="relative h-40 bg-neutral-100 shrink-0 overflow-hidden">

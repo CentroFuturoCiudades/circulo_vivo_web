@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Chip } from "@/components/atoms/Chip";
 import { ChatbotButton } from "@/components/molecules/ChatbotButton";
@@ -9,6 +11,7 @@ import { InitiativeList } from "@/components/molecules/InitiativeList";
 import { InitiativeDetailCard } from "@/components/molecules/InitiativeDetailCard";
 import { InteractiveMap } from "@/components/molecules/InteractiveMap";
 import { InitiativeDrawer } from "@/components/organisms/InitiativeDrawer";
+import { useIsMobile } from "@/lib/useIsMobile";
 
 // ── Shared initiative type ─────────────────────────────────
 
@@ -55,6 +58,8 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
   const [drawerOpen, setDrawerOpen]     = useState(false);
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
   const [mapSelectedState, setMapSelectedState] = useState<string | undefined>();
+  const [sheetExpanded, setSheetExpanded] = useState(false);
+  const isMobile = useIsMobile();
 
   // Filtered initiatives — react to filter changes from the sidebar
   const filteredInitiatives = useMemo(
@@ -96,6 +101,8 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
   function handleSelect(id: string) {
     setSelectedId(id);
     setDrawerOpen(false);
+    // On mobile, collapse the sheet so the map + result card become visible.
+    setSheetExpanded(false);
   }
 
   function handleCloseCard() {
@@ -129,23 +136,71 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
   }
 
   return (
-    <div className={cn("flex h-full gap-8 p-8 overflow-hidden", className)}>
+    // Mobile/tablet: the map is edge-to-edge and primary (Google-Maps-style); the list
+    // becomes a bottom sheet the user can peek/expand, instead of pushing the map off-screen.
+    // Desktop (lg+): unchanged — sidebar + map side by side, exactly as before.
+    <div className={cn("relative flex h-full lg:gap-8 lg:p-8 overflow-hidden", className)}>
 
-      {/* ── Sidebar ── */}
-      <div className="flex flex-col gap-6 shrink-0 h-full" style={{ width: 280 }}>
-        <InitiativeList
-          items={initiatives}
-          selectedId={activeSelectedId}
-          onSelect={handleSelect}
-          onFilterChange={handleFilterChange}
-          selectedState={mapSelectedState}
-          className="flex-1 min-h-0"
-        />
-        <ChatbotButton onClick={onChatbotClick} />
+      {/* ── Sidebar (inline on desktop, bottom sheet on mobile) ── */}
+      <div
+        className={cn(
+          "absolute inset-x-0 bottom-0 z-20 flex flex-col rounded-t-2xl border-t border-[#c4c7c7] bg-[#faf8f5] shadow-[0_-4px_24px_rgba(0,0,0,0.15)] transition-[height] duration-300 ease-in-out overflow-hidden",
+          sheetExpanded ? "h-[75vh]" : "h-[104px]",
+          "lg:static lg:inset-auto lg:z-auto lg:h-full lg:w-[280px] lg:shrink-0 lg:gap-6 lg:rounded-none lg:border-t-0 lg:bg-transparent lg:shadow-none lg:transition-none lg:overflow-visible"
+        )}
+      >
+        {/* Drag handle — mobile/tablet only, toggles expand/collapse */}
+        <button
+          type="button"
+          onClick={() => setSheetExpanded((v) => !v)}
+          aria-label={sheetExpanded ? "Contraer lista" : "Expandir lista"}
+          className="lg:hidden flex flex-col items-center gap-1 shrink-0 pt-2.5 pb-1"
+        >
+          <span className="w-10 h-1 rounded-full bg-[#c4c7c7]" />
+          <ChevronUp
+            size={14}
+            className={cn("text-[#9ca3af] transition-transform", sheetExpanded && "rotate-180")}
+          />
+        </button>
+
+        {/* Collapsed summary — mobile/tablet only, tap to expand */}
+        {!sheetExpanded && (
+          <button
+            type="button"
+            onClick={() => setSheetExpanded(true)}
+            className="lg:hidden flex items-center justify-between px-4 pb-4"
+          >
+            <span className="font-sans font-bold text-[#211f19]" style={{ fontSize: 16 }}>
+              {initiatives.length} iniciativas
+            </span>
+            <span className="font-sans text-[#708b8d]" style={{ fontSize: 13 }}>
+              Ver lista
+            </span>
+          </button>
+        )}
+
+        {/* Full list + chatbot CTA — always on desktop, mobile only while expanded */}
+        <div
+          className={cn(
+            "min-h-0 flex-col gap-6",
+            sheetExpanded ? "flex flex-1" : "hidden",
+            "lg:flex lg:flex-1"
+          )}
+        >
+          <InitiativeList
+            items={initiatives}
+            selectedId={activeSelectedId}
+            onSelect={handleSelect}
+            onFilterChange={handleFilterChange}
+            selectedState={mapSelectedState}
+            className="flex-1 min-h-0 mx-4 lg:mx-0"
+          />
+          <ChatbotButton onClick={onChatbotClick} className="shrink-0 mx-4 mb-4 lg:mx-0 lg:mb-0 hidden lg:flex" />
+        </div>
       </div>
 
-      {/* ── Map panel ── */}
-      <div className="relative flex-1 h-full rounded-xl bg-[#faf8f5] border border-[#c4c7c7] overflow-hidden">
+      {/* ── Map panel (full-bleed on mobile, framed panel on desktop) ── */}
+      <div className="relative flex-1 h-full lg:rounded-xl bg-[#faf8f5] lg:border lg:border-[#c4c7c7] overflow-hidden">
 
         {/* Active location filter chip — top-left of map */}
         <AnimatePresence>
@@ -191,30 +246,63 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
               total={stateGroup.length > 1 ? stateGroup.length : undefined}
               current={currentPage}
               onPageChange={(page) => handleSelect(stateGroup[page - 1].id)}
-              className="absolute top-6 right-6 z-10"
+              className="absolute left-4 right-4 top-4 bottom-[148px] w-auto max-h-none lg:left-auto lg:right-6 lg:top-6 lg:bottom-auto lg:w-[320px] lg:max-h-[calc(100%-3rem)] z-10"
             />
           )}
         </AnimatePresence>
       </div>
 
-      {/* ── Drawer ── */}
-      <AnimatePresence>
-        {selected && effectiveDrawerOpen && (
-          <InitiativeDrawer
-            key={selected.id}
-            open
-            title={selected.title}
-            chips={selected.chips}
-            imageUrl={selected.imageUrl}
-            description={selected.description}
-            whatTheyDo={selected.whatTheyDo}
-            websiteUrl={selected.websiteUrl}
-            location={selected.location}
-            onClose={() => setDrawerOpen(false)}
-            className="h-full shrink-0"
-          />
-        )}
-      </AnimatePresence>
+      {/* ── Drawer ──
+          On mobile this is rendered via a portal into document.body: the map area's own
+          ancestor (`z-10` + `position: relative` in the page) creates a local stacking
+          context, so a merely-high z-index here could never actually render above the
+          page's nav/search bar — only escaping via portal guarantees a true full-screen
+          takeover. Desktop is unaffected — it stays inline, exactly as before.
+          Note: the portal wraps its own AnimatePresence rather than being nested inside
+          one — AnimatePresence relies on React.isValidElement for its direct children,
+          which is false for the object createPortal() returns, silently breaking it. */}
+      {isMobile && typeof document !== "undefined" ? (
+        createPortal(
+          <AnimatePresence>
+            {selected && effectiveDrawerOpen && (
+              <InitiativeDrawer
+                key={selected.id}
+                open
+                title={selected.title}
+                chips={selected.chips}
+                imageUrl={selected.imageUrl}
+                description={selected.description}
+                whatTheyDo={selected.whatTheyDo}
+                websiteUrl={selected.websiteUrl}
+                location={selected.location}
+                onClose={() => setDrawerOpen(false)}
+                width="100%"
+                className="fixed inset-0 z-[100] w-full h-full rounded-none border-0"
+              />
+            )}
+          </AnimatePresence>,
+          document.body
+        )
+      ) : (
+        <AnimatePresence>
+          {selected && effectiveDrawerOpen && (
+            <InitiativeDrawer
+              key={selected.id}
+              open
+              title={selected.title}
+              chips={selected.chips}
+              imageUrl={selected.imageUrl}
+              description={selected.description}
+              whatTheyDo={selected.whatTheyDo}
+              websiteUrl={selected.websiteUrl}
+              location={selected.location}
+              onClose={() => setDrawerOpen(false)}
+              width={319}
+              className="h-full shrink-0 rounded-xl border"
+            />
+          )}
+        </AnimatePresence>
+      )}
 
     </div>
   );
