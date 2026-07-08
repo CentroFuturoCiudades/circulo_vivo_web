@@ -63,7 +63,7 @@ export function ChatInputBar({
   return (
     <div
       className={cn(
-        "w-full p-8",
+        "w-full p-4 md:p-8",
         "bg-[linear-gradient(to_bottom,transparent_0%,white_40%)]",
         className
       )}
@@ -86,7 +86,7 @@ export function ChatInputBar({
               <FilterPill
                 key={i}
                 variant="teal"
-                className="text-base h-auto py-1 px-3 font-normal"
+                className="text-xs md:text-base h-auto py-1 px-2.5 md:px-3 font-normal"
                 onClick={chip.onClick}
               >
                 {chip.label}
@@ -131,11 +131,21 @@ export function ChatInputBar({
 
             <Button
               color="teal"
+              variant="icon"
+              radius="full"
+              iconLeft={ArrowRight}
+              onClick={handleSend}
+              aria-label="Enviar consulta"
+              className="md:hidden w-10 h-10"
+            />
+
+            <Button
+              color="teal"
               variant="primary"
               radius="sm"
               iconRight={ArrowRight}
               onClick={handleSend}
-              className="normal-case tracking-normal font-normal text-base h-auto py-2 px-6"
+              className="hidden md:inline-flex normal-case tracking-normal font-normal text-base h-auto py-2 px-6"
             >
               Enviar consulta
             </Button>

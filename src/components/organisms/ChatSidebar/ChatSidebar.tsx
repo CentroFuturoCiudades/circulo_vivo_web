@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ChatTopicButton } from "@/components/atoms/ChatTopicButton";
 import { Button } from "@/components/atoms/Button";
@@ -14,6 +14,12 @@ export interface ChatSidebarProps {
   methodologyNote?: string;
   methodologyLink?: string;
   onMethodologyClick?: () => void;
+  /**
+   * Controls the slide-over drawer below the `lg` breakpoint. Ignored at `lg`
+   * and up, where the sidebar is always visible inline (unchanged desktop design).
+   */
+  open?: boolean;
+  onClose?: () => void;
   className?: string;
 }
 
@@ -34,22 +40,40 @@ export function ChatSidebar({
   methodologyNote = DEFAULT_NOTE,
   methodologyLink = DEFAULT_LINK,
   onMethodologyClick,
+  open = true,
+  onClose,
   className,
 }: ChatSidebarProps) {
   return (
     <div
       className={cn(
-        "flex h-full w-[384px] shrink-0 flex-col justify-between rounded-2xl border-r border-[#e4e4e7] bg-white/80 p-6",
+        // Mobile/tablet: fixed slide-over drawer, off-canvas by default.
+        "fixed inset-y-0 left-0 z-[70] flex h-full w-[85%] max-w-[360px] flex-col justify-between overflow-y-auto rounded-r-2xl bg-white p-4 pt-6 shadow-2xl transition-transform duration-300 ease-in-out",
+        open ? "translate-x-0" : "-translate-x-full",
+        // Desktop (lg+): original inline, always-visible design — unchanged.
+        "lg:static lg:z-auto lg:h-full lg:w-[384px] lg:max-w-none lg:translate-x-0 lg:shrink-0 lg:justify-between lg:overflow-visible lg:rounded-2xl lg:border-r lg:border-[#e4e4e7] lg:bg-white/80 lg:p-6 lg:shadow-none",
         className
       )}
     >
       <div className="flex flex-col gap-4">
-        <span
-          className="font-sans font-normal text-[#708b8d]"
-          style={{ fontSize: "16px", letterSpacing: "1.6px", lineHeight: "1.5" }}
-        >
-          EXPLORAR TEMAS
-        </span>
+        <div className="flex items-center justify-between gap-4">
+          <span
+            className="font-sans font-normal text-[#708b8d]"
+            style={{ fontSize: "16px", letterSpacing: "1.6px", lineHeight: "1.5" }}
+          >
+            EXPLORAR TEMAS
+          </span>
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Cerrar menú"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-[#71717a] transition-colors hover:bg-black/5 lg:hidden"
+            >
+              <X size={18} />
+            </button>
+          )}
+        </div>
 
         <div className="flex flex-col gap-2">
           {topics.map((topic, i) => (

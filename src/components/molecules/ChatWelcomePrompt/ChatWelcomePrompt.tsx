@@ -39,22 +39,22 @@ export function ChatWelcomePrompt({
         </p>
         <p
           className="font-sans font-normal text-[#000000] text-center whitespace-pre-line text-base"
-          style={{ lineHeight: 1.6, maxWidth: 448, padding: "0 7.69px" }}
+          style={{ lineHeight: 1.6, maxWidth: 500, padding: "0 7.69px" }}
         >
           {subtitle}
         </p>
       </div>
 
       <div
-        className="flex flex-wrap justify-center gap-3"
-        style={{ paddingTop: 16, paddingLeft: 67, paddingRight: 67 }}
+        className="flex flex-wrap justify-center gap-2 md:gap-3 px-4 md:px-[67px]"
+        style={{ paddingTop: 16 }}
       >
         {isLoadingSuggestions ? (
           // Skeletons mientras el servicio genera sugerencias
           [140, 220, 280].map((w) => (
             <div
               key={w}
-              className="h-8 rounded-full bg-neutral-200 animate-pulse"
+              className="h-7 md:h-8 rounded-full bg-neutral-200 animate-pulse"
               style={{ width: w }}
             />
           ))
@@ -67,7 +67,7 @@ export function ChatWelcomePrompt({
                 variant="default"
                 onClick={suggestion.onClick}
                 className={cn(
-                  "h-8 px-4 rounded-full bg-white border font-sans text-sm font-medium text-[#000000]",
+                  "h-auto min-h-7 md:min-h-8 max-w-full whitespace-normal px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-white border font-sans text-xs md:text-sm font-medium text-[#000000] text-center",
                   isLast ? "border-[#e1e1e6]" : "border-[#f0efef]"
                 )}
               >
