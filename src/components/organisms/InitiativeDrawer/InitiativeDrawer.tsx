@@ -56,6 +56,8 @@ export interface InitiativeDrawerProps {
   websiteUrl?: string;
   location?: string;
   onClose?: () => void;
+  /** Target width for the open animation. Defaults to the fixed 319px desktop panel width — pass "100%" for a full-bleed mobile sheet. */
+  width?: number | string;
   className?: string;
 }
 
@@ -72,13 +74,14 @@ export function InitiativeDrawer({
   location,
   className,
   onClose,
+  width = 319,
 }: InitiativeDrawerProps) {
   if (!open) return null;
 
   return (
     <motion.div
       initial={{ width: 0, opacity: 0 }}
-      animate={{ width: 319, opacity: 1 }}
+      animate={{ width, opacity: 1 }}
       exit={{ width: 0, opacity: 0 }}
       transition={{ type: "spring", damping: 32, stiffness: 320 }}
       className={cn(

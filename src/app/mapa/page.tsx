@@ -6,6 +6,7 @@ import { SearchBar }        from "@/components/molecules/SearchBar";
 import { FilterDropdown }   from "@/components/molecules/FilterDropdown";
 import { InitiativesMap }   from "@/components/organisms/InitiativesMap";
 import { MapFooter }        from "@/components/molecules/MapFooter";
+import { useIsMobile }      from "@/lib/useIsMobile";
 import { INITIATIVES }      from "./data";
 
 // ── Static config ──────────────────────────────────────────────────────────
@@ -53,6 +54,7 @@ export default function MapaPage() {
   const [actor,    setActor]    = useState<string | undefined>();
   const [escala,   setEscala]   = useState<string | undefined>();
   const [category, setCategory] = useState<string | undefined>();
+  const isMobile = useIsMobile();
 
   const filtered = useMemo(() => {
     return INITIATIVES.filter((i) => {
@@ -106,15 +108,15 @@ export default function MapaPage() {
       </div>
 
       {/* Search + filter bar */}
-      <div className="relative z-20 flex items-center gap-4 px-6 md:px-9 py-3">
+      <div className="relative z-20 flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-4 px-4 md:px-9 py-3">
         <SearchBar
-          size="sm"
+          size={isMobile ? "lg" : "sm"}
           className="flex-1"
           value={search}
           onChange={setSearch}
           onSearch={setSearch}
         />
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 overflow-x-auto -mx-6 px-6 lg:mx-0 lg:px-0 lg:overflow-visible">
           <FilterDropdown label="Actor"     options={ACTOR_OPTIONS}    value={actor}    onChange={setActor}    />
           <FilterDropdown label="Escala"    options={ESCALA_OPTIONS}   value={escala}   onChange={setEscala}   />
           <FilterDropdown label="Categoría" options={CATEGORIA_OPTIONS} value={category} onChange={setCategory} align="right" />
