@@ -1,35 +1,49 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Map, { Layer, NavigationControl, Source, type MapRef, type MapLayerMouseEvent } from "react-map-gl/maplibre";
-import "maplibre-gl/dist/maplibre-gl.css";
+import Map, { Layer, NavigationControl, Source, type MapRef, type MapMouseEvent } from "react-map-gl/mapbox";
+import "mapbox-gl/dist/mapbox-gl.css";
 import { cn } from "@/lib/utils";
 
 // ── Constants ──────────────────────────────────────────────
 
-const MAP_STYLE =
-  "https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json";
+// Mapbox demo — get a free token at https://account.mapbox.com/access-tokens/
+// and set NEXT_PUBLIC_MAPBOX_TOKEN in .env.local.
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
+
+const MAP_STYLE = "mapbox://styles/mapbox/light-v11";
 
 const MEXICO_CENTER = { longitude: -102.5, latitude: 23.6, zoom: 5 };
 
 const MEXICO_STATES_URL =
   "https://raw.githubusercontent.com/angelnmara/geojson/master/mexicoHigh.json";
 
-// Sede (HQ) state — crimson
-const SEDE_COLOR = "#852038";
-// Presence states — navy
-const PRESENCE_COLOR = "#395284";
-// Overview (all filtered, no selection) — teal
-const ACTIVE_COLOR = "#708b8d";
+// Basemap tint — recolors the stock light-v11 layers with design-system tones
+// (secondary blue for water, warm surface tones for land) instead of the
+// default grayscale, which reads as washed out / disabled.
+const WATER_COLOR = "#9eb7d7"; // secondary-200, muted
+const WATER_OPACITY = 0.55;
+const LAND_COLOR = "#fcfbf7"; // surface-sand
+const PARK_COLOR = "#f8eec9"; // gold-100
+
+// Overview (unselected initiatives) — brand purple. Avoids gray/teal/blue,
+// which read as "disabled" rather than "clickable" against the light basemap.
+const ACTIVE_COLOR = "#a574a5";
+// Sede + presencia (selected initiative) — same brand crimson; opacity (below)
+// differentiates sede (more saturated) from presencia (lighter). Kept out of
+// the green/blue family so it never reads as a body of water on the basemap.
+const SELECTED_COLOR = "#852038";
+const SEDE_COLOR = SELECTED_COLOR;
+const PRESENCE_COLOR = SELECTED_COLOR;
 
 // ── Types ──────────────────────────────────────────────────
 
 export interface InteractiveMapProps {
   /** Sede-state names of all currently filtered initiatives — overview fill */
   stateNames?: string[];
-  /** Sede state of the selected initiative — highlighted in crimson */
+  /** Sede state of the selected initiative — highlighted */
   selectedStateName?: string;
-  /** Presence states of the selected initiative — highlighted in navy */
+  /** Presence states of the selected initiative — highlighted (same color, lighter) */
   selectedPresenceStates?: string[];
   /** Called when the user clicks an active state on the map */
   onStateClick?: (stateName: string) => void;
@@ -49,15 +63,45 @@ export function InteractiveMap({
   const [hoveredState, setHoveredState] = useState<string | null>(null);
   const activeStatesSet = new Set(stateNames);
 
-  function handleMapClick(e: MapLayerMouseEvent) {
+  function handleMapClick(e: MapMouseEvent) {
     if (!onStateClick) return;
     const name = e.features?.[0]?.properties?.name as string | undefined;
     if (name && activeStatesSet.has(name)) onStateClick(name);
   }
 
-  function handleMouseMove(e: MapLayerMouseEvent) {
+  function handleMouseMove(e: MapMouseEvent) {
     const name = e.features?.[0]?.properties?.name as string | undefined;
     setHoveredState((name && activeStatesSet.has(name)) ? name : null);
+  }
+
+  // The basemap's own state boundaries (admin-1) don't align with the
+  // lower-resolution GeoJSON we fill/outline, which reads as a geometry
+  // mismatch. Hide the basemap's boundary lines so ours are the only ones.
+  // Also recolor water/land to design-system tones instead of the stock grays.
+  function handleMapLoad() {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
+    for (const layer of map.getStyle()?.layers ?? []) {
+      if (layer.id.includes("admin-1")) {
+        map.setLayoutProperty(layer.id, "visibility", "none");
+      }
+    }
+
+    const setPaint = (layerId: string, prop: string, value: string | number) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (map.getLayer(layerId)) map.setPaintProperty(layerId, prop as any, value);
+    };
+    setPaint("water", "fill-color", WATER_COLOR);
+    setPaint("water", "fill-opacity", WATER_OPACITY);
+    setPaint("waterway", "line-color", WATER_COLOR);
+    setPaint("waterway", "line-opacity", WATER_OPACITY);
+    setPaint("water-shadow", "fill-color", WATER_COLOR);
+    setPaint("water-shadow", "fill-opacity", WATER_OPACITY);
+    setPaint("background", "background-color", LAND_COLOR);
+    setPaint("land", "background-color", LAND_COLOR);
+    setPaint("landuse", "fill-color", PARK_COLOR);
+    setPaint("national-park", "fill-color", PARK_COLOR);
   }
 
   // Fit to the sede state's bounding box when selection changes
@@ -140,7 +184,7 @@ export function InteractiveMap({
       ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], 0.28]
       : []),
     ...(stateNames.length > 0
-      ? [["in", ["get", "name"], ["literal", stateNames]], 0.15]
+      ? [["in", ["get", "name"], ["literal", stateNames]], 0.30]
       : []),
     0,
   ];
@@ -177,6 +221,24 @@ export function InteractiveMap({
 
   const showLegend = !!selectedStateName || selectedPresenceStates.length > 0;
 
+  if (!MAPBOX_TOKEN) {
+    return (
+      <div className={cn("relative w-full h-full flex items-center justify-center bg-[#faf8f5]", className)}>
+        <div className="max-w-sm text-center px-6">
+          <p className="font-sans font-semibold text-[#3d3d30]" style={{ fontSize: 14 }}>
+            Falta el token de Mapbox
+          </p>
+          <p className="font-sans text-[#747780] mt-1" style={{ fontSize: 13 }}>
+            Agrega <code>NEXT_PUBLIC_MAPBOX_TOKEN</code> en <code>.env.local</code> con un token de{" "}
+            <a href="https://account.mapbox.com/access-tokens/" target="_blank" rel="noopener noreferrer" className="underline">
+              account.mapbox.com
+            </a>.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={cn("relative w-full h-full", className)}>
       {showLegend && (
@@ -197,6 +259,7 @@ export function InteractiveMap({
       )}
       <Map
         ref={mapRef}
+        mapboxAccessToken={MAPBOX_TOKEN}
         initialViewState={MEXICO_CENTER}
         style={{ width: "100%", height: "100%" }}
         mapStyle={MAP_STYLE}
@@ -204,6 +267,7 @@ export function InteractiveMap({
         reuseMaps
         interactiveLayerIds={onStateClick ? ["mx-states-fill"] : []}
         cursor={hoveredState ? "pointer" : undefined}
+        onLoad={handleMapLoad}
         onClick={handleMapClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setHoveredState(null)}
