@@ -163,22 +163,28 @@ function MemberTile({ member, onOpen }: { member: MiembroTecnico; onOpen: () => 
             className="group flex flex-col items-center gap-3 w-full h-full text-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
             aria-label={`Ver perfil de ${member.name}`}
         >
-            <div className="relative w-full flex-1 overflow-hidden rounded-xl bg-neutral-100 transition-transform duration-300 group-hover:scale-[1.02]" style={{ aspectRatio: "1 / 1" }}>
+            {/* Fixed square — width comes from the grid column, not from leftover
+                flex space, so every card's photo is exactly the same size
+                regardless of how much text the name/role below it takes up. */}
+            <div className="relative w-full shrink-0 overflow-hidden rounded-xl bg-neutral-100 transition-transform duration-300 group-hover:scale-[1.02]" style={{ aspectRatio: "1 / 1" }}>
                 <Image
                     src={photoUrl}
                     alt={member.name}
                     fill
                     sizes="(min-width: 1024px) 18vw, (min-width: 640px) 31vw, 46vw"
-                    className="object-cover"
+                    className="object-cover object-center"
                     unoptimized={!member.imageUrl?.trim()}
                 />
             </div>
-            <div className="flex flex-col items-center gap-0.5">
+            <div className="flex flex-col items-center justify-start gap-0.5 w-full" style={{ minHeight: 56 }}>
                 <p className="font-sans font-bold text-[#203b6b]" style={{ fontSize: 20, lineHeight: 1.3 }}>
                     {member.name}
                 </p>
                 {member.role?.trim() && (
-                    <p className="font-sans font-normal text-[#3d5a8a]" style={{ fontSize: 15, lineHeight: 1.4 }}>
+                    <p
+                        className="font-sans font-normal text-[#3d5a8a] line-clamp-2"
+                        style={{ fontSize: 15, lineHeight: 1.4 }}
+                    >
                         {member.role.trim()}
                     </p>
                 )}
