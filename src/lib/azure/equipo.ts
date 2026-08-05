@@ -75,13 +75,29 @@ interface ColaboradorCsvRow {
   name: string;
   role: string;
   imageUrl?: string;
+  description?: string;
+  email?: string;
+  linkedin?: string;
+  twitter?: string;
+  instagram?: string;
+  website?: string;
 }
 
 function rowToColaborador(row: ColaboradorCsvRow): Colaborador {
+  const socials: NonNullable<Colaborador["socials"]> = [
+    row.linkedin  ? { platform: "linkedin" as const,  url: row.linkedin }  : null,
+    row.twitter   ? { platform: "twitter" as const,   url: row.twitter }   : null,
+    row.instagram ? { platform: "instagram" as const, url: row.instagram } : null,
+    row.website   ? { platform: "website" as const,   url: row.website }   : null,
+  ].filter((s): s is NonNullable<Colaborador["socials"]>[number] => s !== null);
+
   return {
     name: row.name,
     role: row.role,
     imageUrl: resolveAzureImageUrl(row.imageUrl),
+    description: row.description || undefined,
+    email: row.email || undefined,
+    socials: socials.length > 0 ? socials : undefined,
   };
 }
 

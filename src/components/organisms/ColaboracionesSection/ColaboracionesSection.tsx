@@ -68,8 +68,7 @@ const SOCIAL_ICONS: Record<string, LucideIcon> = {
   website: Globe,
 };
 
-const CARD_COLLAPSED_WIDTH = 220;
-const CARD_EXPANDED_WIDTH = 380;
+const CARD_WIDTH = 220;
 
 const DEFAULT_COLABORADORES: Colaborador[] = [
   { name: "Andrea Solís",   role: "Enlace ITESO" },
@@ -140,6 +139,7 @@ function ColaboradorCard({
   colaborador,
   color,
   hovered,
+  priority = false,
   onHover,
   onLeave,
   onOpen,
@@ -147,6 +147,8 @@ function ColaboradorCard({
   colaborador: Colaborador;
   color: string;
   hovered: boolean;
+  /** Set on the first visible card only — it's the Largest Contentful Paint candidate, so it should load eagerly instead of lazily. */
+  priority?: boolean;
   onHover: () => void;
   onLeave: () => void;
   onOpen: () => void;
@@ -155,17 +157,15 @@ function ColaboradorCard({
   const photoUrl = colaborador.imageUrl?.trim() || placeholderPortraitUrl(colaborador.name, color);
 
   return (
-    <motion.button
+    <button
       type="button"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
       onFocus={onHover}
       onBlur={onLeave}
       onClick={onOpen}
-      animate={{ width: hovered ? CARD_EXPANDED_WIDTH : CARD_COLLAPSED_WIDTH }}
-      transition={{ type: "spring", stiffness: 260, damping: 28 }}
       className="relative flex-shrink-0 overflow-hidden rounded-2xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
-      style={{ height: 260, backgroundColor: color, marginRight: 12 }}
+      style={{ width: CARD_WIDTH, height: 260, backgroundColor: color, marginRight: 12 }}
       aria-label={`Ver perfil de ${colaborador.name}`}
     >
       {isPlaceholder ? (
@@ -177,10 +177,11 @@ function ColaboradorCard({
             sizes="300px"
             className="object-contain object-bottom"
             unoptimized
+            priority={priority}
           />
         </div>
       ) : (
-        <Image src={photoUrl} alt={colaborador.name} fill sizes="300px" className="object-cover" />
+        <Image src={photoUrl} alt={colaborador.name} fill sizes="300px" className="object-cover" priority={priority} />
       )}
 
       <div
@@ -194,16 +195,16 @@ function ColaboradorCard({
         transition={{ duration: 0.2 }}
         className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-1.5 p-4"
       >
-        <p className="font-serif italic font-bold text-white whitespace-nowrap" style={{ fontSize: 16, lineHeight: 1.3 }}>
+        <p className="font-serif italic font-bold text-white" style={{ fontSize: 16, lineHeight: 1.3 }}>
           {colaborador.name}
         </p>
         {colaborador.role?.trim() && (
-          <p className="font-sans font-normal text-white/85 whitespace-nowrap" style={{ fontSize: 11, lineHeight: 1.4 }}>
+          <p className="font-sans font-normal text-white/85" style={{ fontSize: 11, lineHeight: 1.4 }}>
             {colaborador.role.trim()}
           </p>
         )}
       </motion.div>
-    </motion.button>
+    </button>
   );
 }
 
@@ -241,15 +242,14 @@ function ColaboradorModal({ colaborador, color, onClose }: { colaborador: Colabo
         style={{ maxWidth: 400, maxHeight: "90vh" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="relative w-full flex-shrink-0" style={{ aspectRatio: "4 / 3" }}>
+        <div className="relative w-full flex-shrink-0" style={{ aspectRatio: "1 / 1", backgroundColor: color }}>
           <Image
             src={photoUrl}
             alt={colaborador.name}
             fill
             sizes="400px"
-            className="object-cover"
+            className="object-contain"
             unoptimized={!colaborador.imageUrl?.trim()}
-            style={{ backgroundColor: color }}
           />
           <Button
             variant="icon"
@@ -338,6 +338,7 @@ function InstitutionLogoItem({ institution }: { institution: InstitutionLogo }) 
             src={institution.logoUrl!.trim()}
             alt={institution.name}
             fill
+            sizes="120px"
             className="object-contain"
             onError={() => setImageFailed(true)}
           />
@@ -425,6 +426,7 @@ export function ColaboracionesSection({
                   colaborador={c}
                   color={CARD_COLORS[i % CARD_COLORS.length]}
                   hovered={hoveredIndex === i}
+                  priority={i === 0}
                   onHover={() => setHoveredIndex(i)}
                   onLeave={() => setHoveredIndex((prev) => (prev === i ? null : prev))}
                   onOpen={() => setOpenIndex(i)}

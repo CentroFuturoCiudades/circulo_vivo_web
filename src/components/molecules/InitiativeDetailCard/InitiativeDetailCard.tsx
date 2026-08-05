@@ -206,19 +206,18 @@ export function InitiativeDetailCard({
         {/* ── Paginator — always visible at bottom ── */}
         {showPaginator && (
           <div
-            className="flex items-center justify-center flex-wrap px-3 pb-4 shrink-0"
-            style={{ gap: "4px", rowGap: "6px" }}
+            className="flex items-center justify-center px-5 pb-4 shrink-0"
+            style={{ gap: "3.35px" }}
           >
             {/* Prev */}
             <button
               onClick={() => onPageChange?.(current - 1)}
               disabled={current <= 1}
-              aria-label="Página anterior"
-              className="flex items-center justify-center shrink-0 disabled:opacity-30"
+              className="flex items-center justify-center disabled:opacity-30"
               style={{
                 borderRadius: "6.7px",
                 border: "0.84px solid #e4e4e7",
-                padding: "6.7px 8px",
+                padding: "6.7px 10.06px",
               }}
             >
               <ChevronLeft
@@ -227,18 +226,18 @@ export function InitiativeDetailCard({
             </button>
 
             {/* Page numbers */}
-            <div className="flex items-center flex-wrap justify-center" style={{ gap: 4, rowGap: 6 }}>
+            <div className="flex items-center" style={{ gap: 8 }}>
               {getPageRange(current, total!).map((page, i) =>
                 page === "..." ? (
                   <span
                     key={`gap-${i}`}
-                    className="flex items-center justify-center font-bold text-black shrink-0"
+                    className="flex items-center justify-center font-bold text-black"
                     style={{
                       fontFamily: "Inter, sans-serif",
-                      fontSize: 14,
+                      fontSize: 16,
                       lineHeight: 1,
                       borderRadius: 8,
-                      padding: "6px 8px",
+                      padding: "8px 16px",
                     }}
                   >
                     ...
@@ -248,20 +247,19 @@ export function InitiativeDetailCard({
                     key={page}
                     onClick={() => onPageChange?.(page as number)}
                     className={cn(
-                      "flex items-center justify-center shrink-0",
+                      "flex items-center justify-center",
                       page === current
                         ? "bg-[#2c2c2c] text-[#f5f5f5]"
                         : "text-[#1e1e1e] hover:bg-neutral-100"
                     )}
                     style={{
                       fontFamily: "Inter, sans-serif",
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: "normal",
                       lineHeight: 1,
                       borderRadius: 8,
                       border: "1px solid transparent",
-                      padding: "6px 9px",
-                      minWidth: 28,
+                      padding: "8px 12px",
                     }}
                   >
                     {page}
@@ -274,14 +272,25 @@ export function InitiativeDetailCard({
             <button
               onClick={() => onPageChange?.(current + 1)}
               disabled={current >= total!}
-              aria-label="Página siguiente"
-              className="flex items-center justify-center shrink-0 disabled:opacity-30"
+              className="flex items-center justify-center disabled:opacity-30"
               style={{
                 borderRadius: "6.7px",
                 border: "0.84px solid #e4e4e7",
-                padding: "6.7px 8px",
+                padding: "6.7px 10.06px",
+                gap: "6.7px",
               }}
             >
+              <span
+                style={{
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 16,
+                  fontWeight: "normal",
+                  lineHeight: 1,
+                  color: "#71717a",
+                }}
+              >
+                Sig
+              </span>
               <ChevronRight
                 style={{ width: 16, height: 16, strokeWidth: 1.6, color: "#1e1e1e" }}
               />
