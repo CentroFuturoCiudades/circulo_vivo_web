@@ -329,16 +329,16 @@ function InstitutionLogoItem({ institution }: { institution: InstitutionLogo }) 
 
   return (
     <div
-      className="flex items-center justify-center flex-shrink-0 grayscale opacity-60 hover:opacity-100 transition-opacity"
-      style={{ height: 40, marginRight: 64 }}
+      className="flex items-center justify-center flex-shrink-0"
+      style={{ height: 76, marginRight: 64 }}
     >
       {hasLogo ? (
-        <div className="relative" style={{ width: 120, height: 40 }}>
+        <div className="relative" style={{ width: 228, height: 76 }}>
           <Image
             src={institution.logoUrl!.trim()}
             alt={institution.name}
             fill
-            sizes="120px"
+            sizes="228px"
             className="object-contain"
             onError={() => setImageFailed(true)}
           />
