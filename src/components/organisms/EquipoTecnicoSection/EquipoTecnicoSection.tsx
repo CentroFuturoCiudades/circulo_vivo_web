@@ -145,6 +145,20 @@ const DEFAULT_MEMBERS: MiembroTecnico[] = [
     },
 ];
 
+/**
+ * Project-leadership label for specific members — not part of the tecnico.csv
+ * schema, so it's kept as a small hardcoded lookup here rather than a data
+ * field. Keyed by exact `name` as it appears in the CSV.
+ */
+const PROJECT_ROLE_OVERRIDES: Record<string, string> = {
+    "Dra. Abril Campos Rivera": "Investigadora principal",
+    "Dra. Alejandra González Moreno": "Coordinadora de proyecto",
+};
+
+function getProjectRole(name: string): string | undefined {
+    return PROJECT_ROLE_OVERRIDES[name.trim()];
+}
+
 /** Copyright-free, procedurally generated placeholder headshot (DiceBear Open Peeps, free for commercial use). */
 function placeholderPortraitUrl(name: string): string {
     const seed = encodeURIComponent(name.trim().toLowerCase());
@@ -155,6 +169,7 @@ function placeholderPortraitUrl(name: string): string {
 
 function MemberTile({ member, onOpen }: { member: MiembroTecnico; onOpen: () => void }) {
     const photoUrl = member.imageUrl?.trim() || placeholderPortraitUrl(member.name);
+    const projectRole = getProjectRole(member.name);
 
     return (
         <button
@@ -177,6 +192,14 @@ function MemberTile({ member, onOpen }: { member: MiembroTecnico; onOpen: () => 
                 />
             </div>
             <div className="flex flex-col items-center justify-start gap-0.5 w-full" style={{ minHeight: 56 }}>
+                {projectRole && (
+                    <p
+                        className="font-sans font-bold uppercase text-crimson-400"
+                        style={{ fontSize: 11, letterSpacing: 0.8, lineHeight: 1.3 }}
+                    >
+                        {projectRole}
+                    </p>
+                )}
                 <p className="font-sans font-bold text-[#203b6b]" style={{ fontSize: 20, lineHeight: 1.3 }}>
                     {member.name}
                 </p>
@@ -205,6 +228,7 @@ function MemberDetailModal({
 }) {
     const photoUrl = member.imageUrl?.trim() || placeholderPortraitUrl(member.name);
     const tag = member.tag?.trim().toUpperCase() ?? "";
+    const projectRole = getProjectRole(member.name);
 
     useEffect(() => {
         function onKeyDown(e: KeyboardEvent) {
@@ -255,6 +279,14 @@ function MemberDetailModal({
                     style={{ minHeight: 0 }}
                 >
                     <div className="flex flex-col gap-1.5">
+                        {projectRole && (
+                            <p
+                                className="font-sans font-bold uppercase text-crimson-400"
+                                style={{ fontSize: 12, letterSpacing: 1, lineHeight: 1.3 }}
+                            >
+                                {projectRole}
+                            </p>
+                        )}
                         {tag && (
                             <Chip
                                 color="purple"
