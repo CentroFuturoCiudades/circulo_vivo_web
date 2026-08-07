@@ -13,10 +13,44 @@ const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
 const MAP_STYLE = "mapbox://styles/mapbox/light-v11";
 
-const MEXICO_CENTER = { longitude: -102.5, latitude: 23.6, zoom: 5 };
+// Default/overview viewport — framed to show all of Mexico *and* Central
+// America (not just Mexico), since sede states can be outside the mx-states
+// GeoJSON (e.g. Guatemala). Zoomed/centered further south+east than a
+// Mexico-only view would be.
+const MEXICO_CENTER = { longitude: -95, latitude: 18.5, zoom: 4.1 };
 
 const MEXICO_STATES_URL =
   "https://raw.githubusercontent.com/angelnmara/geojson/master/mexicoHigh.json";
+
+// World country polygons — used only for the Central American countries (the
+// mx-states GeoJSON above only covers Mexican states), so sede/presence
+// values outside Mexico (e.g. "Guatemala") still render as a colored fill
+// instead of nothing. Filtered down to CENTRAL_AMERICA_GEOJSON_NAMES via the
+// layer `filter` prop below.
+const WORLD_COUNTRIES_URL =
+  "https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json";
+
+// Our data uses Spanish country names (matching the CSV); this GeoJSON's
+// `name` property is in English. Add more Central American countries here as
+// needed — both maps stay in sync automatically.
+const COUNTRY_NAME_TO_GEOJSON: Record<string, string> = {
+  "Guatemala":   "Guatemala",
+  "Belice":      "Belize",
+  "El Salvador": "El Salvador",
+  "Honduras":    "Honduras",
+  "Nicaragua":   "Nicaragua",
+  "Costa Rica":  "Costa Rica",
+  "Panamá":      "Panama",
+};
+const GEOJSON_NAME_TO_COUNTRY: Record<string, string> = Object.fromEntries(
+  Object.entries(COUNTRY_NAME_TO_GEOJSON).map(([ours, geojson]) => [geojson, ours])
+);
+const CENTRAL_AMERICA_GEOJSON_NAMES = Object.values(COUNTRY_NAME_TO_GEOJSON);
+
+/** Translates our Spanish country names to this GeoJSON's English ones, dropping non-matches (e.g. Mexican states). */
+function toGeojsonNames(names: string[]): string[] {
+  return names.map((n) => COUNTRY_NAME_TO_GEOJSON[n]).filter((n): n is string => !!n);
+}
 
 // Basemap tint — recolors the stock light-v11 layers with design-system tones
 // (secondary blue for water, warm surface tones for land) instead of the
@@ -62,15 +96,31 @@ export function InteractiveMap({
   const mapRef = useRef<MapRef>(null);
   const [hoveredState, setHoveredState] = useState<string | null>(null);
   const activeStatesSet = new Set(stateNames);
+  // Sede outside Mexico (e.g. "Guatemala") — filled via the ca-countries
+  // layer below instead of the mx-states one.
+  const selectedCountryGeojsonName = selectedStateName
+    ? COUNTRY_NAME_TO_GEOJSON[selectedStateName]
+    : undefined;
+  const stateNamesGeo = toGeojsonNames(stateNames);
+  const selectedPresenceStatesGeo = toGeojsonNames(selectedPresenceStates);
+
+  // Feature "name" comes back in Spanish for mx-states, English for
+  // ca-countries — normalize to our internal (Spanish) name before matching.
+  function resolveFeatureName(e: MapMouseEvent): string | undefined {
+    const feature = e.features?.[0];
+    const rawName = feature?.properties?.name as string | undefined;
+    if (!rawName) return undefined;
+    return feature?.layer?.id === "ca-countries-fill" ? GEOJSON_NAME_TO_COUNTRY[rawName] : rawName;
+  }
 
   function handleMapClick(e: MapMouseEvent) {
     if (!onStateClick) return;
-    const name = e.features?.[0]?.properties?.name as string | undefined;
+    const name = resolveFeatureName(e);
     if (name && activeStatesSet.has(name)) onStateClick(name);
   }
 
   function handleMouseMove(e: MapMouseEvent) {
-    const name = e.features?.[0]?.properties?.name as string | undefined;
+    const name = resolveFeatureName(e);
     setHoveredState((name && activeStatesSet.has(name)) ? name : null);
   }
 
@@ -119,13 +169,18 @@ export function InteractiveMap({
       return;
     }
 
-    function fitToStateBounds(): boolean {
-      const features = map!.querySourceFeatures("mx-states");
+    // Sede outside Mexico (e.g. "Guatemala") — fit to its polygon in the
+    // ca-countries source instead of mx-states.
+    const sourceId = selectedCountryGeojsonName ? "ca-countries" : "mx-states";
+    const featureName = selectedCountryGeojsonName ?? selectedStateName;
+
+    function fitToFeatureBounds(): boolean {
+      const features = map!.querySourceFeatures(sourceId);
       const lngs: number[] = [];
       const lats: number[] = [];
 
       for (const f of features) {
-        if (f.properties?.name !== selectedStateName) continue;
+        if (f.properties?.name !== featureName) continue;
         const geom = f.geometry;
         const rings =
           geom.type === "Polygon"      ? geom.coordinates :
@@ -147,77 +202,67 @@ export function InteractiveMap({
       return true;
     }
 
-    if (!fitToStateBounds()) {
+    if (!fitToFeatureBounds()) {
       const onSourceData = () => {
-        if (fitToStateBounds()) map.off("sourcedata", onSourceData);
+        if (fitToFeatureBounds()) map.off("sourcedata", onSourceData);
       };
       map.on("sourcedata", onSourceData);
       return () => { map.off("sourcedata", onSourceData); };
     }
-  }, [selectedStateName]);
+  }, [selectedStateName, selectedCountryGeojsonName]);
 
   // ── MapLibre fill/line expressions ────────────────────────
   // Priority: sede > presencia > overview > transparent
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const fillColor: any = [
-    "case",
-    ...(selectedStateName
-      ? [["==", ["get", "name"], selectedStateName], SEDE_COLOR]
-      : []),
-    ...(selectedPresenceStates.length > 0
-      ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], PRESENCE_COLOR]
-      : []),
-    ...(stateNames.length > 0
-      ? [["in", ["get", "name"], ["literal", stateNames]], ACTIVE_COLOR]
-      : []),
-    "transparent",
-  ];
+  // Builds the four paint expressions for a fill/line layer, given the
+  // "name" values to match against for each priority tier (sede > presencia
+  // > overview). Reused for both mx-states (Spanish names) and ca-countries
+  // (English names).
+  function buildPaintExpressions(selected: string | undefined, presence: string[], overview: string[]) {
+    /* eslint-disable @typescript-eslint/no-explicit-any -- Mapbox expression types don't line up with our dynamic case-list building */
+    return {
+      fillColor: [
+        "case",
+        ...(selected ? [["==", ["get", "name"], selected], SEDE_COLOR] : []),
+        ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], PRESENCE_COLOR] : []),
+        ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], ACTIVE_COLOR] : []),
+        "transparent",
+      ] as any,
+      fillOpacity: [
+        "case",
+        ...(selected ? [["==", ["get", "name"], selected], 0.50] : []),
+        ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], 0.28] : []),
+        ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], 0.30] : []),
+        0,
+      ] as any,
+      lineColor: [
+        "case",
+        ...(selected ? [["==", ["get", "name"], selected], SEDE_COLOR] : []),
+        ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], PRESENCE_COLOR] : []),
+        ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], ACTIVE_COLOR] : []),
+        "transparent",
+      ] as any,
+      lineOpacity: [
+        "case",
+        ...(selected ? [["==", ["get", "name"], selected], 0.70] : []),
+        ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], 0.50] : []),
+        ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], 0.35] : []),
+        0,
+      ] as any,
+    };
+    /* eslint-enable @typescript-eslint/no-explicit-any */
+  }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const fillOpacity: any = [
-    "case",
-    ...(selectedStateName
-      ? [["==", ["get", "name"], selectedStateName], 0.50]
-      : []),
-    ...(selectedPresenceStates.length > 0
-      ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], 0.28]
-      : []),
-    ...(stateNames.length > 0
-      ? [["in", ["get", "name"], ["literal", stateNames]], 0.30]
-      : []),
-    0,
-  ];
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const lineColor: any = [
-    "case",
-    ...(selectedStateName
-      ? [["==", ["get", "name"], selectedStateName], SEDE_COLOR]
-      : []),
-    ...(selectedPresenceStates.length > 0
-      ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], PRESENCE_COLOR]
-      : []),
-    ...(stateNames.length > 0
-      ? [["in", ["get", "name"], ["literal", stateNames]], ACTIVE_COLOR]
-      : []),
-    "transparent",
-  ];
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const lineOpacity: any = [
-    "case",
-    ...(selectedStateName
-      ? [["==", ["get", "name"], selectedStateName], 0.70]
-      : []),
-    ...(selectedPresenceStates.length > 0
-      ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], 0.50]
-      : []),
-    ...(stateNames.length > 0
-      ? [["in", ["get", "name"], ["literal", stateNames]], 0.35]
-      : []),
-    0,
-  ];
+  const mxPaint = buildPaintExpressions(
+    selectedCountryGeojsonName ? undefined : selectedStateName,
+    selectedPresenceStates,
+    stateNames
+  );
+  const caPaint = buildPaintExpressions(
+    selectedCountryGeojsonName,
+    selectedPresenceStatesGeo,
+    stateNamesGeo
+  );
 
   const showLegend = !!selectedStateName || selectedPresenceStates.length > 0;
 
@@ -265,7 +310,7 @@ export function InteractiveMap({
         mapStyle={MAP_STYLE}
         attributionControl={false}
         reuseMaps
-        interactiveLayerIds={onStateClick ? ["mx-states-fill"] : []}
+        interactiveLayerIds={onStateClick ? ["mx-states-fill", "ca-countries-fill"] : []}
         cursor={hoveredState ? "pointer" : undefined}
         onLoad={handleMapLoad}
         onClick={handleMapClick}
@@ -277,17 +322,39 @@ export function InteractiveMap({
             id="mx-states-fill"
             type="fill"
             paint={{
-              "fill-color":   fillColor,
-              "fill-opacity": fillOpacity,
+              "fill-color":   mxPaint.fillColor,
+              "fill-opacity": mxPaint.fillOpacity,
             }}
           />
           <Layer
             id="mx-states-border"
             type="line"
             paint={{
-              "line-color":   lineColor,
+              "line-color":   mxPaint.lineColor,
               "line-width":   0.75,
-              "line-opacity": lineOpacity,
+              "line-opacity": mxPaint.lineOpacity,
+            }}
+          />
+        </Source>
+
+        <Source id="ca-countries" type="geojson" data={WORLD_COUNTRIES_URL}>
+          <Layer
+            id="ca-countries-fill"
+            type="fill"
+            filter={["in", ["get", "name"], ["literal", CENTRAL_AMERICA_GEOJSON_NAMES]]}
+            paint={{
+              "fill-color":   caPaint.fillColor,
+              "fill-opacity": caPaint.fillOpacity,
+            }}
+          />
+          <Layer
+            id="ca-countries-border"
+            type="line"
+            filter={["in", ["get", "name"], ["literal", CENTRAL_AMERICA_GEOJSON_NAMES]]}
+            paint={{
+              "line-color":   caPaint.lineColor,
+              "line-width":   0.75,
+              "line-opacity": caPaint.lineOpacity,
             }}
           />
         </Source>
