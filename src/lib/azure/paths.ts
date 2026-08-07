@@ -14,6 +14,11 @@ export const BLOB_PATHS = {
   colaboradores: "equipo/csv/colaboradores.csv",
   instituciones: "equipo/csv/instituciones.csv",
   iniciativas: "mapa/csv/iniciativas.csv",
+  indicadoresPorEstado: "indicadores/csv/indicadores.csv",
+  indicadoresDominios: "indicadores/csv/dominios.csv",
+  indicadoresNacional: "indicadores/csv/nacional.csv",
+  indicadoresRelaciones: "indicadores/csv/relaciones.csv",
+  indicadoresCorrelaciones: "indicadores/csv/correlaciones.csv",
 } as const;
 
 function resolveContainerUrl(container: string, relativePath: string): string | undefined {
