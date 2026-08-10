@@ -101,7 +101,6 @@ export function InitiativeDrawer({
             src={imageUrl}
             alt={title}
             className="w-full h-full object-cover"
-            style={{ filter: "saturate(0)" }}
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center gap-1.5">

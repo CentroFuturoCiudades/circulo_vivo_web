@@ -218,37 +218,38 @@ export function InteractiveMap({
   // "name" values to match against for each priority tier (sede > presencia
   // > overview). Reused for both mx-states (Spanish names) and ca-countries
   // (English names).
+  // A bare Mapbox "case" expression needs at least one [test, output] pair
+  // before its fallback (>= 3 args total) — with zero active conditions
+  // (e.g. the selected initiative has no presence outside Mexico) the naive
+  // ["case", fallback] is invalid and Mapbox's setPaintProperty throws,
+  // silently leaving whatever paint was previously applied on screen. Build
+  // the pair list first and only wrap in "case" when it's non-empty.
+  function buildCaseExpression(pairs: unknown[], fallback: unknown) {
+    return pairs.length > 0 ? ["case", ...pairs, fallback] : fallback;
+  }
+
   function buildPaintExpressions(selected: string | undefined, presence: string[], overview: string[]) {
     /* eslint-disable @typescript-eslint/no-explicit-any -- Mapbox expression types don't line up with our dynamic case-list building */
+    const colorPairs = [
+      ...(selected ? [["==", ["get", "name"], selected], SEDE_COLOR] : []),
+      ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], PRESENCE_COLOR] : []),
+      ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], ACTIVE_COLOR] : []),
+    ];
+    const fillOpacityPairs = [
+      ...(selected ? [["==", ["get", "name"], selected], 0.50] : []),
+      ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], 0.28] : []),
+      ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], 0.30] : []),
+    ];
+    const lineOpacityPairs = [
+      ...(selected ? [["==", ["get", "name"], selected], 0.70] : []),
+      ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], 0.50] : []),
+      ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], 0.35] : []),
+    ];
     return {
-      fillColor: [
-        "case",
-        ...(selected ? [["==", ["get", "name"], selected], SEDE_COLOR] : []),
-        ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], PRESENCE_COLOR] : []),
-        ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], ACTIVE_COLOR] : []),
-        "transparent",
-      ] as any,
-      fillOpacity: [
-        "case",
-        ...(selected ? [["==", ["get", "name"], selected], 0.50] : []),
-        ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], 0.28] : []),
-        ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], 0.30] : []),
-        0,
-      ] as any,
-      lineColor: [
-        "case",
-        ...(selected ? [["==", ["get", "name"], selected], SEDE_COLOR] : []),
-        ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], PRESENCE_COLOR] : []),
-        ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], ACTIVE_COLOR] : []),
-        "transparent",
-      ] as any,
-      lineOpacity: [
-        "case",
-        ...(selected ? [["==", ["get", "name"], selected], 0.70] : []),
-        ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], 0.50] : []),
-        ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], 0.35] : []),
-        0,
-      ] as any,
+      fillColor:   buildCaseExpression(colorPairs, "transparent") as any,
+      fillOpacity: buildCaseExpression(fillOpacityPairs, 0) as any,
+      lineColor:   buildCaseExpression(colorPairs, "transparent") as any,
+      lineOpacity: buildCaseExpression(lineOpacityPairs, 0) as any,
     };
     /* eslint-enable @typescript-eslint/no-explicit-any */
   }
