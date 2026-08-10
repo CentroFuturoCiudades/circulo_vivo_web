@@ -1,9 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { Fragment, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useInView } from "framer-motion";
+import { Briefcase, Camera, Globe, Link2, Mail, X } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { CarouselArrow } from "@/components/atoms/CarouselArrow";
+import { Button } from "@/components/atoms/Button";
 import { Eyebrow } from "@/components/atoms/Eyebrow";
+import { DataUnavailableMessage, type DataUnavailableVariant } from "@/components/molecules/DataUnavailableMessage";
 import { cn } from "@/lib/utils";
 
 function FadeUp({
@@ -36,18 +41,34 @@ export interface Colaborador {
   name: string;
   role: string;
   imageUrl?: string;
+  description?: string;
+  email?: string;
+  socials?: { platform: "linkedin" | "twitter" | "instagram" | "website"; url: string }[];
 }
 
+/** Rotated over collaborators (they carry no `tag`) purely for visual variety on the cards. */
+const CARD_COLORS = ["#264042", "#203b6b", "#7f4d7b", "#395284"];
+
 /** Copyright-free, procedurally generated placeholder headshot (DiceBear Open Peeps, free for commercial use). */
-function placeholderPortraitUrl(name: string): string {
+function placeholderPortraitUrl(name: string, bgColor?: string): string {
   const seed = encodeURIComponent(name.trim().toLowerCase());
-  return `https://api.dicebear.com/9.x/open-peeps/png?seed=${seed}&backgroundColor=f0f0f0&size=256`;
+  const bg = (bgColor ?? "f0f0f0").replace("#", "");
+  return `https://api.dicebear.com/9.x/open-peeps/png?seed=${seed}&backgroundColor=${bg}&size=512`;
 }
 
 export interface InstitutionLogo {
   name: string;
   logoUrl?: string;
 }
+
+const SOCIAL_ICONS: Record<string, LucideIcon> = {
+  linkedin: Briefcase,
+  twitter: X,
+  instagram: Camera,
+  website: Globe,
+};
+
+const CARD_WIDTH = 220;
 
 const DEFAULT_COLABORADORES: Colaborador[] = [
   { name: "Andrea Solís",   role: "Enlace ITESO" },
@@ -112,35 +133,191 @@ function Marquee({
   );
 }
 
-// ── Collaborator pill ─────────────────────────────────────
+// ── Collaborator card — expands on hover, opens a detail modal on click ───
 
-function ColaboradorPill({ colaborador }: { colaborador: Colaborador }) {
-  const photoUrl = colaborador.imageUrl?.trim() || placeholderPortraitUrl(colaborador.name);
+function ColaboradorCard({
+  colaborador,
+  color,
+  hovered,
+  priority = false,
+  onHover,
+  onLeave,
+  onOpen,
+}: {
+  colaborador: Colaborador;
+  color: string;
+  hovered: boolean;
+  /** Set on the first visible card only — it's the Largest Contentful Paint candidate, so it should load eagerly instead of lazily. */
+  priority?: boolean;
+  onHover: () => void;
+  onLeave: () => void;
+  onOpen: () => void;
+}) {
+  const isPlaceholder = !colaborador.imageUrl?.trim();
+  const photoUrl = colaborador.imageUrl?.trim() || placeholderPortraitUrl(colaborador.name, color);
 
   return (
-    <div
-      className="flex items-center flex-shrink-0 rounded-full bg-neutral-100 border border-white"
-      style={{ padding: 8, paddingRight: 34, gap: 16, marginRight: 20 }}
+    <button
+      type="button"
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
+      onFocus={onHover}
+      onBlur={onLeave}
+      onClick={onOpen}
+      className="relative flex-shrink-0 overflow-hidden rounded-2xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+      style={{ width: CARD_WIDTH, height: 260, backgroundColor: color, marginRight: 12 }}
+      aria-label={`Ver perfil de ${colaborador.name}`}
     >
-      <div className="relative flex-shrink-0 rounded-full overflow-hidden" style={{ width: 72, height: 72 }}>
-        <Image
-          src={photoUrl}
-          alt=""
-          fill
-          sizes="72px"
-          className="object-cover grayscale"
-          unoptimized={!colaborador.imageUrl?.trim()}
-        />
-      </div>
-      <div className="flex flex-col whitespace-nowrap">
-        <span className="font-sans font-semibold text-[#1a1c1c]" style={{ fontSize: 17, lineHeight: 1.3 }}>
+      {isPlaceholder ? (
+        <div className="absolute inset-x-0 bottom-0" style={{ height: "82%" }}>
+          <Image
+            src={photoUrl}
+            alt={colaborador.name}
+            fill
+            sizes="300px"
+            className="object-contain object-bottom"
+            unoptimized
+            priority={priority}
+          />
+        </div>
+      ) : (
+        <Image src={photoUrl} alt={colaborador.name} fill sizes="300px" className="object-cover" priority={priority} />
+      )}
+
+      <div
+        className="absolute inset-x-0 bottom-0 pointer-events-none"
+        style={{ height: "60%", background: "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.75) 100%)" }}
+      />
+
+      <motion.div
+        initial={false}
+        animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 8 }}
+        transition={{ duration: 0.2 }}
+        className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-1.5 p-4"
+      >
+        <p className="font-serif italic font-bold text-white" style={{ fontSize: 16, lineHeight: 1.3 }}>
           {colaborador.name}
-        </span>
-        <span className="font-sans font-normal text-[#6b7280]" style={{ fontSize: 13, lineHeight: 1.4 }}>
-          {colaborador.role}
-        </span>
-      </div>
-    </div>
+        </p>
+        {colaborador.role?.trim() && (
+          <p className="font-sans font-normal text-white/85" style={{ fontSize: 11, lineHeight: 1.4 }}>
+            {colaborador.role.trim()}
+          </p>
+        )}
+      </motion.div>
+    </button>
+  );
+}
+
+function ColaboradorModal({ colaborador, color, onClose }: { colaborador: Colaborador; color: string; onClose: () => void }) {
+  const photoUrl = colaborador.imageUrl?.trim() || placeholderPortraitUrl(colaborador.name, color);
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKeyDown);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8"
+      style={{ backgroundColor: "rgba(15,20,20,0.6)" }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 24, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 16, scale: 0.97 }}
+        transition={{ type: "spring", stiffness: 320, damping: 30 }}
+        className="relative flex flex-col w-full overflow-hidden bg-white rounded-2xl shadow-xl"
+        style={{ maxWidth: 400, maxHeight: "90vh" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="relative w-full flex-shrink-0" style={{ aspectRatio: "1 / 1", backgroundColor: color }}>
+          <Image
+            src={photoUrl}
+            alt={colaborador.name}
+            fill
+            sizes="400px"
+            className="object-contain"
+            unoptimized={!colaborador.imageUrl?.trim()}
+          />
+          <Button
+            variant="icon"
+            color="neutral"
+            iconLeft={X}
+            onClick={onClose}
+            aria-label="Cerrar"
+            className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white border border-black/10 text-[#1a1c1c] hover:bg-neutral-50"
+          />
+        </div>
+
+        <div className="flex flex-col gap-4 p-6 md:p-8 overflow-y-auto" style={{ minHeight: 0 }}>
+          <div className="flex flex-col gap-1.5">
+            <h3 className="font-serif italic font-bold text-[#203b6b]" style={{ fontSize: 26, lineHeight: 1.3 }}>
+              {colaborador.name}
+            </h3>
+            {colaborador.role?.trim() && (
+              <p className="font-sans font-normal text-[#747780]" style={{ fontSize: 13 }}>
+                {colaborador.role.trim()}
+              </p>
+            )}
+          </div>
+
+          {colaborador.description?.trim() && (
+            <>
+              <div className="h-px bg-neutral-200" />
+              <p className="font-sans font-normal text-[#44474f]" style={{ fontSize: 14, lineHeight: 1.7 }}>
+                {colaborador.description.trim()}
+              </p>
+            </>
+          )}
+
+          {colaborador.socials && colaborador.socials.length > 0 && (
+            <div className="flex items-center gap-2">
+              {colaborador.socials.map((social, i) => {
+                const SocialIcon = SOCIAL_ICONS[social.platform] ?? Link2;
+                return (
+                  <a
+                    key={i}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.platform}
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-neutral-300 text-neutral-600 hover:border-secondary hover:text-secondary transition-colors"
+                  >
+                    <SocialIcon size={16} />
+                  </a>
+                );
+              })}
+            </div>
+          )}
+
+          {colaborador.email?.trim() && (
+            <Button
+              color="navy"
+              radius="full"
+              iconRight={Mail}
+              onClick={() => {
+                window.location.href = `mailto:${colaborador.email}`;
+              }}
+              className="w-full justify-center normal-case tracking-normal font-normal text-sm mt-1"
+            >
+              Contactar
+            </Button>
+          )}
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -152,15 +329,16 @@ function InstitutionLogoItem({ institution }: { institution: InstitutionLogo }) 
 
   return (
     <div
-      className="flex items-center justify-center flex-shrink-0 grayscale opacity-60 hover:opacity-100 transition-opacity"
-      style={{ height: 40, marginRight: 64 }}
+      className="flex items-center justify-center flex-shrink-0"
+      style={{ height: 76, marginRight: 64 }}
     >
       {hasLogo ? (
-        <div className="relative" style={{ width: 120, height: 40 }}>
+        <div className="relative" style={{ width: 228, height: 76 }}>
           <Image
             src={institution.logoUrl!.trim()}
             alt={institution.name}
             fill
+            sizes="228px"
             className="object-contain"
             onError={() => setImageFailed(true)}
           />
@@ -182,53 +360,109 @@ function InstitutionLogoItem({ institution }: { institution: InstitutionLogo }) 
 export interface ColaboracionesSectionProps {
   colaboradores?: Colaborador[];
   instituciones?: InstitutionLogo[];
+  /** When set, renders a DataUnavailableMessage in place of the colaboradores marquees instead of the `colaboradores` prop. */
+  colaboradoresState?: DataUnavailableVariant;
+  /** When set, renders a DataUnavailableMessage in place of the instituciones marquee instead of the `instituciones` prop. */
+  institucionesState?: DataUnavailableVariant;
 }
 
 export function ColaboracionesSection({
   colaboradores = DEFAULT_COLABORADORES,
   instituciones = DEFAULT_INSTITUCIONES,
+  colaboradoresState,
+  institucionesState,
 }: ColaboracionesSectionProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
   const validColaboradores = (colaboradores ?? []).filter((c) => c && c.name?.trim());
   const validInstituciones = (instituciones ?? []).filter((i) => i && i.name?.trim());
+  const openColaborador = openIndex !== null ? validColaboradores[openIndex] : null;
+
+  function scrollColaboradores(dir: "left" | "right") {
+    scrollRef.current?.scrollBy({ left: dir === "right" ? 320 : -320, behavior: "smooth" });
+  }
 
   return (
     <section className="pt-20 pb-20 md:pt-28 md:pb-28">
       {/* Header */}
-      <FadeUp delay={0} className="flex flex-col gap-2 px-6 md:px-16 lg:px-24">
-        <Eyebrow color="purple">COLABORACIONES</Eyebrow>
-        <h2
-          className="font-serif font-bold text-[#203b6b] text-[24px] md:text-[32px]"
-          style={{ lineHeight: 1.25 }}
-        >
-          Red de Colaboración
-        </h2>
+      <FadeUp
+        delay={0}
+        className="flex flex-wrap items-center justify-between gap-4 px-6 md:px-16 lg:px-24"
+      >
+        <div>
+          <Eyebrow color="purple">COLABORACIONES</Eyebrow>
+          <h2
+            className="font-serif font-bold text-[#203b6b] text-[24px] md:text-[32px]"
+            style={{ lineHeight: 1.25 }}
+          >
+            Red de Colaboración
+          </h2>
+        </div>
+        {!colaboradoresState && validColaboradores.length > 0 && (
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <CarouselArrow direction="prev" onClick={() => scrollColaboradores("left")} />
+            <CarouselArrow direction="next" onClick={() => scrollColaboradores("right")} />
+          </div>
+        )}
       </FadeUp>
 
-      {/* Equipo de colaboradores — auto-scrolling marquee, pauses on hover, no click */}
-      {validColaboradores.length > 0 && (
-        <FadeUp delay={0.1} className="flex flex-col gap-6 mt-12 md:mt-16">
-          <Marquee durationSec={62}>
-            {validColaboradores.map((c, i) => (
-              <ColaboradorPill key={`${c.name}-a-${i}`} colaborador={c} />
-            ))}
-          </Marquee>
-          <Marquee durationSec={56} reverse>
-            {[...validColaboradores].reverse().map((c, i) => (
-              <ColaboradorPill key={`${c.name}-b-${i}`} colaborador={c} />
-            ))}
-          </Marquee>
+      {/* Equipo de colaboradores — card carousel, click opens a detail modal */}
+      {colaboradoresState ? (
+        <FadeUp delay={0.1} className="mt-12 md:mt-16">
+          <DataUnavailableMessage variant={colaboradoresState} title="Equipo de colaboradores no disponible" />
         </FadeUp>
+      ) : (
+        validColaboradores.length > 0 && (
+          <div
+            ref={scrollRef}
+            className="flex mt-8 pb-2 overflow-x-auto px-6 md:px-16 lg:px-24"
+            style={{ scrollbarWidth: "none", gap: 12, overflowY: "hidden" }}
+          >
+            {validColaboradores.map((c, i) => (
+              <FadeUp key={c.name ?? i} delay={Math.min(i * 0.04, 0.4)} className="flex-shrink-0">
+                <ColaboradorCard
+                  colaborador={c}
+                  color={CARD_COLORS[i % CARD_COLORS.length]}
+                  hovered={hoveredIndex === i}
+                  priority={i === 0}
+                  onHover={() => setHoveredIndex(i)}
+                  onLeave={() => setHoveredIndex((prev) => (prev === i ? null : prev))}
+                  onOpen={() => setOpenIndex(i)}
+                />
+              </FadeUp>
+            ))}
+          </div>
+        )
       )}
 
+      {/* Modal */}
+      <AnimatePresence>
+        {openColaborador && openIndex !== null && (
+          <ColaboradorModal
+            colaborador={openColaborador}
+            color={CARD_COLORS[openIndex % CARD_COLORS.length]}
+            onClose={() => setOpenIndex(null)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Instituciones colaboradoras — minimal logo-only marquee */}
-      {validInstituciones.length > 0 && (
+      {institucionesState ? (
         <FadeUp delay={0.2} className="mt-16 md:mt-24">
-          <Marquee durationSec={95} repeat={6}>
-            {validInstituciones.map((inst, i) => (
-              <InstitutionLogoItem key={`${inst.name}-${i}`} institution={inst} />
-            ))}
-          </Marquee>
+          <DataUnavailableMessage variant={institucionesState} title="Instituciones colaboradoras no disponibles" />
         </FadeUp>
+      ) : (
+        validInstituciones.length > 0 && (
+          <FadeUp delay={0.2} className="mt-16 md:mt-24">
+            <Marquee durationSec={95} repeat={6}>
+              {validInstituciones.map((inst, i) => (
+                <InstitutionLogoItem key={`${inst.name}-${i}`} institution={inst} />
+              ))}
+            </Marquee>
+          </FadeUp>
+        )
       )}
     </section>
   );

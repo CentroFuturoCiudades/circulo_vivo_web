@@ -1,35 +1,83 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Map, { Layer, NavigationControl, Source, type MapRef, type MapLayerMouseEvent } from "react-map-gl/maplibre";
-import "maplibre-gl/dist/maplibre-gl.css";
+import Map, { Layer, NavigationControl, Source, type MapRef, type MapMouseEvent } from "react-map-gl/mapbox";
+import "mapbox-gl/dist/mapbox-gl.css";
 import { cn } from "@/lib/utils";
 
 // ── Constants ──────────────────────────────────────────────
 
-const MAP_STYLE =
-  "https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json";
+// Mapbox demo — get a free token at https://account.mapbox.com/access-tokens/
+// and set NEXT_PUBLIC_MAPBOX_TOKEN in .env.local.
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
-const MEXICO_CENTER = { longitude: -102.5, latitude: 23.6, zoom: 5 };
+const MAP_STYLE = "mapbox://styles/mapbox/light-v11";
+
+// Default/overview viewport — framed to show all of Mexico *and* Central
+// America (not just Mexico), since sede states can be outside the mx-states
+// GeoJSON (e.g. Guatemala). Zoomed/centered further south+east than a
+// Mexico-only view would be.
+const MEXICO_CENTER = { longitude: -95, latitude: 18.5, zoom: 4.1 };
 
 const MEXICO_STATES_URL =
   "https://raw.githubusercontent.com/angelnmara/geojson/master/mexicoHigh.json";
 
-// Sede (HQ) state — crimson
-const SEDE_COLOR = "#852038";
-// Presence states — navy
-const PRESENCE_COLOR = "#395284";
-// Overview (all filtered, no selection) — teal
-const ACTIVE_COLOR = "#708b8d";
+// World country polygons — used only for the Central American countries (the
+// mx-states GeoJSON above only covers Mexican states), so sede/presence
+// values outside Mexico (e.g. "Guatemala") still render as a colored fill
+// instead of nothing. Filtered down to CENTRAL_AMERICA_GEOJSON_NAMES via the
+// layer `filter` prop below.
+const WORLD_COUNTRIES_URL =
+  "https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json";
+
+// Our data uses Spanish country names (matching the CSV); this GeoJSON's
+// `name` property is in English. Add more Central American countries here as
+// needed — both maps stay in sync automatically.
+const COUNTRY_NAME_TO_GEOJSON: Record<string, string> = {
+  "Guatemala":   "Guatemala",
+  "Belice":      "Belize",
+  "El Salvador": "El Salvador",
+  "Honduras":    "Honduras",
+  "Nicaragua":   "Nicaragua",
+  "Costa Rica":  "Costa Rica",
+  "Panamá":      "Panama",
+};
+const GEOJSON_NAME_TO_COUNTRY: Record<string, string> = Object.fromEntries(
+  Object.entries(COUNTRY_NAME_TO_GEOJSON).map(([ours, geojson]) => [geojson, ours])
+);
+const CENTRAL_AMERICA_GEOJSON_NAMES = Object.values(COUNTRY_NAME_TO_GEOJSON);
+
+/** Translates our Spanish country names to this GeoJSON's English ones, dropping non-matches (e.g. Mexican states). */
+function toGeojsonNames(names: string[]): string[] {
+  return names.map((n) => COUNTRY_NAME_TO_GEOJSON[n]).filter((n): n is string => !!n);
+}
+
+// Basemap tint — recolors the stock light-v11 layers with design-system tones
+// (secondary blue for water, warm surface tones for land) instead of the
+// default grayscale, which reads as washed out / disabled.
+const WATER_COLOR = "#9eb7d7"; // secondary-200, muted
+const WATER_OPACITY = 0.55;
+const LAND_COLOR = "#fcfbf7"; // surface-sand
+const PARK_COLOR = "#f8eec9"; // gold-100
+
+// Overview (unselected initiatives) — brand purple. Avoids gray/teal/blue,
+// which read as "disabled" rather than "clickable" against the light basemap.
+const ACTIVE_COLOR = "#a574a5";
+// Sede + presencia (selected initiative) — same brand crimson; opacity (below)
+// differentiates sede (more saturated) from presencia (lighter). Kept out of
+// the green/blue family so it never reads as a body of water on the basemap.
+const SELECTED_COLOR = "#852038";
+const SEDE_COLOR = SELECTED_COLOR;
+const PRESENCE_COLOR = SELECTED_COLOR;
 
 // ── Types ──────────────────────────────────────────────────
 
 export interface InteractiveMapProps {
   /** Sede-state names of all currently filtered initiatives — overview fill */
   stateNames?: string[];
-  /** Sede state of the selected initiative — highlighted in crimson */
+  /** Sede state of the selected initiative — highlighted */
   selectedStateName?: string;
-  /** Presence states of the selected initiative — highlighted in navy */
+  /** Presence states of the selected initiative — highlighted (same color, lighter) */
   selectedPresenceStates?: string[];
   /** Called when the user clicks an active state on the map */
   onStateClick?: (stateName: string) => void;
@@ -48,16 +96,62 @@ export function InteractiveMap({
   const mapRef = useRef<MapRef>(null);
   const [hoveredState, setHoveredState] = useState<string | null>(null);
   const activeStatesSet = new Set(stateNames);
+  // Sede outside Mexico (e.g. "Guatemala") — filled via the ca-countries
+  // layer below instead of the mx-states one.
+  const selectedCountryGeojsonName = selectedStateName
+    ? COUNTRY_NAME_TO_GEOJSON[selectedStateName]
+    : undefined;
+  const stateNamesGeo = toGeojsonNames(stateNames);
+  const selectedPresenceStatesGeo = toGeojsonNames(selectedPresenceStates);
 
-  function handleMapClick(e: MapLayerMouseEvent) {
+  // Feature "name" comes back in Spanish for mx-states, English for
+  // ca-countries — normalize to our internal (Spanish) name before matching.
+  function resolveFeatureName(e: MapMouseEvent): string | undefined {
+    const feature = e.features?.[0];
+    const rawName = feature?.properties?.name as string | undefined;
+    if (!rawName) return undefined;
+    return feature?.layer?.id === "ca-countries-fill" ? GEOJSON_NAME_TO_COUNTRY[rawName] : rawName;
+  }
+
+  function handleMapClick(e: MapMouseEvent) {
     if (!onStateClick) return;
-    const name = e.features?.[0]?.properties?.name as string | undefined;
+    const name = resolveFeatureName(e);
     if (name && activeStatesSet.has(name)) onStateClick(name);
   }
 
-  function handleMouseMove(e: MapLayerMouseEvent) {
-    const name = e.features?.[0]?.properties?.name as string | undefined;
+  function handleMouseMove(e: MapMouseEvent) {
+    const name = resolveFeatureName(e);
     setHoveredState((name && activeStatesSet.has(name)) ? name : null);
+  }
+
+  // The basemap's own state boundaries (admin-1) don't align with the
+  // lower-resolution GeoJSON we fill/outline, which reads as a geometry
+  // mismatch. Hide the basemap's boundary lines so ours are the only ones.
+  // Also recolor water/land to design-system tones instead of the stock grays.
+  function handleMapLoad() {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
+    for (const layer of map.getStyle()?.layers ?? []) {
+      if (layer.id.includes("admin-1")) {
+        map.setLayoutProperty(layer.id, "visibility", "none");
+      }
+    }
+
+    const setPaint = (layerId: string, prop: string, value: string | number) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (map.getLayer(layerId)) map.setPaintProperty(layerId, prop as any, value);
+    };
+    setPaint("water", "fill-color", WATER_COLOR);
+    setPaint("water", "fill-opacity", WATER_OPACITY);
+    setPaint("waterway", "line-color", WATER_COLOR);
+    setPaint("waterway", "line-opacity", WATER_OPACITY);
+    setPaint("water-shadow", "fill-color", WATER_COLOR);
+    setPaint("water-shadow", "fill-opacity", WATER_OPACITY);
+    setPaint("background", "background-color", LAND_COLOR);
+    setPaint("land", "background-color", LAND_COLOR);
+    setPaint("landuse", "fill-color", PARK_COLOR);
+    setPaint("national-park", "fill-color", PARK_COLOR);
   }
 
   // Fit to the sede state's bounding box when selection changes
@@ -75,13 +169,18 @@ export function InteractiveMap({
       return;
     }
 
-    function fitToStateBounds(): boolean {
-      const features = map!.querySourceFeatures("mx-states");
+    // Sede outside Mexico (e.g. "Guatemala") — fit to its polygon in the
+    // ca-countries source instead of mx-states.
+    const sourceId = selectedCountryGeojsonName ? "ca-countries" : "mx-states";
+    const featureName = selectedCountryGeojsonName ?? selectedStateName;
+
+    function fitToFeatureBounds(): boolean {
+      const features = map!.querySourceFeatures(sourceId);
       const lngs: number[] = [];
       const lats: number[] = [];
 
       for (const f of features) {
-        if (f.properties?.name !== selectedStateName) continue;
+        if (f.properties?.name !== featureName) continue;
         const geom = f.geometry;
         const rings =
           geom.type === "Polygon"      ? geom.coordinates :
@@ -103,79 +202,88 @@ export function InteractiveMap({
       return true;
     }
 
-    if (!fitToStateBounds()) {
+    if (!fitToFeatureBounds()) {
       const onSourceData = () => {
-        if (fitToStateBounds()) map.off("sourcedata", onSourceData);
+        if (fitToFeatureBounds()) map.off("sourcedata", onSourceData);
       };
       map.on("sourcedata", onSourceData);
       return () => { map.off("sourcedata", onSourceData); };
     }
-  }, [selectedStateName]);
+  }, [selectedStateName, selectedCountryGeojsonName]);
 
   // ── MapLibre fill/line expressions ────────────────────────
   // Priority: sede > presencia > overview > transparent
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const fillColor: any = [
-    "case",
-    ...(selectedStateName
-      ? [["==", ["get", "name"], selectedStateName], SEDE_COLOR]
-      : []),
-    ...(selectedPresenceStates.length > 0
-      ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], PRESENCE_COLOR]
-      : []),
-    ...(stateNames.length > 0
-      ? [["in", ["get", "name"], ["literal", stateNames]], ACTIVE_COLOR]
-      : []),
-    "transparent",
-  ];
+  // Builds the four paint expressions for a fill/line layer, given the
+  // "name" values to match against for each priority tier (sede > presencia
+  // > overview). Reused for both mx-states (Spanish names) and ca-countries
+  // (English names).
+  // A bare Mapbox "case" expression needs at least one [test, output] pair
+  // before its fallback (>= 3 args total) — with zero active conditions
+  // (e.g. the selected initiative has no presence outside Mexico) the naive
+  // ["case", fallback] is invalid and Mapbox's setPaintProperty throws,
+  // silently leaving whatever paint was previously applied on screen. Build
+  // the pair list first and only wrap in "case" when it's non-empty.
+  function buildCaseExpression(pairs: unknown[], fallback: unknown) {
+    return pairs.length > 0 ? ["case", ...pairs, fallback] : fallback;
+  }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const fillOpacity: any = [
-    "case",
-    ...(selectedStateName
-      ? [["==", ["get", "name"], selectedStateName], 0.50]
-      : []),
-    ...(selectedPresenceStates.length > 0
-      ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], 0.28]
-      : []),
-    ...(stateNames.length > 0
-      ? [["in", ["get", "name"], ["literal", stateNames]], 0.15]
-      : []),
-    0,
-  ];
+  function buildPaintExpressions(selected: string | undefined, presence: string[], overview: string[]) {
+    /* eslint-disable @typescript-eslint/no-explicit-any -- Mapbox expression types don't line up with our dynamic case-list building */
+    const colorPairs = [
+      ...(selected ? [["==", ["get", "name"], selected], SEDE_COLOR] : []),
+      ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], PRESENCE_COLOR] : []),
+      ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], ACTIVE_COLOR] : []),
+    ];
+    const fillOpacityPairs = [
+      ...(selected ? [["==", ["get", "name"], selected], 0.50] : []),
+      ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], 0.28] : []),
+      ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], 0.30] : []),
+    ];
+    const lineOpacityPairs = [
+      ...(selected ? [["==", ["get", "name"], selected], 0.70] : []),
+      ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], 0.50] : []),
+      ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], 0.35] : []),
+    ];
+    return {
+      fillColor:   buildCaseExpression(colorPairs, "transparent") as any,
+      fillOpacity: buildCaseExpression(fillOpacityPairs, 0) as any,
+      lineColor:   buildCaseExpression(colorPairs, "transparent") as any,
+      lineOpacity: buildCaseExpression(lineOpacityPairs, 0) as any,
+    };
+    /* eslint-enable @typescript-eslint/no-explicit-any */
+  }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const lineColor: any = [
-    "case",
-    ...(selectedStateName
-      ? [["==", ["get", "name"], selectedStateName], SEDE_COLOR]
-      : []),
-    ...(selectedPresenceStates.length > 0
-      ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], PRESENCE_COLOR]
-      : []),
-    ...(stateNames.length > 0
-      ? [["in", ["get", "name"], ["literal", stateNames]], ACTIVE_COLOR]
-      : []),
-    "transparent",
-  ];
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const lineOpacity: any = [
-    "case",
-    ...(selectedStateName
-      ? [["==", ["get", "name"], selectedStateName], 0.70]
-      : []),
-    ...(selectedPresenceStates.length > 0
-      ? [["in", ["get", "name"], ["literal", selectedPresenceStates]], 0.50]
-      : []),
-    ...(stateNames.length > 0
-      ? [["in", ["get", "name"], ["literal", stateNames]], 0.35]
-      : []),
-    0,
-  ];
+  const mxPaint = buildPaintExpressions(
+    selectedCountryGeojsonName ? undefined : selectedStateName,
+    selectedPresenceStates,
+    stateNames
+  );
+  const caPaint = buildPaintExpressions(
+    selectedCountryGeojsonName,
+    selectedPresenceStatesGeo,
+    stateNamesGeo
+  );
 
   const showLegend = !!selectedStateName || selectedPresenceStates.length > 0;
+
+  if (!MAPBOX_TOKEN) {
+    return (
+      <div className={cn("relative w-full h-full flex items-center justify-center bg-[#faf8f5]", className)}>
+        <div className="max-w-sm text-center px-6">
+          <p className="font-sans font-semibold text-[#3d3d30]" style={{ fontSize: 14 }}>
+            Falta el token de Mapbox
+          </p>
+          <p className="font-sans text-[#747780] mt-1" style={{ fontSize: 13 }}>
+            Agrega <code>NEXT_PUBLIC_MAPBOX_TOKEN</code> en <code>.env.local</code> con un token de{" "}
+            <a href="https://account.mapbox.com/access-tokens/" target="_blank" rel="noopener noreferrer" className="underline">
+              account.mapbox.com
+            </a>.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={cn("relative w-full h-full", className)}>
@@ -197,13 +305,15 @@ export function InteractiveMap({
       )}
       <Map
         ref={mapRef}
+        mapboxAccessToken={MAPBOX_TOKEN}
         initialViewState={MEXICO_CENTER}
         style={{ width: "100%", height: "100%" }}
         mapStyle={MAP_STYLE}
         attributionControl={false}
         reuseMaps
-        interactiveLayerIds={onStateClick ? ["mx-states-fill"] : []}
+        interactiveLayerIds={onStateClick ? ["mx-states-fill", "ca-countries-fill"] : []}
         cursor={hoveredState ? "pointer" : undefined}
+        onLoad={handleMapLoad}
         onClick={handleMapClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setHoveredState(null)}
@@ -213,17 +323,39 @@ export function InteractiveMap({
             id="mx-states-fill"
             type="fill"
             paint={{
-              "fill-color":   fillColor,
-              "fill-opacity": fillOpacity,
+              "fill-color":   mxPaint.fillColor,
+              "fill-opacity": mxPaint.fillOpacity,
             }}
           />
           <Layer
             id="mx-states-border"
             type="line"
             paint={{
-              "line-color":   lineColor,
+              "line-color":   mxPaint.lineColor,
               "line-width":   0.75,
-              "line-opacity": lineOpacity,
+              "line-opacity": mxPaint.lineOpacity,
+            }}
+          />
+        </Source>
+
+        <Source id="ca-countries" type="geojson" data={WORLD_COUNTRIES_URL}>
+          <Layer
+            id="ca-countries-fill"
+            type="fill"
+            filter={["in", ["get", "name"], ["literal", CENTRAL_AMERICA_GEOJSON_NAMES]]}
+            paint={{
+              "fill-color":   caPaint.fillColor,
+              "fill-opacity": caPaint.fillOpacity,
+            }}
+          />
+          <Layer
+            id="ca-countries-border"
+            type="line"
+            filter={["in", ["get", "name"], ["literal", CENTRAL_AMERICA_GEOJSON_NAMES]]}
+            paint={{
+              "line-color":   caPaint.lineColor,
+              "line-width":   0.75,
+              "line-opacity": caPaint.lineOpacity,
             }}
           />
         </Source>

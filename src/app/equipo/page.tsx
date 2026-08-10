@@ -7,17 +7,30 @@ import { TeamStatsSection } from "@/components/organisms/TeamStatsSection";
 import { IniciativasEnCursoSection } from "@/components/organisms/IniciativasEnCursoSection";
 import { ProductosInvestigacionSection } from "@/components/organisms/ProductosInvestigacionSection";
 import { ColaboraCTASection } from "@/components/organisms/ColaboraCTASection";
-import { EQUIPO_TECNICO, EQUIPO_COLABORADORES, INSTITUCIONES_COLABORADORAS } from "./data";
+import { getEquipoTecnico, getEquipoColaboradores, getInstitucionesColaboradoras } from "@/lib/data/equipo";
+import { toSectionState } from "@/lib/data/types";
 
-export default function EquipoPage() {
+export default async function EquipoPage() {
+    const [equipoTecnicoResult, colaboradoresResult, institucionesResult] = await Promise.all([
+        getEquipoTecnico(),
+        getEquipoColaboradores(),
+        getInstitucionesColaboradoras(),
+    ]);
+
+    const equipoTecnico = toSectionState(equipoTecnicoResult);
+    const colaboradores = toSectionState(colaboradoresResult);
+    const instituciones = toSectionState(institucionesResult);
+
     return (
         <main>
             <TeamHeroSection />
             <ProblematicaSection />
-            <EquipoTecnicoSection members={EQUIPO_TECNICO} />
+            <EquipoTecnicoSection members={equipoTecnico.items} state={equipoTecnico.state} />
             <ColaboracionesSection
-                colaboradores={EQUIPO_COLABORADORES}
-                instituciones={INSTITUCIONES_COLABORADORAS}
+                colaboradores={colaboradores.items}
+                instituciones={instituciones.items}
+                colaboradoresState={colaboradores.state}
+                institucionesState={instituciones.state}
             />
             <TeamStatsSection />
             <IniciativasEnCursoSection />
