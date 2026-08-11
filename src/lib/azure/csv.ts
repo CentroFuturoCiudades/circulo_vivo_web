@@ -11,6 +11,12 @@ import { resolveImageBlobUrl } from "./paths";
  * never be sent to the client, so never import this file from a "use client" module.
  */
 
+// TEMP diagnostic: try the NEXT_PUBLIC_-prefixed name first, in case Azure
+// Application Settings aren't reaching server-only env vars at runtime.
+function resolveSasToken(): string | undefined {
+  return process.env.NEXT_PUBLIC_AZURE_BLOB_SAS_TOKEN || process.env.AZURE_BLOB_SAS_TOKEN;
+}
+
 export class CsvFetchError extends Error {
   constructor(message: string, public readonly cause?: unknown) {
     super(message);
@@ -58,11 +64,11 @@ export function resolveAzureImageUrl(raw?: string): string | undefined {
   if (!isAbsolute) {
     const resolved = resolveImageBlobUrl(value);
     if (!resolved) return value; // nothing to resolve against — return as-is rather than dropping the image entirely
-    return withSasToken(resolved, process.env.AZURE_BLOB_SAS_TOKEN);
+    return withSasToken(resolved, resolveSasToken());
   }
 
   if (value.includes("sig=")) return value; // already signed — don't touch it
-  return withSasToken(value, process.env.AZURE_BLOB_SAS_TOKEN);
+  return withSasToken(value, resolveSasToken());
 }
 
 /**
@@ -81,7 +87,7 @@ export async function fetchCsvRows<T = Record<string, string>>(
     throw new CsvFetchError("fetchCsvRows: no se proporcionó una URL de blob.");
   }
 
-  const token = options.token ?? process.env.AZURE_BLOB_SAS_TOKEN;
+  const token = options.token ?? resolveSasToken();
   const signedUrl = withSasToken(url, token);
 
   let res: Response;
