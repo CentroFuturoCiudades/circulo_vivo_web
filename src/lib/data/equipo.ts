@@ -1,33 +1,71 @@
 import type { MiembroTecnico } from "@/components/organisms/EquipoTecnicoSection";
 import type { Colaborador, InstitutionLogo } from "@/components/organisms/ColaboracionesSection";
 import type { Directivo } from "@/components/organisms/DirectivosSection";
+import {
+  fetchDirectivosFromAzure,
+  fetchEquipoTecnicoFromAzure,
+  fetchColaboradoresFromAzure,
+  fetchInstitucionesFromAzure,
+} from "@/lib/azure/equipo";
+import { BLOB_PATHS, resolveDataBlobUrl } from "@/lib/azure/paths";
 import { dataResultOk, type DataResult } from "./types";
-import directivosSnapshot from "@/data/snapshot/directivos.json";
-import equipoTecnicoSnapshot from "@/data/snapshot/equipo-tecnico.json";
-import colaboradoresSnapshot from "@/data/snapshot/colaboradores.json";
-import institucionesSnapshot from "@/data/snapshot/instituciones.json";
 
 /**
- * DEMO BRANCH — contingency for when Azure Blob env vars aren't available.
- * Serves a point-in-time snapshot of the real data (fetched from Azure once,
- * frozen into src/data/snapshot/*.json + public/data-snapshot/ images) instead
- * of hitting Azure at request time. Never merge this branch into dev/main —
- * once the Azure env vars are confirmed working, this file should go back to
- * fetching live from Azure (see git history on dev).
+ * Each getter fetches from the `datos` container in Azure Blob Storage if
+ * `AZURE_STORAGE_ACCOUNT_URL` is set, and returns a `DataResult` describing
+ * what happened — we deliberately
+ * never fall back to the local `equipo/data.ts` fixtures, since that data is
+ * stale/fake and showing it silently would be misleading. Callers must handle
+ * `unconfigured`/`error` explicitly (see `DataUnavailableMessage`).
+ *
+ * DirectivosSection is currently hidden on the equipo page (see equipo/page.tsx),
+ * but its data-fetching is wired up here so it's ready whenever it comes back.
  */
 
 export async function getDirectivos(): Promise<DataResult<Directivo[]>> {
-  return dataResultOk(directivosSnapshot as Directivo[]);
+  const url = resolveDataBlobUrl(BLOB_PATHS.directivos);
+  if (!url) return { status: "unconfigured" };
+
+  try {
+    return dataResultOk(await fetchDirectivosFromAzure(url));
+  } catch (err) {
+    console.error("getDirectivos: fallo al obtener datos de Azure.", err);
+    return { status: "error", message: err instanceof Error ? err.message : "Error desconocido" };
+  }
 }
 
 export async function getEquipoTecnico(): Promise<DataResult<MiembroTecnico[]>> {
-  return dataResultOk(equipoTecnicoSnapshot as MiembroTecnico[]);
+  const url = resolveDataBlobUrl(BLOB_PATHS.equipoTecnico);
+  if (!url) return { status: "unconfigured" };
+
+  try {
+    return dataResultOk(await fetchEquipoTecnicoFromAzure(url));
+  } catch (err) {
+    console.error("getEquipoTecnico: fallo al obtener datos de Azure.", err);
+    return { status: "error", message: err instanceof Error ? err.message : "Error desconocido" };
+  }
 }
 
 export async function getEquipoColaboradores(): Promise<DataResult<Colaborador[]>> {
-  return dataResultOk(colaboradoresSnapshot as Colaborador[]);
+  const url = resolveDataBlobUrl(BLOB_PATHS.colaboradores);
+  if (!url) return { status: "unconfigured" };
+
+  try {
+    return dataResultOk(await fetchColaboradoresFromAzure(url));
+  } catch (err) {
+    console.error("getEquipoColaboradores: fallo al obtener datos de Azure.", err);
+    return { status: "error", message: err instanceof Error ? err.message : "Error desconocido" };
+  }
 }
 
 export async function getInstitucionesColaboradoras(): Promise<DataResult<InstitutionLogo[]>> {
-  return dataResultOk(institucionesSnapshot as InstitutionLogo[]);
+  const url = resolveDataBlobUrl(BLOB_PATHS.instituciones);
+  if (!url) return { status: "unconfigured" };
+
+  try {
+    return dataResultOk(await fetchInstitucionesFromAzure(url));
+  } catch (err) {
+    console.error("getInstitucionesColaboradoras: fallo al obtener datos de Azure.", err);
+    return { status: "error", message: err instanceof Error ? err.message : "Error desconocido" };
+  }
 }
