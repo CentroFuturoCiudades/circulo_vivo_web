@@ -3,13 +3,32 @@ import { useState, useRef } from "react";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type SearchBarSize = "sm" | "md" | "lg";
-
-const sizeMap: Record<SearchBarSize, { height: string; text: string; icon: number }> = {
-  sm: { height: "h-9",      text: "text-[12px]", icon: 14 },
-  md: { height: "h-[44px]", text: "text-[13px]", icon: 16 },
-  lg: { height: "h-[52px]", text: "text-[15px]", icon: 18 },
-};
+const sizeConfig = {
+  sm: {
+    wrapper:  "h-9",
+    iconSize: 14,
+    iconPos:  "left-3.5",
+    input:    "text-[12px] pl-9 pr-8",
+    clearPos: "right-3",
+    clearSize: 13,
+  },
+  md: {
+    wrapper:  "h-11",
+    iconSize: 16,
+    iconPos:  "left-4",
+    input:    "text-[13px] pl-10 pr-9",
+    clearPos: "right-4",
+    clearSize: 15,
+  },
+  lg: {
+    wrapper:  "h-16",
+    iconSize: 20,
+    iconPos:  "left-6",
+    input:    "text-[18px] pl-16 pr-10",
+    clearPos: "right-6",
+    clearSize: 18,
+  },
+} as const;
 
 export interface SearchBarProps {
   placeholder?: string;
@@ -17,26 +36,26 @@ export interface SearchBarProps {
   defaultValue?: string;
   onChange?: (value: string) => void;
   onSearch?: (value: string) => void;
-  size?: SearchBarSize;
   disabled?: boolean;
+  size?: keyof typeof sizeConfig;
   className?: string;
 }
 
 export function SearchBar({
-  placeholder = "Buscar...",
+  placeholder = "Muéstrame iniciativas de producción agroecológica en el centro del país...",
   value,
   defaultValue = "",
   onChange,
   onSearch,
-  size = "md",
   disabled,
+  size = "lg",
   className,
 }: SearchBarProps) {
   const [internal, setInternal] = useState(defaultValue);
   const isControlled = value !== undefined;
   const current = isControlled ? value : internal;
   const inputRef = useRef<HTMLInputElement>(null);
-  const { height, text, icon } = sizeMap[size];
+  const cfg = sizeConfig[size];
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const v = e.target.value;
@@ -57,14 +76,15 @@ export function SearchBar({
   return (
     <div
       className={cn(
-        "relative flex items-center w-full bg-white rounded-md border-[1.5px] border-neutral-300",
-        "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all",
+        "relative flex items-center w-full bg-white rounded-full transition-all",
+        "border-2 border-[#708b8d1a] shadow-[0_1px_1.75px_#0000000d]",
+        "focus-within:border-[#708b8d40] focus-within:shadow-[0_0_0_3px_#708b8d14]",
         disabled && "opacity-60 pointer-events-none",
-        height,
+        cfg.wrapper,
         className
       )}
     >
-      <Search size={icon} className="absolute left-3 text-neutral-400 pointer-events-none" />
+      <Search size={cfg.iconSize} className={cn("absolute text-[#747878] pointer-events-none", cfg.iconPos)} />
 
       <input
         ref={inputRef}
@@ -74,11 +94,7 @@ export function SearchBar({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={disabled}
-        className={cn(
-          "w-full h-full bg-transparent font-sans text-neutral-900 placeholder:text-neutral-400",
-          "focus:outline-none pl-9 pr-9",
-          text
-        )}
+        className={cn("w-full h-full bg-transparent font-sans text-neutral-900 placeholder:text-[#747878] focus:outline-none", cfg.input)}
       />
 
       {current && (
@@ -86,9 +102,9 @@ export function SearchBar({
           type="button"
           onClick={handleClear}
           aria-label="Limpiar búsqueda"
-          className="absolute right-3 text-neutral-400 hover:text-neutral-700 transition-colors"
+          className={cn("absolute text-[#747878] hover:text-[#211f19] transition-colors", cfg.clearPos)}
         >
-          <X size={icon - 2} />
+          <X size={cfg.clearSize} />
         </button>
       )}
     </div>

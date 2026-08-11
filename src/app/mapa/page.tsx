@@ -1,7 +1,9 @@
-export default function MapaPage() {
-  return (
-    <main className="h-screen w-full">
-      <h1 className="sr-only">Mapa de iniciativas</h1>
-    </main>
-  );
+import { MapaPageClient } from "./MapaPageClient";
+import { getIniciativas } from "@/lib/data/iniciativas";
+import { toSectionState } from "@/lib/data/types";
+
+export default async function MapaPage() {
+  const result = await getIniciativas();
+  const { items, state } = toSectionState(result);
+  return <MapaPageClient initiatives={items} state={state} />;
 }

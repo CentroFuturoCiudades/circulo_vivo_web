@@ -3,7 +3,7 @@ import { type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const chipVariants = cva(
-  "inline-flex items-center gap-1.5 rounded-full font-sans font-medium text-[11px] transition-colors cursor-pointer select-none h-7 px-3",
+  "inline-flex items-center gap-1.5 rounded-full font-sans font-medium text-[11px] transition-all cursor-pointer select-none h-7 px-3 active:scale-[0.95]",
   {
     variants: {
       color: {
@@ -35,9 +35,18 @@ export interface ChipProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonEle
   color?: "teal" | "crimson" | "gold" | "secondary" | "neutral" | "purple";
   selected?: boolean;
   icon?: LucideIcon;
+  as?: "button" | "span";
 }
 
-export function Chip({ className, color = "teal", selected = false, icon: Icon, children, ...props }: ChipProps) {
+export function Chip({ className, color = "teal", selected = false, icon: Icon, children, as: Tag = "button", ...props }: ChipProps) {
+  if (Tag === "span") {
+    return (
+      <span className={cn(chipVariants({ color, selected }), className)}>
+        {Icon && <Icon size={11} />}
+        {children}
+      </span>
+    );
+  }
   return (
     <button
       type="button"

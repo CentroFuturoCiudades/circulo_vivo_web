@@ -61,6 +61,19 @@
   --color-gold-900: #303008;
   --color-gold:     #bcb884;
 
+  /* Purple — warm purple accent */
+  --color-purple-50:  #f0e8f0;
+  --color-purple-100: #e1d1e1;
+  --color-purple-200: #d2b9d2;
+  --color-purple-300: #c3a2c3;
+  --color-purple-400: #b48bb4;
+  --color-purple-500: #a574a5;
+  --color-purple-600: #965d96;
+  --color-purple-700: #874687;
+  --color-purple-800: #783078;
+  --color-purple-900: #691969;
+  --color-purple:     #7F4D7B;
+
   /* Neutral — warm gray scale */
   --color-neutral-0:   #ffffff;
   --color-neutral-50:  #faf8f5;
@@ -151,4 +164,27 @@
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+button,
+[role="button"],
+[type="button"],
+[type="submit"],
+[type="reset"] {
+  cursor: pointer;
+}
+
+/* ─── MARQUEE (auto-scrolling slider, pauses on hover) ─────────────────── */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee-scroll linear infinite;
+  will-change: transform;
+}
+
+.group:hover .animate-marquee {
+  animation-play-state: paused;
 }

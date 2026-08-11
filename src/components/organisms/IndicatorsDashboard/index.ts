@@ -1,1 +1,0 @@
-export { IndicatorsDashboard } from "./IndicatorsDashboard";

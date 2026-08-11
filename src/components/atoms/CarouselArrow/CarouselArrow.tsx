@@ -15,7 +15,7 @@ export function CarouselArrow({ direction, active = false, className, disabled, 
       aria-label={direction === "prev" ? "Anterior" : "Siguiente"}
       disabled={disabled}
       className={cn(
-        "w-10 h-10 rounded-full flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary",
+        "w-10 h-10 rounded-full flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary active:scale-[0.9]",
         active
           ? "bg-secondary border border-secondary text-white"
           : "bg-transparent border border-[#c4c6d0] text-neutral-700 hover:border-secondary hover:text-secondary",

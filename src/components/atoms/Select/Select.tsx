@@ -29,7 +29,8 @@ export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectE
   options: { value: string; label: string }[];
 }
 
-export function Select({ state = "default", size = "md", placeholder, errorMessage, options, className, ...props }: SelectProps) {
+export function Select({ state = "default", size = "md", placeholder, errorMessage, options, className, value, ...props }: SelectProps) {
+  const valueProps = value !== undefined ? { value } : { defaultValue: "" };
   return (
     <div className="relative flex flex-col gap-1 w-full">
       <select
@@ -41,7 +42,7 @@ export function Select({ state = "default", size = "md", placeholder, errorMessa
           sizeMap[size],
           className
         )}
-        defaultValue=""
+        {...valueProps}
         {...props}
       >
         {placeholder && (

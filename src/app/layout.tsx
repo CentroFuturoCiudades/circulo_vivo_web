@@ -20,6 +20,9 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "Círculo Vivo",
   description: "Plataforma de visualización de sistemas alimentarios en México",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
