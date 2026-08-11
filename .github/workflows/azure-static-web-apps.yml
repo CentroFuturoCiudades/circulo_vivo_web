@@ -44,29 +44,17 @@ jobs:
         if: github.ref_name == 'storybook'
         run: npm run build-storybook
 
-      - name: Debug - verify data env vars reach the build
+      - name: Build app
         if: github.ref_name != 'storybook'
         env:
           NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
           NEXT_PUBLIC_DEV_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_DEV_ENVIRONMENT }}
           AZURE_STORAGE_ACCOUNT_URL: ${{ secrets.AZURE_STORAGE_ACCOUNT_URL }}
           AZURE_BLOB_SAS_TOKEN: ${{ secrets.AZURE_BLOB_SAS_TOKEN }}
-        run: |
-          echo "NEXT_PUBLIC_MAPBOX_TOKEN length: ${#NEXT_PUBLIC_MAPBOX_TOKEN}"
-          echo "NEXT_PUBLIC_DEV_ENVIRONMENT length: ${#NEXT_PUBLIC_DEV_ENVIRONMENT}"
-          echo "AZURE_STORAGE_ACCOUNT_URL length: ${#AZURE_STORAGE_ACCOUNT_URL}"
-          echo "AZURE_BLOB_SAS_TOKEN length: ${#AZURE_BLOB_SAS_TOKEN}"
-          npm run build
-          echo "--- /equipo prerendered output check ---"
-          grep -l "no disponible" .next/server/app/equipo.* 2>/dev/null && echo "RESULT: equipo page baked EMPTY state" || echo "RESULT: equipo page did NOT bake empty state"
+        run: npm run build
 
       - name: Deploy to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
-        env:
-          NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
-          NEXT_PUBLIC_DEV_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_DEV_ENVIRONMENT }}
-          AZURE_STORAGE_ACCOUNT_URL: ${{ secrets.AZURE_STORAGE_ACCOUNT_URL }}
-          AZURE_BLOB_SAS_TOKEN: ${{ secrets.AZURE_BLOB_SAS_TOKEN }}
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GREEN_ISLAND_047A61710 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -74,7 +62,7 @@ jobs:
           app_location: ${{ github.ref_name == 'storybook' && 'storybook-static' || '/' }}
           api_location: ''
           output_location: ''
-          skip_app_build: ${{ github.ref_name == 'storybook' }}
+          skip_app_build: true
           production_branch: 'main'
 
   # ── Close PR preview ─────────────────────────────────────
