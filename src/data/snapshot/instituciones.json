@@ -1,0 +1,30 @@
+[
+  {
+    "name": "IEA Paris",
+    "logoUrl": "/data-snapshot/instituciones/iea-paris.png"
+  },
+  {
+    "name": "INCAP",
+    "logoUrl": "/data-snapshot/instituciones/incap.png"
+  },
+  {
+    "name": "ITESO",
+    "logoUrl": "/data-snapshot/instituciones/iteso.png"
+  },
+  {
+    "name": "Alianza Bioversity & CIAT",
+    "logoUrl": "/data-snapshot/instituciones/alianza-bioversity-ciat.png"
+  },
+  {
+    "name": "CGIAR",
+    "logoUrl": "/data-snapshot/instituciones/cgiar.png"
+  },
+  {
+    "name": "Centro para el Futuro de las Ciudades",
+    "logoUrl": "/data-snapshot/instituciones/cfc.png"
+  },
+  {
+    "name": "SEDAGRO Morelos",
+    "logoUrl": "/data-snapshot/instituciones/sedagro-morelos.jpeg"
+  }
+]

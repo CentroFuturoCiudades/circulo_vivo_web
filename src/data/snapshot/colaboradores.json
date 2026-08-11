@@ -1,0 +1,147 @@
+[
+  {
+    "name": "Michelle Ramírez",
+    "role": "Consultora independiente",
+    "imageUrl": "/data-snapshot/colaboradores/michelle-ramirez.jpg",
+    "description": "Investigadora en sistemas alimentarios, especializada en gobernanza, políticas públicas e investigación cualitativa. Su trabajo busca generar evidencia que fortalezca la acción política para avanzar hacia reducir las desigualdades en salud y alimentación.",
+    "email": "mirp.16@gmail.com",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/michelle-ramirezp"
+      }
+    ]
+  },
+  {
+    "name": "Roberto Ponce",
+    "role": "Líder de Investigación, Centro para el Futuro de las Ciudades, Tec de Monterrey",
+    "imageUrl": "/data-snapshot/colaboradores/roberto-ponce.jpg",
+    "description": "Profesor-investigador y líder de Investigación del Centro para el Futuro de las Ciudades del Tecnológico de Monterrey. Desarrollo sistemas de información urbana, modelos de transporte y análisis espacial para apoyar la planeación de ciudades.",
+    "email": "rpl@tec.mx",
+    "socials": [
+      {
+        "platform": "website",
+        "url": "https://www.robertoponcelopez.com/"
+      }
+    ]
+  },
+  {
+    "name": "Uriel Salazar",
+    "role": "Gerente de Desarrollo de Plataformas, Centro para el Futuro de las Ciudades, Tec de Monterrey",
+    "imageUrl": "/data-snapshot/colaboradores/uriel-salazar.jpg",
+    "description": "Encargado del desarrollo de plataformas en el Centro para el Futuro de las Ciudades del Tecnológico de Monterrey. Desarrollo plataformas de divulgación y análisis urbano como Reimagina Urbano, Ciudad Finita y Atlas de Ciudades.",
+    "email": "uriel.s@tec.mx",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/usu96/"
+      }
+    ]
+  },
+  {
+    "name": "Fiorella Espinosa",
+    "role": "Consultora independiente",
+    "imageUrl": "/data-snapshot/colaboradores/fiorella-espinosa.jpeg",
+    "description": "Nutrióloga y Maestra en Salud Pública, con amplia experiencia en el diseño, coordinación e implementación de programas, investigación e incidencia en políticas públicas desde el sector público, organizaciones de la sociedad civil y organismos internacionales.",
+    "email": "fiorella82@gmail.com",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/fiorella-espinosa-123154b0/"
+      }
+    ]
+  },
+  {
+    "name": "Costanza Conti",
+    "role": "Consultora independiente",
+    "imageUrl": "/data-snapshot/colaboradores/costanza-conti.jpg",
+    "description": "Dr Costanza Conti advises FAO, CSIRO, GNR and CGIAR centres and contributed to EAT–Lancet 2.0, advancing evidence for healthy, sustainable and climate-resilient societies.",
+    "email": "costanza.conti@reading.ac.uk",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/costanza-conti-0a35a3133/"
+      },
+      {
+        "platform": "website",
+        "url": "https://scholar.google.it/citations?user=_LQGm8AAAAAJ&hl=en"
+      }
+    ]
+  },
+  {
+    "name": "Gregorio Leal Martínez",
+    "role": "Profesor titular del Centro Interdisciplinario para la Formación y la Vinculación Social (CIFOVIS), ITESO",
+    "imageUrl": "/data-snapshot/colaboradores/gregorio-leal.jpeg",
+    "description": "Gregorio Leal Martínez, maestro en Economía Social y licenciado en Ciencias de la Educación, es profesor titular del ITESO. Especialista en economía social y solidaria, educación popular y redes alimentarias alternativas, con experiencia en proyectos comunitarios en ámbitos rurales y urbanos.",
+    "email": "gregorioleal@iteso.mx",
+    "socials": [
+      {
+        "platform": "website",
+        "url": "https://www.researchgate.net/profile/Gregorio-Martinez-3?ev=hdr_xprf"
+      }
+    ]
+  },
+  {
+    "name": "Rodrigo Rodríguez Guerrero",
+    "role": "Profesor Titular Programa Economía y Soberanía Alimentaria CONCIDE- ITESO",
+    "imageUrl": "/data-snapshot/colaboradores/rodrigo-rodriguez.jpeg",
+    "description": "Doctor en Ciencias Sociales y profesor titular del ITESO, en el Centro Universitario de Incidencia Social (COINCIDE), acompaña, forma e investiga con organizaciones de la Economía Social y Solidaria, redes alimentarias y agroecológicas.",
+    "email": "rodrigorodriguez@iteso.mx",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/rodrigo-rodríguez-g"
+      },
+      {
+        "platform": "website",
+        "url": "https://www.researchgate.net/profile/Rodrigo-Rodriguez-Guerrero?ev=hdr_xprf"
+      }
+    ]
+  },
+  {
+    "name": "Roberto Paulo Orozco Hernández",
+    "role": "Profesor titulardel Departamento de Psicología, Educación y Salud, ITESO",
+    "imageUrl": "/data-snapshot/colaboradores/paulo-orozco.png",
+    "description": "Nutriólogo comunitario. Maestro en Desarrollo Social y en Agroecología. Participante en distintas redes alimentarias alternativas a nivel local, nacional e internacional. Trabaja temas relacionados con soberanía alimentaria, agroecología, sistemas alimentarios sostenibles y colectivos urbanos de consumo.",
+    "email": "paulorozco@iteso.mx",
+    "socials": [
+      {
+        "platform": "website",
+        "url": "https://www.researchgate.net/profile/Roberto-Orozco-Hernandez"
+      }
+    ]
+  },
+  {
+    "name": "Dr. Raúl Monroy",
+    "role": "Equipo de ingeniería e IA, Tec de Monterrey",
+    "imageUrl": "/data-snapshot/colaboradores/raul-monroy.jpeg",
+    "description": "Doctor en inteligencia artificial por la universidad de Edimburgo. Investigador nacional nivel 3. Su interés es la invención de métodos de machine learning y su aplicación en áreas como ciberseguridad.",
+    "email": "raulm@tec.mx",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/raul-monroy-45647115/"
+      }
+    ]
+  },
+  {
+    "name": "Dra. Miryam Elizabeth Villa Pérez",
+    "role": "Equipo de ingeniería e IA, Tec de Monterrey",
+    "imageUrl": "/data-snapshot/colaboradores/miryam-villa.jpeg",
+    "description": "Miryam Elizabeth Villa-Pérez es investigadora posdoc en el Tec de Monterrey, institución donde también obtuvo su doctorado en Ciencias Computacionales. Se especializa en procesamiento de lenguaje natural y aprendizaje automático.",
+    "email": "miryam@tec.mx",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/miryamelizabeth/"
+      }
+    ]
+  },
+  {
+    "name": "M. en C. Sergio Eduardo Vega Gúzman",
+    "role": "Equipo de ingeniería e IA, Tec de Monterrey",
+    "imageUrl": "/data-snapshot/colaboradores/eduardo-vega.jpeg",
+    "description": "Investigador en IA enfocado en LLMs, evaluación de modelos y marcos matemáticos para mejorar su razonamiento, control y confiabilidad.",
+    "email": "sho.vgz@gmail.com"
+  }
+]

@@ -1,0 +1,163 @@
+[
+  {
+    "name": "Dra. Abril Campos Rivera",
+    "role": "Profesora-investigadora del Tec de Monterrey",
+    "tag": "Salud Pública",
+    "imageUrl": "/data-snapshot/equipo/abril-campos.jpeg",
+    "description": "Investigadora en salud pública, salud global, sistemas de salud y alimentarios. Trabajó en el gobierno de México y en la Organización Mundial de la Salud. Co-directora de Evidencia y Acción para la Equidad en Salud (EVIS).",
+    "doctorado": "Doctorado en Salud Pública, Universidad de Harvard",
+    "email": "abril.campos@tec.mx",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/paola-abril-campos-7aa42019/"
+      }
+    ]
+  },
+  {
+    "name": "Dra. Alejandra Maldonado Esquer",
+    "role": "Especialista en investigación",
+    "tag": "Salud Pública",
+    "imageUrl": "/data-snapshot/equipo/alejandra-maldonado.jpeg",
+    "description": "Investigadora en salud y sistemas alimentarios. Integra investigación cualitativa, metodologías participativas y enfoques interdisciplinarios para generar conocimiento sobre alimentación, salud y territorio.",
+    "doctorado": "Doctorado en Ciencias en Sistemas de Salud, Instituto Nacional de Salud Pública",
+    "email": "ale.m.esquer@tec.mx",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/alejandra-maldonado-esquer-0b1688299/"
+      }
+    ]
+  },
+  {
+    "name": "Dra. Alejandra González Moreno",
+    "role": "Investigadora postdoctoral",
+    "tag": "Seguridad Alimentaria",
+    "imageUrl": "/data-snapshot/equipo/alejandra-gonzalez.png",
+    "description": "Investigadora en sistemas alimentarios, nutrición poblacional y salud pública. Integra evidencia científica para impulsar políticas alimentarias más equitativas y fortalecer la seguridad alimentaria.",
+    "doctorado": "Doctorado en Ciencias en Nutrición Poblacional, Instituto Nacional de Salud Pública",
+    "email": "alejandragmoreno@tec.mx",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/alejandra-gmoreno/"
+      },
+      {
+        "platform": "website",
+        "url": "https://scholar.google.com/citations?view_op=list_works&hl=es&user=ug4ECIYAAAAJ&gmla=AO4B3jvod3W8-fkTnxYK-aq-CdhpZRuYpkozy53HGP-EMNhNuGheoh7GnNjXKBIVggujwi20DFmwpIG486r759ByI6wWV2CSdBqCaRUdFSCp3MsdK7U_Or0jwgdhcsU3O0ZQdft1-qNM&inst=4849081589359952528"
+      }
+    ]
+  },
+  {
+    "name": "Dra. Nidya Velasco Roldán",
+    "role": "Investigadora postdoctoral",
+    "tag": "Determinantes Sociales de la Salud",
+    "imageUrl": "/data-snapshot/equipo/nidya-velasco.jpg",
+    "description": "Demógrafa que investiga desigualdades en salud y envejecimiento con enfoque de género y curso de vida. Su experiencia nutre el análisis cuantitativo de sistemas alimentarios.",
+    "doctorado": "Doctorado en Gerontología, Universidad de Massachusetts Boston",
+    "email": "nidya.velasco.roldan@tec.mx",
+    "socials": [
+      {
+        "platform": "website",
+        "url": "https://scholar.google.com/citations?user=U-ZBQ48AAAAJ"
+      }
+    ]
+  },
+  {
+    "name": "Dra. Andrea Torres Calderón",
+    "role": "Investigadora postdoctoral",
+    "tag": "IA",
+    "imageUrl": "/data-snapshot/equipo/andrea-torres.jpeg",
+    "description": "Investigadora en IA, machine learning, lenguaje natural y algoritmos. Desarrolla proyectos de impacto social en equipos multidisciplinarios, como la transformación de sistemas alimentarios.",
+    "doctorado": "Doctorado en Ciencias de la Computación, Centro de Investigación en Computación del IPN",
+    "email": "a.torres.c@tec.mx",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/andrea-torres-24843426b"
+      }
+    ]
+  },
+  {
+    "name": "Dra. Geneviève Stone",
+    "role": "Investigadora Postdoctoral",
+    "tag": "Inseguridad Alimentaria",
+    "imageUrl": "/data-snapshot/equipo/genevieve-stone.jpg",
+    "description": "Antropóloga especializada en métodos mixtos, con experiencia en proyectos comunitarios y de salud global. Estudio seguridad alimentaria y salud ambiental con enfoque crítico y anticolonial.",
+    "doctorado": "Doctorado en Antropología y Política Social de la Universidad de Bristol",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/geneviève-lstone"
+      }
+    ]
+  },
+  {
+    "name": "Dr. Víctor Adrián Sosa Hernández",
+    "role": "Profesor-investigador del Tec de Monterrey",
+    "tag": "IA",
+    "imageUrl": "/data-snapshot/equipo/victor-sosa.jpeg",
+    "description": "Investigador en inteligencia artificial y ciencias computacionales. Director de posgrado y líder de diversos proyectos con gobierno e industria.",
+    "doctorado": "Doctorado en Ciencias de la Computación, CINVESTAV-IPN",
+    "email": "vsosa@tec.mx",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/vsosahdz/"
+      }
+    ]
+  },
+  {
+    "name": "Dr. Esteban Castillo Juárez",
+    "role": "Profesor-investigador del Tec de Monterrey",
+    "tag": "IA",
+    "imageUrl": "/data-snapshot/equipo/esteban-castillo.png",
+    "description": "Investigador en inteligencia artificial, procesamiento de lenguaje natural y aprendizaje automático.",
+    "doctorado": "Doctorado en Ciencias de la Computación, Universidad de las Américas Puebla",
+    "email": "esteban.castillojz@tec.mx",
+    "socials": [
+      {
+        "platform": "website",
+        "url": "https://scholar.google.com/citations?user=JfZpVO8AAAAJ&hl=es"
+      }
+    ]
+  },
+  {
+    "name": "Dra. Berenice Ponce Alfaro",
+    "role": "Directora Asociada de Departamento Regional",
+    "tag": "Derechos Humanos",
+    "imageUrl": "/data-snapshot/equipo/berenice-ponce.png",
+    "description": "Investigadora en derechos humanos, políticas públicas y justicia social. Emplea metodologías cualitativas para estudiar desigualdades y la transformación de sistemas alimentarios.",
+    "doctorado": "Doctorado en Ciencias Sociales, Universidad Autónoma del Estado de Hidalgo",
+    "email": "berenice.alfaro@tec.mx",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/berenice-alfaro-ponce-514556b5"
+      },
+      {
+        "platform": "website",
+        "url": "https://scholar.google.com/citations?user=14L3Ow4AAAAJ&hl=es&inst=4849081589359952528&oi=ao"
+      }
+    ]
+  },
+  {
+    "name": "Dr. David Contreras-Loya",
+    "role": "Profesor-investigador del Tec de Monterrey",
+    "tag": "Economía aplicada",
+    "imageUrl": "/data-snapshot/equipo/david-contreras.png",
+    "description": "Economista aplicado. Co-director de Evidencia y Acción para la Equidad en Salud (EVIS). Investiga salud, educación y política social basada en evidencia para América Latina.",
+    "doctorado": "Doctorado en Políticas de Salud, Universidad de California, Berkeley",
+    "email": "d.contreras@tec.mx",
+    "socials": [
+      {
+        "platform": "linkedin",
+        "url": "https://www.linkedin.com/in/david-contreras-loya-8550bb44"
+      },
+      {
+        "platform": "website",
+        "url": "https://scholar.google.es/citations?user=axuzNJ0AAAAJ&hl"
+      }
+    ]
+  }
+]
