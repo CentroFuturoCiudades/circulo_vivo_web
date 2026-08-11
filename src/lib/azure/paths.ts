@@ -17,7 +17,9 @@ export const BLOB_PATHS = {
 } as const;
 
 function resolveContainerUrl(container: string, relativePath: string): string | undefined {
-  const account = process.env.AZURE_STORAGE_ACCOUNT_URL;
+  // TEMP diagnostic: try the NEXT_PUBLIC_-prefixed name first, in case Azure
+  // Application Settings aren't reaching server-only env vars at runtime.
+  const account = process.env.NEXT_PUBLIC_AZURE_STORAGE_ACCOUNT_URL || process.env.AZURE_STORAGE_ACCOUNT_URL;
   if (!account) return undefined;
   return `${account.replace(/\/+$/, "")}/${container}/${relativePath.replace(/^\/+/, "")}`;
 }

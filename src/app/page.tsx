@@ -17,8 +17,6 @@ const NAV_LINKS = [
     { label: "Inicio",      href: "/",            active: true },
     { label: "Equipo",      href: "/equipo" },
     { label: "Mapa",        href: "/mapa" },
-    { label: "Chatbot",     href: "/chatbot" },
-    { label: "Indicadores", href: "/indicadores" },
 ];
 
 const FEATURES = [
