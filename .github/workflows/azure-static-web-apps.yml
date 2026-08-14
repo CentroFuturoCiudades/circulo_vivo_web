@@ -44,6 +44,15 @@ jobs:
         if: github.ref_name == 'storybook'
         run: npm run build-storybook
 
+      - name: Build app
+        if: github.ref_name != 'storybook'
+        env:
+          NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
+          NEXT_PUBLIC_DEV_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_DEV_ENVIRONMENT }}
+          NEXT_PUBLIC_AZURE_STORAGE_ACCOUNT_URL: ${{ secrets.NEXT_PUBLIC_AZURE_STORAGE_ACCOUNT_URL }}
+          NEXT_PUBLIC_AZURE_BLOB_SAS_TOKEN: ${{ secrets.NEXT_PUBLIC_AZURE_BLOB_SAS_TOKEN }}
+        run: npm run build
+
       - name: Deploy to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -53,7 +62,7 @@ jobs:
           app_location: ${{ github.ref_name == 'storybook' && 'storybook-static' || '/' }}
           api_location: ''
           output_location: ''
-          skip_app_build: ${{ github.ref_name == 'storybook' }}
+          skip_app_build: true
           production_branch: 'main'
 
   # ── Close PR preview ─────────────────────────────────────

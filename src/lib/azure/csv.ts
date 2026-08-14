@@ -11,6 +11,10 @@ import { resolveImageBlobUrl } from "./paths";
  * never be sent to the client, so never import this file from a "use client" module.
  */
 
+function resolveSasToken(): string | undefined {
+  return process.env.NEXT_PUBLIC_AZURE_BLOB_SAS_TOKEN || process.env.AZURE_BLOB_SAS_TOKEN;
+}
+
 export class CsvFetchError extends Error {
   constructor(message: string, public readonly cause?: unknown) {
     super(message);
@@ -29,10 +33,6 @@ export interface FetchCsvOptions {
   token?: string;
   /** Next.js fetch cache revalidation window, in seconds. Defaults to 1 hour. */
   revalidateSeconds?: number;
-}
-
-function resolveSasToken(): string | undefined {
-  return process.env.NEXT_PUBLIC_AZURE_BLOB_SAS_TOKEN || process.env.AZURE_BLOB_SAS_TOKEN;
 }
 
 /** Appends a SAS token to a blob URL as a query string, if one is provided. */
