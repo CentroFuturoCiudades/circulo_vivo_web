@@ -31,6 +31,10 @@ export interface FetchCsvOptions {
   revalidateSeconds?: number;
 }
 
+function resolveSasToken(): string | undefined {
+  return process.env.NEXT_PUBLIC_AZURE_BLOB_SAS_TOKEN || process.env.AZURE_BLOB_SAS_TOKEN;
+}
+
 /** Appends a SAS token to a blob URL as a query string, if one is provided. */
 export function withSasToken(url: string, token?: string): string {
   if (!token) return url;
@@ -58,11 +62,11 @@ export function resolveAzureImageUrl(raw?: string): string | undefined {
   if (!isAbsolute) {
     const resolved = resolveImageBlobUrl(value);
     if (!resolved) return value; // nothing to resolve against — return as-is rather than dropping the image entirely
-    return withSasToken(resolved, process.env.AZURE_BLOB_SAS_TOKEN);
+    return withSasToken(resolved, resolveSasToken());
   }
 
   if (value.includes("sig=")) return value; // already signed — don't touch it
-  return withSasToken(value, process.env.AZURE_BLOB_SAS_TOKEN);
+  return withSasToken(value, resolveSasToken());
 }
 
 /**
@@ -81,7 +85,7 @@ export async function fetchCsvRows<T = Record<string, string>>(
     throw new CsvFetchError("fetchCsvRows: no se proporcionó una URL de blob.");
   }
 
-  const token = options.token ?? process.env.AZURE_BLOB_SAS_TOKEN;
+  const token = options.token ?? resolveSasToken();
   const signedUrl = withSasToken(url, token);
 
   let res: Response;
