@@ -11,8 +11,6 @@ import { resolveImageBlobUrl } from "./paths";
  * never be sent to the client, so never import this file from a "use client" module.
  */
 
-// TEMP diagnostic: try the NEXT_PUBLIC_-prefixed name first, in case Azure
-// Application Settings aren't reaching server-only env vars at runtime.
 function resolveSasToken(): string | undefined {
   return process.env.NEXT_PUBLIC_AZURE_BLOB_SAS_TOKEN || process.env.AZURE_BLOB_SAS_TOKEN;
 }

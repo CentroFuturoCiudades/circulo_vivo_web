@@ -1,6 +1,6 @@
 "use client";
 
-import { Bar, type BarDatum } from "@nivo/bar";
+import { ResponsiveBar, type BarDatum } from "@nivo/bar";
 import { cn } from "@/lib/utils";
 
 export interface GanadorItem {
@@ -109,59 +109,59 @@ export function TopGanadoresChart({
         </div>
       </div>
 
-      <Bar
-        width={461}
-        height={232}
-        data={data.map(({ state, value }): BarDatum => ({ state, value }))}
-
-        layout="horizontal"
-        indexBy="state"
-        keys={["value"]}
-        colorBy="indexValue"
-        colors={({ indexValue }) =>
-          colorMap[indexValue as string] ?? "#708b8d"
-        }
-        margin={{ top: 0, right: 70, bottom: 20, left: 90 }}
-        padding={0.35}
-        axisBottom={{
-          tickSize: 0,
-          tickPadding: 4,
-          format: (v) => (v as number).toFixed(3),
-        }}
-        axisLeft={{ tickSize: 0, tickPadding: 8 }}
-        enableGridX={true}
-        enableGridY={false}
-        enableLabel={true}
-        label={(d) => `+${(d.value as number).toFixed(3)}`}
-        labelPosition="end"
-        labelOffset={6}
-        isInteractive={false}
-        animate={false}
-        theme={{
-          axis: {
-            ticks: {
+      <div style={{ height: 232 }}>
+        <ResponsiveBar
+          data={data.map(({ state, value }): BarDatum => ({ state, value }))}
+          layout="horizontal"
+          indexBy="state"
+          keys={["value"]}
+          colorBy="indexValue"
+          colors={({ indexValue }) =>
+            colorMap[indexValue as string] ?? "#708b8d"
+          }
+          margin={{ top: 0, right: 70, bottom: 20, left: 90 }}
+          padding={0.35}
+          axisBottom={{
+            tickSize: 0,
+            tickPadding: 4,
+            tickValues: 5,
+            format: (v) => (v as number).toFixed(2),
+          }}
+          axisLeft={{ tickSize: 0, tickPadding: 8 }}
+          enableGridX={true}
+          enableGridY={false}
+          enableLabel={true}
+          label={(d) => `+${(d.value as number).toFixed(3)}`}
+          labelPosition="end"
+          labelOffset={6}
+          isInteractive={false}
+          animate={false}
+          theme={{
+            axis: {
+              ticks: {
+                text: {
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: 11,
+                  fill: "#71717a",
+                },
+              },
+            },
+            labels: {
               text: {
                 fontFamily: "Poppins, sans-serif",
                 fontSize: 11,
                 fill: "#71717a",
               },
             },
-          },
-          labels: {
-            text: {
-              fontFamily: "Poppins, sans-serif",
-              fontSize: 11,
-              fill: "#71717a",
+            grid: {
+              line: {
+                stroke: "#f3f4f6",
+                strokeWidth: 1,
+              },
             },
-          },
-          grid: {
-            line: {
-              stroke: "#f3f4f6",
-              strokeWidth: 1,
-            },
-          },
-        }}
-      />
+          }}
+        />
+      </div>
     </div>
   );
 }
