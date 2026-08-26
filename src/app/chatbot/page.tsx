@@ -2,6 +2,7 @@
 
 import { NavBar } from "@/components/molecules/NavBar";
 import { ChatInterface } from "@/components/organisms/ChatInterface";
+import { getChatbotReply } from "@/app/actions/chatbot";
 import type { ChatTopic } from "@/components/organisms/ChatSidebar";
 import type { ChatSuggestion } from "@/components/molecules/ChatWelcomePrompt";
 import type { ChatChip } from "@/components/molecules/ChatInputBar";
@@ -35,11 +36,9 @@ const CONTEXT_CHIPS: ChatChip[] = [
 ];
 
 async function handleSend(message: string): Promise<Omit<AssistantEntry, "id" | "role">> {
-  // TODO: wire up to the real research-AI backend.
-  await new Promise((resolve) => setTimeout(resolve, 600));
-  return {
-    markdown: `Aún no tengo una respuesta conectada para: "${message}". Esta es una respuesta de ejemplo mientras se integra el backend.`,
-  };
+  const reply = await getChatbotReply(message);
+  if ("error" in reply) return { error: reply.error };
+  return { markdown: reply.markdown, citation: reply.citation };
 }
 
 export default function ChatbotPage() {
