@@ -114,6 +114,15 @@ export function ChatInterface({
     },
   }));
 
+  // Context chips send their associated question (or label, if no question given)
+  const resolvedChips: ChatChip[] = contextChips.map((c) => ({
+    ...c,
+    onClick: () => {
+      c.onClick?.();
+      send(c.question ?? c.label);
+    },
+  }));
+
   async function send(text: string) {
     const trimmed = text.trim();
     if (!trimmed) return;
@@ -318,7 +327,7 @@ export function ChatInterface({
 
         {/* Input bar — sticky at bottom */}
         <ChatInputBar
-          chips={contextChips}
+          chips={resolvedChips}
           value={inputValue}
           onChange={setInputValue}
           onSend={send}

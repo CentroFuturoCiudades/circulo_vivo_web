@@ -3,6 +3,7 @@
 import { NavBar } from "@/components/molecules/NavBar";
 import { ChatInterface } from "@/components/organisms/ChatInterface";
 import { getChatbotReply } from "@/app/actions/chatbot";
+import { exportConversationToPdf } from "@/lib/chat/exportConversationPdf";
 import type { ChatTopic } from "@/components/organisms/ChatSidebar";
 import type { ChatSuggestion } from "@/components/molecules/ChatWelcomePrompt";
 import type { ChatChip } from "@/components/molecules/ChatInputBar";
@@ -28,11 +29,13 @@ const SUGGESTIONS: ChatSuggestion[] = [
   { text: "Principales desafíos de las iniciativas que trabajan con huertos escolares en la biodiversidad" },
 ];
 
+// Preguntas hardcodeadas por decisión del equipo de datos (correo de Andrea
+// Torres, 2026-08-27) — cada botón envía su pregunta asociada al RAG.
 const CONTEXT_CHIPS: ChatChip[] = [
-  { label: "Barreras Logísticas" },
-  { label: "Costo de Insumos" },
-  { label: "Apoyo Institucional" },
-  { label: "Financiamiento" },
+  { label: "Barreras", question: "¿Qué barreras han encontrado las iniciativas?" },
+  { label: "Sistemas alimentarios", question: "¿Qué es un sistema alimentario?" },
+  { label: "Estrategias", question: "¿Qué estrategias se han encontrado?" },
+  { label: "Financiamiento", question: "¿Qué financiamiento han encontrado las iniciativas?" },
 ];
 
 async function handleSend(message: string): Promise<Omit<AssistantEntry, "id" | "role">> {
@@ -72,6 +75,7 @@ export default function ChatbotPage() {
           suggestions={SUGGESTIONS}
           contextChips={CONTEXT_CHIPS}
           onSend={handleSend}
+          onDownload={exportConversationToPdf}
         />
       </div>
     </main>
