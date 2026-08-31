@@ -51,6 +51,7 @@ jobs:
           NEXT_PUBLIC_DEV_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_DEV_ENVIRONMENT }}
           NEXT_PUBLIC_AZURE_STORAGE_ACCOUNT_URL: ${{ secrets.NEXT_PUBLIC_AZURE_STORAGE_ACCOUNT_URL }}
           NEXT_PUBLIC_AZURE_BLOB_SAS_TOKEN: ${{ secrets.NEXT_PUBLIC_AZURE_BLOB_SAS_TOKEN }}
+          NEXT_PUBLIC_RAG_API_URL: ${{ secrets.NEXT_PUBLIC_RAG_API_URL }}
         run: npm run build
 
       - name: Deploy to Azure Static Web Apps
