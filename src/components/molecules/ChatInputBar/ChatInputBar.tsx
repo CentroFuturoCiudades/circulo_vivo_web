@@ -7,6 +7,8 @@ import { Button } from "@/components/atoms/Button";
 
 export interface ChatChip {
   label: string;
+  /** Question sent to the chatbot on click. Falls back to `label` if omitted. */
+  question?: string;
   onClick?: () => void;
 }
 

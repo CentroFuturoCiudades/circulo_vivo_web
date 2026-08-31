@@ -114,6 +114,15 @@ export function ChatInterface({
     },
   }));
 
+  // Context chips send their associated question (or label, if no question given)
+  const resolvedChips: ChatChip[] = contextChips.map((c) => ({
+    ...c,
+    onClick: () => {
+      c.onClick?.();
+      send(c.question ?? c.label);
+    },
+  }));
+
   async function send(text: string) {
     const trimmed = text.trim();
     if (!trimmed) return;
@@ -278,7 +287,7 @@ export function ChatInterface({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2 }}
-                className="mx-auto flex w-full max-w-[860px] flex-col gap-4 px-4 py-4 md:px-8 md:py-8"
+                className="mx-auto flex w-full max-w-[1120px] flex-col gap-4 px-4 py-4 md:px-8 md:py-8"
               >
                 {messages.map((entry) => {
                   if (entry.role === "user") {
@@ -318,7 +327,7 @@ export function ChatInterface({
 
         {/* Input bar — sticky at bottom */}
         <ChatInputBar
-          chips={contextChips}
+          chips={resolvedChips}
           value={inputValue}
           onChange={setInputValue}
           onSend={send}
