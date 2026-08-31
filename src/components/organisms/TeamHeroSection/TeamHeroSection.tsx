@@ -82,10 +82,9 @@ export function TeamHeroSection() {
           <h1
             className="font-sans font-semibold text-white text-[28px] leading-[36px] md:text-[36px] md:leading-[46px] lg:text-[48px] lg:leading-[60px]"
           >
-            Tu socio estratégico
+            Muchas miradas,
             <br />
-            para el éxito en la{" "}
-            <span className="font-serif italic font-medium">investigación</span>
+            <span className="font-serif italic font-medium">una misma causa</span>
           </h1>
 
           {/* Description */}

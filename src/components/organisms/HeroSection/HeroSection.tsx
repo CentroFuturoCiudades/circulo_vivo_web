@@ -113,11 +113,12 @@ export function HeroSection({
         >
           {title ?? (
             <h1 className="font-sans font-semibold text-white text-[28px] leading-[36px] md:text-[36px] md:leading-[46px] lg:text-[48px] lg:leading-[60px]">
-              Impulsando la creación de conocimientos y espacios para la
-              transformación de los{" "}
+              Contribuyendo a replantear cómo producimos, distribuimos y
+              consumimos alimentos a través de la integración del{" "}
               <span className="font-serif italic font-medium" style={{ fontWeight: 500 }}>
-                sistemas alimentarios
+                aprendizaje colectivo
               </span>
+              .
             </h1>
           )}
           <p
@@ -176,13 +177,13 @@ export function HeroSection({
                 className="font-sans font-medium text-white/80 uppercase"
                 style={{ fontSize: 12, letterSpacing: "1.2px", lineHeight: 1 }}
               >
-                Datos en Tiempo Real
+                Levantamiento de información en territorio
               </p>
               <p className="font-sans font-semibold text-white mt-2" style={{ fontSize: 24, lineHeight: 1.3 }}>
-                +1,240
+                +60
               </p>
               <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 14, lineHeight: 1.5 }}>
-                Iniciativas mapeadas en el territorio nacional.
+                Iniciativas entrevistadas y documentadas
               </p>
             </motion.div>
           </motion.div>
@@ -204,10 +205,10 @@ export function HeroSection({
                 className="font-sans font-medium text-white/80 uppercase"
                 style={{ fontSize: 12, letterSpacing: "1.2px", lineHeight: 1 }}
               >
-                Datos en Tiempo Real
+                +60 historias
               </p>
               <p className="font-sans font-semibold text-white mt-2" style={{ fontSize: 24, lineHeight: 1.3 }}>
-                +1,240
+                +12 territorios
               </p>
               <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 14, lineHeight: 1.5 }}>
                 Iniciativas mapeadas en el territorio nacional.

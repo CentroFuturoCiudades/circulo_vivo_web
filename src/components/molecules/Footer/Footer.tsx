@@ -60,9 +60,9 @@ const defaultLegalLinks: FooterColumnLink[] = [
 ];
 
 export function Footer({
-  tagline = "Empoderando comunidades a través de tecnología transparente y datos accionables para un futuro más cívico.",
+  tagline = "Conociendo trayectorias para integrar y compartir aprendizajes para replantear los sistemas de alimentación en México: mejores para las personas, mejores para el planeta y más justas para quienes hacen posible cada alimento.",
   columns = defaultColumns,
-  copyright = "© 2024 CivicPulse. Empowering communities through transparent technology.",
+  copyright = "Círculo Vivo es una iniciativa de investigación del Tecnológico de Monterrey. Colaboramos con pares académicos e institucionales para lograr Nuestro objetivo.",
   legalLinks = defaultLegalLinks,
   socialLinks = {},
   className,
