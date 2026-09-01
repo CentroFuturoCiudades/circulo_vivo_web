@@ -54,7 +54,7 @@ jobs:
           NEXT_PUBLIC_RAG_API_URL: ${{ secrets.NEXT_PUBLIC_RAG_API_URL }}
         run: npm run build
 
-      # Azure's managed Functions deploy step is currently flaky platform-wide
+      # Azure's managed Functions deploy step is currently flaky platform-wide 
       # (https://github.com/Azure/static-web-apps/issues/1761, #1689, #1711) —
       # builds succeed and upload fine, but the "Failed to deploy the Azure
       # Functions" polling step intermittently fails. Retry up to 3 times
