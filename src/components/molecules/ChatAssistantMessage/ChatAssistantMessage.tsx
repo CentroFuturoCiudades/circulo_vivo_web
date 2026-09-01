@@ -62,7 +62,7 @@ export function ChatAssistantMessage({
   return (
     <div
       className={cn(
-        "w-full rounded-2xl bg-white border border-[#d7d7d7] p-4 flex flex-col gap-4",
+        "w-full rounded-2xl bg-[#fef4ce] border border-[#c1c8c833] p-4 flex flex-col gap-4",
         className
       )}
     >
