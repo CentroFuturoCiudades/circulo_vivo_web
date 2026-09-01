@@ -10,7 +10,6 @@ const NAV_LINKS = [
   { label: "Equipo",      href: "/equipo", active: true },
   { label: "Mapa",        href: "/mapa" },
   { label: "Chatbot",     href: "/chatbot" },
-  { label: "Indicadores", href: "/indicadores" },
 ];
 
 export function TeamHeroSection() {

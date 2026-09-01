@@ -40,7 +40,6 @@ const NAV_LINKS = [
   { label: "Equipo",      href: "/equipo" },
   { label: "Mapa",        href: "/mapa", active: true },
   { label: "Chatbot",     href: "/chatbot" },
-  { label: "Indicadores", href: "/indicadores" },
 ];
 
 const ACTOR_OPTIONS = [

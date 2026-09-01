@@ -254,7 +254,7 @@ export function ChatbotHighlightSection({ ctaHref = "/chatbot" }: ChatbotHighlig
           </FadeUp>
 
           <FadeUp delay={0.2}>
-            <div className="flex flex-col gap-3" style={{ maxWidth: 413 }}>
+            <div className="flex flex-col gap-3" style={{ maxWidth: 480 }}>
               <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 16, lineHeight: 1.5 }}>
                 Hemos entrevistado a +60 iniciativas que ya han generado cambios tangibles para entender qué podemos mejorar para facilitar los cambios que necesitamos.
               </p>

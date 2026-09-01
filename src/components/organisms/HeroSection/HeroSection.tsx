@@ -22,7 +22,6 @@ const DEFAULT_LINKS: NavLink[] = [
   { label: "Equipo", href: "/equipo" },
   { label: "Mapa", href: "/mapa" },
   { label: "Chatbot", href: "/chatbot" },
-  { label: "Indicadores", href: "/indicadores" },
 ];
 
 export function HeroSection({
@@ -158,7 +157,7 @@ export function HeroSection({
         {/* Right — floating stat cards */}
         <div
           className="relative flex-shrink-0 hidden lg:block"
-          style={{ width: 466, height: 390 }}
+          style={{ width: 466, height: 460 }}
         >
           {/* Card navy */}
           <motion.div
@@ -194,7 +193,7 @@ export function HeroSection({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.6 }}
             className="absolute"
-            style={{ left: 29, top: 195.5, width: 320 }}
+            style={{ left: 29, top: 260, width: 320 }}
           >
             <motion.div
               animate={{ y: [0, -6, 0] }}
