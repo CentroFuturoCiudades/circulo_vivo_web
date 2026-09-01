@@ -61,8 +61,6 @@ export interface ChatInterfaceProps {
    */
   onDownload?: (messages: ChatEntry[]) => void;
   methodologyNote?: string;
-  methodologyLink?: string;
-  onMethodologyClick?: () => void;
   className?: string;
 }
 
@@ -84,8 +82,6 @@ export function ChatInterface({
   onTopicSelect,
   onDownload,
   methodologyNote,
-  methodologyLink,
-  onMethodologyClick,
   className,
 }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<ChatEntry[]>(initialMessages);
@@ -193,8 +189,6 @@ export function ChatInterface({
       <ChatSidebar
         topics={resolvedTopics}
         methodologyNote={methodologyNote}
-        methodologyLink={methodologyLink}
-        onMethodologyClick={onMethodologyClick}
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />
