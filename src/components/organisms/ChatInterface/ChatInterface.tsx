@@ -61,8 +61,6 @@ export interface ChatInterfaceProps {
    */
   onDownload?: (messages: ChatEntry[]) => void;
   methodologyNote?: string;
-  methodologyLink?: string;
-  onMethodologyClick?: () => void;
   className?: string;
 }
 
@@ -84,8 +82,6 @@ export function ChatInterface({
   onTopicSelect,
   onDownload,
   methodologyNote,
-  methodologyLink,
-  onMethodologyClick,
   className,
 }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<ChatEntry[]>(initialMessages);
@@ -111,6 +107,15 @@ export function ChatInterface({
       setSelectedTopic(t.label);
       onTopicSelect?.(t.label);
       setSidebarOpen(false);
+    },
+  }));
+
+  // Context chips send their associated question (or label, if no question given)
+  const resolvedChips: ChatChip[] = contextChips.map((c) => ({
+    ...c,
+    onClick: () => {
+      c.onClick?.();
+      send(c.question ?? c.label);
     },
   }));
 
@@ -184,8 +189,6 @@ export function ChatInterface({
       <ChatSidebar
         topics={resolvedTopics}
         methodologyNote={methodologyNote}
-        methodologyLink={methodologyLink}
-        onMethodologyClick={onMethodologyClick}
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />
@@ -278,7 +281,7 @@ export function ChatInterface({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2 }}
-                className="mx-auto flex w-full max-w-[860px] flex-col gap-4 px-4 py-4 md:px-8 md:py-8"
+                className="mx-auto flex w-full max-w-[1120px] flex-col gap-4 px-4 py-4 md:px-8 md:py-8"
               >
                 {messages.map((entry) => {
                   if (entry.role === "user") {
@@ -318,7 +321,7 @@ export function ChatInterface({
 
         {/* Input bar — sticky at bottom */}
         <ChatInputBar
-          chips={contextChips}
+          chips={resolvedChips}
           value={inputValue}
           onChange={setInputValue}
           onSend={send}
