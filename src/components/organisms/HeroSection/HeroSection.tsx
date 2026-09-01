@@ -5,7 +5,13 @@ import { motion } from "framer-motion";
 import { MoveUpRight, PlayCircle } from "lucide-react";
 import { NavBar, type NavLink } from "@/components/molecules/NavBar";
 import { Button } from "@/components/atoms/Button";
+import { resolveSignedVideoUrl, resolveSignedImageUrl } from "@/lib/azure/paths";
 import heroBg from "@/assets/bg-images/hero.jpg";
+
+const HERO_VIDEO_PATH = "home/hero-bg.mp4";
+// First frame of the video, shown while it buffers — avoids flashing the old
+// static photo before the video takes over.
+const HERO_VIDEO_POSTER_PATH = "home/hero-bg-poster.jpg";
 
 export interface HeroSectionProps {
   links?: NavLink[];
@@ -33,15 +39,30 @@ export function HeroSection({
   onPrimaryClick,
   onSecondaryClick,
 }: HeroSectionProps) {
+  const videoUrl = resolveSignedVideoUrl(HERO_VIDEO_PATH);
+  const posterUrl = resolveSignedImageUrl(HERO_VIDEO_POSTER_PATH);
+
   return (
     <section className="relative min-h-screen overflow-hidden flex flex-col">
-      <Image
-        src={heroBg}
-        alt=""
-        fill
-        priority
-        className="object-cover object-center"
-      />
+      {videoUrl ? (
+        <video
+          src={videoUrl}
+          poster={posterUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+      ) : (
+        <Image
+          src={heroBg}
+          alt=""
+          fill
+          priority
+          className="object-cover object-center"
+        />
+      )}
       <div
         className="absolute inset-0"
         style={{
