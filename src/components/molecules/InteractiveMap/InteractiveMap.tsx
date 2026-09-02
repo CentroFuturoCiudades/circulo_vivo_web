@@ -47,6 +47,49 @@ const GEOJSON_NAME_TO_COUNTRY: Record<string, string> = Object.fromEntries(
 );
 const CENTRAL_AMERICA_GEOJSON_NAMES = Object.values(COUNTRY_NAME_TO_GEOJSON);
 
+// ── GeoJSON prefetch (bbox source of truth) ───────────────────────────────
+// `map.querySourceFeatures` only returns features from *currently loaded*
+// tiles — for a plain (non-vector) GeoJSON source that means whatever
+// happens to be near the last camera position. Selecting a state whose tile
+// was never loaded (e.g. jumping from a CDMX-zoomed view straight to a
+// Monterrey initiative) silently returns nothing, so `fitBounds` never
+// fires and the camera just sits there. Fetching + caching the same GeoJSON
+// ourselves gives us every feature up front, independent of the camera.
+type FeatureCollectionLike = { features: Array<{ properties?: Record<string, unknown>; geometry: { type: string; coordinates: unknown } }> };
+
+let mxStatesPromise: Promise<FeatureCollectionLike> | null = null;
+function loadMxStatesGeojson(): Promise<FeatureCollectionLike> {
+  if (!mxStatesPromise) mxStatesPromise = fetch(MEXICO_STATES_URL).then((r) => r.json());
+  return mxStatesPromise;
+}
+
+let worldCountriesPromise: Promise<FeatureCollectionLike> | null = null;
+function loadWorldCountriesGeojson(): Promise<FeatureCollectionLike> {
+  if (!worldCountriesPromise) worldCountriesPromise = fetch(WORLD_COUNTRIES_URL).then((r) => r.json());
+  return worldCountriesPromise;
+}
+
+/** Bounding box of every ring in every feature matching `name`, or null if none match. */
+function boundsForFeature(data: FeatureCollectionLike, name: string): [[number, number], [number, number]] | null {
+  const lngs: number[] = [];
+  const lats: number[] = [];
+  for (const f of data.features) {
+    if (f.properties?.name !== name) continue;
+    const geom = f.geometry;
+    const rings =
+      geom.type === "Polygon"      ? (geom.coordinates as number[][][]) :
+      geom.type === "MultiPolygon" ? (geom.coordinates as number[][][][]).flat(1) : [];
+    for (const ring of rings) {
+      for (const [lng, lat] of ring) {
+        lngs.push(lng);
+        lats.push(lat);
+      }
+    }
+  }
+  if (!lngs.length) return null;
+  return [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]];
+}
+
 /** Translates our Spanish country names to this GeoJSON's English ones, dropping non-matches (e.g. Mexican states). */
 function toGeojsonNames(names: string[]): string[] {
   return names.map((n) => COUNTRY_NAME_TO_GEOJSON[n]).filter((n): n is string => !!n);
@@ -95,6 +138,13 @@ export function InteractiveMap({
 }: InteractiveMapProps) {
   const mapRef = useRef<MapRef>(null);
   const [hoveredState, setHoveredState] = useState<string | null>(null);
+  const [mxStatesData, setMxStatesData] = useState<FeatureCollectionLike | null>(null);
+  const [worldCountriesData, setWorldCountriesData] = useState<FeatureCollectionLike | null>(null);
+
+  useEffect(() => {
+    loadMxStatesGeojson().then(setMxStatesData);
+    loadWorldCountriesGeojson().then(setWorldCountriesData);
+  }, []);
   const activeStatesSet = new Set(stateNames);
   // Sede outside Mexico (e.g. "Guatemala") — filled via the ca-countries
   // layer below instead of the mx-states one.
@@ -170,46 +220,16 @@ export function InteractiveMap({
     }
 
     // Sede outside Mexico (e.g. "Guatemala") — fit to its polygon in the
-    // ca-countries source instead of mx-states.
-    const sourceId = selectedCountryGeojsonName ? "ca-countries" : "mx-states";
+    // ca-countries dataset instead of mx-states.
+    const data = selectedCountryGeojsonName ? worldCountriesData : mxStatesData;
     const featureName = selectedCountryGeojsonName ?? selectedStateName;
+    if (!data) return; // geojson still loading — this effect re-runs once it's set
 
-    function fitToFeatureBounds(): boolean {
-      const features = map!.querySourceFeatures(sourceId);
-      const lngs: number[] = [];
-      const lats: number[] = [];
+    const bounds = boundsForFeature(data, featureName);
+    if (!bounds) return;
 
-      for (const f of features) {
-        if (f.properties?.name !== featureName) continue;
-        const geom = f.geometry;
-        const rings =
-          geom.type === "Polygon"      ? geom.coordinates :
-          geom.type === "MultiPolygon" ? geom.coordinates.flat(1) : [];
-        for (const ring of rings) {
-          for (const [lng, lat] of ring) {
-            lngs.push(lng as number);
-            lats.push(lat as number);
-          }
-        }
-      }
-
-      if (!lngs.length) return false;
-
-      map!.fitBounds(
-        [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
-        { padding: 80, maxZoom: 8, duration: 700, essential: true }
-      );
-      return true;
-    }
-
-    if (!fitToFeatureBounds()) {
-      const onSourceData = () => {
-        if (fitToFeatureBounds()) map.off("sourcedata", onSourceData);
-      };
-      map.on("sourcedata", onSourceData);
-      return () => { map.off("sourcedata", onSourceData); };
-    }
-  }, [selectedStateName, selectedCountryGeojsonName]);
+    map.fitBounds(bounds, { padding: 80, maxZoom: 8, duration: 700, essential: true });
+  }, [selectedStateName, selectedCountryGeojsonName, mxStatesData, worldCountriesData]);
 
   // ── MapLibre fill/line expressions ────────────────────────
   // Priority: sede > presencia > overview > transparent
