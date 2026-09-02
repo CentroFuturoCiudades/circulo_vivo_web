@@ -36,8 +36,8 @@ export interface EcosystemMapSectionProps {
 }
 
 export function EcosystemMapSection({
-  title = "Navega el ecosistema",
-  description = "Visualiza la distribución geográfica de los esfuerzos ciudadanos y encuentra colaboradores potenciales cerca de ti.",
+  title = "Mapeo de experiencias",
+  description = "Visualiza iniciativas identificadas mediante investigación de campo y entrevistas, mostrando la diversidad de actores y experiencias vinculadas con la alimentación.",
   ctaLabel = "Abrir mapa completo",
   ctaHref = "/mapa",
 }: EcosystemMapSectionProps) {

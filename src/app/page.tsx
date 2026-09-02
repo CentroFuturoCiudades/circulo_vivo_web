@@ -2,6 +2,7 @@
 
 import { Footer } from "@/components/molecules/Footer";
 import { HeroSection } from "@/components/organisms/HeroSection";
+import { SistemasAlimentariosSection } from "@/components/organisms/SistemasAlimentariosSection";
 import { ChatbotHighlightSection } from "@/components/organisms/ChatbotHighlightSection";
 import { EcosystemMapSection } from "@/components/organisms/EcosystemMapSection";
 import { ConversionBannerSection } from "@/components/organisms/ConversionBannerSection";
@@ -17,6 +18,7 @@ export default function HomePage() {
     return (
         <main className="w-full bg-white">
             <HeroSection links={NAV_LINKS} />
+            <SistemasAlimentariosSection />
             <ChatbotHighlightSection />
             <EcosystemMapSection />
             <ConversionBannerSection />

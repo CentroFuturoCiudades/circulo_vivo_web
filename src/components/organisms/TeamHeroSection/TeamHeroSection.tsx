@@ -91,9 +91,10 @@ export function TeamHeroSection() {
             className="font-sans font-normal text-white/60 max-w-2xl"
             style={{ fontSize: 18, lineHeight: 1.6, paddingTop: 15 }}
           >
-            Un sistema modular de conocimiento diseñado para catalizar la
-            investigación orientada a desafíos complejos en salud y equidad
-            social.
+            Somos un equipo con trayectorias y aprendizajes distintos,
+            motivados por la necesidad de ponernos en acción para
+            transformar los sistemas de alimentación en México y en el
+            mundo.
           </p>
 
           {/* Buttons */}

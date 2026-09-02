@@ -22,12 +22,12 @@ export interface ChatSidebarProps {
 }
 
 const DEFAULT_NOTE =
-  "Basado en el análisis cualitativo de XX horas de entrevistas semiestructuradas realizado mediante LLM locales y validado por investigadoras humanas.";
+  "Hemos entrevistado a +60 iniciativas para entender qué podemos mejorar para facilitar los cambios que necesitamos. En esta sección hemos sistematizado los datos de esas entrevistas para que el conocimiento colectivo nutra la política pública.";
 
-const DEFAULT_TITLE = "Asistente de investigación";
+const DEFAULT_TITLE = "Explora las historias de las iniciativas que ya están generando cambios.";
 
 const DEFAULT_DESCRIPTION =
-  "Responde tus preguntas a partir del análisis cualitativo de entrevistas con iniciativas de sistemas alimentarios. Escribe una pregunta o elige un tema para explorar los hallazgos.";
+  "Puedes preguntar sobre las barreras que enfrentan y sobre las estrategias que implementan para superarlas.";
 
 export function ChatSidebar({
   title = DEFAULT_TITLE,

@@ -33,7 +33,7 @@ const DEFAULT_LINKS: NavLink[] = [
 export function HeroSection({
   links = DEFAULT_LINKS,
   title,
-  subtitle = "Una plataforma para mapear, analizar y conectar iniciativas, proyectos y movimientos que impulsan la transformación de los sistemas alimentarios hacia modelos más saludables, justos y sostenibles.",
+  subtitle = "Conectamos personas e iniciativas que ya están trabajando para configurar sistemas alimentarios mejores para las personas, para el planeta y para quienes hacen posible cada alimento.",
   primaryCta = "Explorar Mapa",
   secondaryCta = "Ver Demostración",
   onPrimaryClick,

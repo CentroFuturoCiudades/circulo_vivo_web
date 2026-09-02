@@ -27,27 +27,11 @@ export interface FooterProps {
 
 const defaultColumns: FooterColumn[] = [
   {
-    heading: "Plataforma",
+    heading: "Explora",
     links: [
-      { label: "Mapa Global",         href: "#" },
-      { label: "Dashboard Regional",  href: "#" },
-      { label: "Metodología",         href: "#" },
-    ],
-  },
-  {
-    heading: "Recursos",
-    links: [
-      { label: "Reportes PDF", href: "#" },
-      { label: "API Pública",  href: "#" },
-      { label: "Blog Cívico",  href: "#" },
-    ],
-  },
-  {
-    heading: "Contacto",
-    links: [
-      { label: "hola@circulovivo.org", href: "mailto:hola@circulovivo.org" },
-      { label: "+52 (55) 1234 5678",   href: "tel:+5215512345678" },
-      { label: "CDMX, México",         href: "#" },
+      { label: "Mapa de iniciativas",      href: "/mapa" },
+      { label: "Asistente de investigación", href: "/chatbot" },
+      { label: "Equipo",                   href: "/equipo" },
     ],
   },
 ];
