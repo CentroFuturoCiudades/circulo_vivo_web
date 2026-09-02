@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Footer } from "@/components/molecules/Footer";
 import { HeroSection } from "@/components/organisms/HeroSection";
 import { SistemasAlimentariosSection } from "@/components/organisms/SistemasAlimentariosSection";
@@ -15,9 +16,15 @@ const NAV_LINKS = [
 ];
 
 export default function HomePage() {
+    const router = useRouter();
+
     return (
         <main className="w-full bg-white">
-            <HeroSection links={NAV_LINKS} />
+            <HeroSection
+                links={NAV_LINKS}
+                onPrimaryClick={() => router.push("/mapa")}
+                onSecondaryClick={() => router.push("/chatbot")}
+            />
             <SistemasAlimentariosSection />
             <ChatbotHighlightSection />
             <EcosystemMapSection />
