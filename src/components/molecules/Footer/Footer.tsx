@@ -27,27 +27,11 @@ export interface FooterProps {
 
 const defaultColumns: FooterColumn[] = [
   {
-    heading: "Plataforma",
+    heading: "Explora",
     links: [
-      { label: "Mapa Global",         href: "#" },
-      { label: "Dashboard Regional",  href: "#" },
-      { label: "Metodología",         href: "#" },
-    ],
-  },
-  {
-    heading: "Recursos",
-    links: [
-      { label: "Reportes PDF", href: "#" },
-      { label: "API Pública",  href: "#" },
-      { label: "Blog Cívico",  href: "#" },
-    ],
-  },
-  {
-    heading: "Contacto",
-    links: [
-      { label: "hola@circulovivo.org", href: "mailto:hola@circulovivo.org" },
-      { label: "+52 (55) 1234 5678",   href: "tel:+5215512345678" },
-      { label: "CDMX, México",         href: "#" },
+      { label: "Mapa de iniciativas",      href: "/mapa" },
+      { label: "Asistente de investigación", href: "/chatbot" },
+      { label: "Equipo",                   href: "/equipo" },
     ],
   },
 ];
@@ -60,9 +44,9 @@ const defaultLegalLinks: FooterColumnLink[] = [
 ];
 
 export function Footer({
-  tagline = "Empoderando comunidades a través de tecnología transparente y datos accionables para un futuro más cívico.",
+  tagline = "Conociendo trayectorias para integrar y compartir aprendizajes para replantear los sistemas de alimentación en México: mejores para las personas, mejores para el planeta y más justas para quienes hacen posible cada alimento.",
   columns = defaultColumns,
-  copyright = "© 2024 CivicPulse. Empowering communities through transparent technology.",
+  copyright = "Círculo Vivo es una iniciativa de investigación del Tecnológico de Monterrey. Colaboramos con pares académicos e institucionales para lograr Nuestro objetivo.",
   legalLinks = defaultLegalLinks,
   socialLinks = {},
   className,

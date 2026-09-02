@@ -1,23 +1,45 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useSyncExternalStore } from "react";
+import { Info } from "lucide-react";
 import { NavBar }           from "@/components/molecules/NavBar";
 import { SearchBar }        from "@/components/molecules/SearchBar";
 import { FilterDropdown }   from "@/components/molecules/FilterDropdown";
 import { InitiativesMap }   from "@/components/organisms/InitiativesMap";
 import { MapFooter }        from "@/components/molecules/MapFooter";
+import { MapIntroModal }    from "@/components/molecules/MapIntroModal";
+import { Button }           from "@/components/atoms/Button";
 import { useIsMobile }      from "@/lib/useIsMobile";
 import { DataUnavailableMessage } from "@/components/molecules/DataUnavailableMessage";
 import type { Initiative }  from "@/components/organisms/InitiativesMap";
 
 // ── Static config ──────────────────────────────────────────────────────────
 
+const MAP_INTRO_STORAGE_KEY = "circulo-vivo:mapa-intro-seen";
+
+// Mirrors the useIsMobile pattern: reads a browser-only source without a
+// hydration mismatch — the server snapshot reports "seen" so the modal never
+// renders during SSR, then React re-checks the real client snapshot right
+// after mount.
+function subscribeIntroSeen() {
+  return () => {};
+}
+function getIntroSeenSnapshot() {
+  try {
+    return localStorage.getItem(MAP_INTRO_STORAGE_KEY) === "true";
+  } catch {
+    return true;
+  }
+}
+function getIntroSeenServerSnapshot() {
+  return true;
+}
+
 const NAV_LINKS = [
   { label: "Inicio",      href: "/" },
   { label: "Equipo",      href: "/equipo" },
   { label: "Mapa",        href: "/mapa", active: true },
   { label: "Chatbot",     href: "/chatbot" },
-  { label: "Indicadores", href: "/indicadores" },
 ];
 
 const ACTOR_OPTIONS = [
@@ -60,7 +82,24 @@ export function MapaPageClient({ initiatives, state }: MapaPageClientProps) {
   const [actor,    setActor]    = useState<string | undefined>();
   const [escala,   setEscala]   = useState<string | undefined>();
   const [category, setCategory] = useState<string | undefined>();
+  const [forceIntroOpen, setForceIntroOpen] = useState(false);
+  const [introDismissed, setIntroDismissed] = useState(false);
   const isMobile = useIsMobile();
+
+  // Auto-opens once per visitor (until localStorage says otherwise); the info
+  // button can always force it open again via forceIntroOpen.
+  const introSeen = useSyncExternalStore(subscribeIntroSeen, getIntroSeenSnapshot, getIntroSeenServerSnapshot);
+  const introOpen = forceIntroOpen || (!introSeen && !introDismissed);
+
+  function closeIntro() {
+    setForceIntroOpen(false);
+    setIntroDismissed(true);
+    try {
+      localStorage.setItem(MAP_INTRO_STORAGE_KEY, "true");
+    } catch {
+      // ignore — worst case the modal reopens next visit
+    }
+  }
 
   const filtered = useMemo(() => {
     return initiatives.filter((i) => {
@@ -139,6 +178,17 @@ export function MapaPageClient({ initiatives, state }: MapaPageClientProps) {
           <h1 className="sr-only">Mapa de iniciativas</h1>
           <div className="relative z-10 flex-1 min-h-0">
             <InitiativesMap initiatives={filtered} className="w-full h-full" />
+
+            {/* Floating info button — reopens the map explainer, tucked in a corner so it never overlaps the sidebar, search bar, or zoom controls */}
+            <Button
+              variant="icon"
+              color="neutral"
+              iconLeft={Info}
+              size="sm"
+              onClick={() => setForceIntroOpen(true)}
+              aria-label="Acerca del mapa"
+              className="absolute top-4 right-4 z-20 rounded-full bg-white shadow-md"
+            />
           </div>
         </>
       )}
@@ -147,6 +197,8 @@ export function MapaPageClient({ initiatives, state }: MapaPageClientProps) {
       <div className="relative z-20">
         <MapFooter />
       </div>
+
+      <MapIntroModal open={introOpen} onClose={closeIntro} />
     </div>
   );
 }

@@ -10,7 +10,6 @@ const NAV_LINKS = [
   { label: "Equipo",      href: "/equipo", active: true },
   { label: "Mapa",        href: "/mapa" },
   { label: "Chatbot",     href: "/chatbot" },
-  { label: "Indicadores", href: "/indicadores" },
 ];
 
 export function TeamHeroSection() {
@@ -82,10 +81,9 @@ export function TeamHeroSection() {
           <h1
             className="font-sans font-semibold text-white text-[28px] leading-[36px] md:text-[36px] md:leading-[46px] lg:text-[48px] lg:leading-[60px]"
           >
-            Tu socio estratégico
+            Muchas miradas,
             <br />
-            para el éxito en la{" "}
-            <span className="font-serif italic font-medium">investigación</span>
+            <span className="font-serif italic font-medium">una misma causa</span>
           </h1>
 
           {/* Description */}
@@ -93,9 +91,10 @@ export function TeamHeroSection() {
             className="font-sans font-normal text-white/60 max-w-2xl"
             style={{ fontSize: 18, lineHeight: 1.6, paddingTop: 15 }}
           >
-            Un sistema modular de conocimiento diseñado para catalizar la
-            investigación orientada a desafíos complejos en salud y equidad
-            social.
+            Somos un equipo con trayectorias y aprendizajes distintos,
+            motivados por la necesidad de ponernos en acción para
+            transformar los sistemas de alimentación en México y en el
+            mundo.
           </p>
 
           {/* Buttons */}

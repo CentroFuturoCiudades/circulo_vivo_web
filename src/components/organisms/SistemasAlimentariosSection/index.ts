@@ -1,0 +1,1 @@
+export { SistemasAlimentariosSection } from "./SistemasAlimentariosSection";

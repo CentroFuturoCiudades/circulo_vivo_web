@@ -37,14 +37,14 @@ export interface ConversionBannerSectionProps {
 }
 
 export function ConversionBannerSection({
-  title = "Únete a la red de transformación",
-  subtitle = "Impulsa proyectos con impacto sistémico real.",
-  ctaLabel = "Solicitar Acceso",
-  ctaHref = "#",
+  title = "Personas detrás de Círculo Vivo",
+  subtitle = "Conoce a quienes contribuyen desde diferentes disciplinas y experiencias a comprender la alimentación en nuestra región.",
+  ctaLabel = "Conocer al equipo",
+  ctaHref = "/equipo",
 }: ConversionBannerSectionProps) {
   const router = useRouter();
   return (
-    <section className="relative overflow-hidden rounded-2xl py-[60px] mx-6 md:mx-9 mb-12">
+    <section className="relative overflow-hidden rounded-2xl py-[60px] mx-6 md:mx-9 my-12">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/join-transformation.jpg')" }}

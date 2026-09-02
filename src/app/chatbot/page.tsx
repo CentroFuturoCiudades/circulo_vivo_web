@@ -14,7 +14,6 @@ const NAV_LINKS = [
   { label: "Equipo",      href: "/equipo" },
   { label: "Mapa",        href: "/mapa" },
   { label: "Chatbot",     href: "/chatbot", active: true },
-  { label: "Indicadores", href: "/indicadores" },
 ];
 
 const TOPICS: ChatTopic[] = [
