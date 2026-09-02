@@ -7,6 +7,7 @@ import { NavBar, type NavLink } from "@/components/molecules/NavBar";
 import { Button } from "@/components/atoms/Button";
 import { resolveSignedVideoUrl, resolveSignedImageUrl } from "@/lib/azure/paths";
 import heroBg from "@/assets/bg-images/hero.jpg";
+import circuloVivoLogoWhite from "@/assets/logos/logo-white.png";
 
 const HERO_VIDEO_PATH = "home/hero-bg.mp4";
 // First frame of the video, shown while it buffers — avoids flashing the old
@@ -33,7 +34,7 @@ const DEFAULT_LINKS: NavLink[] = [
 export function HeroSection({
   links = DEFAULT_LINKS,
   title,
-  subtitle = "Conectamos personas e iniciativas que ya están trabajando para configurar sistemas alimentarios mejores para las personas, para el planeta y para quienes hacen posible cada alimento.",
+  subtitle = "Tejemos historias y datos para replantear cómo producimos, distribuimos y consumimos alimentos. Aprendemos en colectivo.",
   primaryCta = "Explorar Mapa",
   secondaryCta = "Ver Demostración",
   onPrimaryClick,
@@ -131,14 +132,18 @@ export function HeroSection({
           transition={{ duration: 0.75, ease: "easeOut", delay: 0.1 }}
           className="flex flex-col gap-6 w-full"
         >
+          <Image
+            src={circuloVivoLogoWhite}
+            alt="Círculo Vivo"
+            className="h-20 md:h-24 w-auto self-start select-none"
+            priority
+          />
           {title ?? (
             <h1 className="font-sans font-semibold text-white text-[28px] leading-[36px] md:text-[36px] md:leading-[46px] lg:text-[48px] lg:leading-[60px]">
-              Contribuyendo a replantear cómo producimos, distribuimos y
-              consumimos alimentos a través de la integración del{" "}
+              Sistemas alimentarios que sostienen{" "}
               <span className="font-serif italic font-medium" style={{ fontWeight: 500 }}>
-                aprendizaje colectivo
+                la vida
               </span>
-              .
             </h1>
           )}
           <p
