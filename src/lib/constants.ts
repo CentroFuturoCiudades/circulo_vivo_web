@@ -4,5 +4,6 @@ export const APP_DESCRIPTION = "Plataforma de visualización de sistemas aliment
 export const NAV_LINKS = [
   { href: "/", label: "Inicio" },
   { href: "/mapa", label: "Mapa" },
+  { href: "/chatbot", label: "Asistente" },
   { href: "/equipo", label: "Equipo" },
 ] as const;

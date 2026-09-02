@@ -5,7 +5,14 @@ import { motion } from "framer-motion";
 import { MoveUpRight, PlayCircle } from "lucide-react";
 import { NavBar, type NavLink } from "@/components/molecules/NavBar";
 import { Button } from "@/components/atoms/Button";
+import { resolveSignedVideoUrl, resolveSignedImageUrl } from "@/lib/azure/paths";
 import heroBg from "@/assets/bg-images/hero.jpg";
+import circuloVivoLogoWhite from "@/assets/logos/logo-white.png";
+
+const HERO_VIDEO_PATH = "home/hero-bg.mp4";
+// First frame of the video, shown while it buffers — avoids flashing the old
+// static photo before the video takes over.
+const HERO_VIDEO_POSTER_PATH = "home/hero-bg-poster.jpg";
 
 export interface HeroSectionProps {
   links?: NavLink[];
@@ -22,27 +29,41 @@ const DEFAULT_LINKS: NavLink[] = [
   { label: "Equipo", href: "/equipo" },
   { label: "Mapa", href: "/mapa" },
   { label: "Chatbot", href: "/chatbot" },
-  { label: "Indicadores", href: "/indicadores" },
 ];
 
 export function HeroSection({
   links = DEFAULT_LINKS,
   title,
-  subtitle = "Una plataforma para mapear, analizar y conectar iniciativas, proyectos y movimientos que impulsan la transformación de los sistemas alimentarios hacia modelos más saludables, justos y sostenibles.",
+  subtitle = "Tejemos historias y datos para replantear cómo producimos, distribuimos y consumimos alimentos. Aprendemos en colectivo.",
   primaryCta = "Explorar Mapa",
   secondaryCta = "Ver Demostración",
   onPrimaryClick,
   onSecondaryClick,
 }: HeroSectionProps) {
+  const videoUrl = resolveSignedVideoUrl(HERO_VIDEO_PATH);
+  const posterUrl = resolveSignedImageUrl(HERO_VIDEO_POSTER_PATH);
+
   return (
     <section className="relative min-h-screen overflow-hidden flex flex-col">
-      <Image
-        src={heroBg}
-        alt=""
-        fill
-        priority
-        className="object-cover object-center"
-      />
+      {videoUrl ? (
+        <video
+          src={videoUrl}
+          poster={posterUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+      ) : (
+        <Image
+          src={heroBg}
+          alt=""
+          fill
+          priority
+          className="object-cover object-center"
+        />
+      )}
       <div
         className="absolute inset-0"
         style={{
@@ -111,12 +132,17 @@ export function HeroSection({
           transition={{ duration: 0.75, ease: "easeOut", delay: 0.1 }}
           className="flex flex-col gap-6 w-full"
         >
+          <Image
+            src={circuloVivoLogoWhite}
+            alt="Círculo Vivo"
+            className="h-20 md:h-24 w-auto self-start select-none"
+            priority
+          />
           {title ?? (
             <h1 className="font-sans font-semibold text-white text-[28px] leading-[36px] md:text-[36px] md:leading-[46px] lg:text-[48px] lg:leading-[60px]">
-              Impulsando la creación de conocimientos y espacios para la
-              transformación de los{" "}
+              Sistemas alimentarios que sostienen{" "}
               <span className="font-serif italic font-medium" style={{ fontWeight: 500 }}>
-                sistemas alimentarios
+                la vida
               </span>
             </h1>
           )}
@@ -157,7 +183,7 @@ export function HeroSection({
         {/* Right — floating stat cards */}
         <div
           className="relative flex-shrink-0 hidden lg:block"
-          style={{ width: 466, height: 390 }}
+          style={{ width: 466, height: 460 }}
         >
           {/* Card navy */}
           <motion.div
@@ -176,13 +202,13 @@ export function HeroSection({
                 className="font-sans font-medium text-white/80 uppercase"
                 style={{ fontSize: 12, letterSpacing: "1.2px", lineHeight: 1 }}
               >
-                Datos en Tiempo Real
+                Levantamiento de información en territorio
               </p>
               <p className="font-sans font-semibold text-white mt-2" style={{ fontSize: 24, lineHeight: 1.3 }}>
-                +1,240
+                +60
               </p>
               <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 14, lineHeight: 1.5 }}>
-                Iniciativas mapeadas en el territorio nacional.
+                Iniciativas entrevistadas y documentadas
               </p>
             </motion.div>
           </motion.div>
@@ -193,7 +219,7 @@ export function HeroSection({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.6 }}
             className="absolute"
-            style={{ left: 29, top: 195.5, width: 320 }}
+            style={{ left: 29, top: 260, width: 320 }}
           >
             <motion.div
               animate={{ y: [0, -6, 0] }}
@@ -204,10 +230,10 @@ export function HeroSection({
                 className="font-sans font-medium text-white/80 uppercase"
                 style={{ fontSize: 12, letterSpacing: "1.2px", lineHeight: 1 }}
               >
-                Datos en Tiempo Real
+                +60 historias
               </p>
               <p className="font-sans font-semibold text-white mt-2" style={{ fontSize: 24, lineHeight: 1.3 }}>
-                +1,240
+                +12 territorios
               </p>
               <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 14, lineHeight: 1.5 }}>
                 Iniciativas mapeadas en el territorio nacional.

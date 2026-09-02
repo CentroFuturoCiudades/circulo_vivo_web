@@ -1,5 +1,5 @@
 import Papa from "papaparse";
-import { resolveImageBlobUrl } from "./paths";
+import { resolveImageBlobUrl, withSasToken } from "./paths";
 
 /**
  * Server-only helpers for fetching CSV data from Azure Blob Storage containers
@@ -35,14 +35,6 @@ export interface FetchCsvOptions {
   token?: string;
   /** Next.js fetch cache revalidation window, in seconds. Defaults to 1 hour. */
   revalidateSeconds?: number;
-}
-
-/** Appends a SAS token to a blob URL as a query string, if one is provided. */
-export function withSasToken(url: string, token?: string): string {
-  if (!token) return url;
-  const cleanToken = token.startsWith("?") ? token.slice(1) : token;
-  const separator = url.includes("?") ? "&" : "?";
-  return `${url}${separator}${cleanToken}`;
 }
 
 /**

@@ -107,7 +107,7 @@ function ChatbotMock() {
           }}
         >
           <p className="font-sans text-[#201c05]" style={{ fontSize: 16, lineHeight: 1.5 }}>
-            ¿Qué quieres saber sobre las iniciativas que están transformando los sistemas alimentarios?
+            ¿Qué quieres saber sobre las personas y proyectos que están cambiando nuestra forma de producir, distribuir y consumir alimentos?
           </p>
         </div>
 
@@ -119,13 +119,13 @@ function ChatbotMock() {
         </p>
 
         <div className="flex" style={{ gap: 12, marginTop: 48, padding: "0 12px" }}>
-          {["Barreras", "Estrategias", "Actores"].map((chip) => (
+          {["Barreras", "Estrategias", "Facilitadores"].map((chip) => (
             <Chip key={chip} color="secondary" className="text-[#455E90]">
               {chip}
             </Chip>
           ))}
           <Chip color="gold" selected className="text-white">
-            Huertos Escolares
+            Motivaciones
           </Chip>
         </div>
 
@@ -139,7 +139,7 @@ function ChatbotMock() {
             }}
           >
             <p className="font-sans text-white" style={{ fontSize: 14, lineHeight: 1.5 }}>
-              Explícame sobre los huertos escolares.
+              ¿Qué retos enfrentan las iniciativas que buscan mejorar cómo producimos y compartimos los alimentos?
             </p>
           </div>
         </div>
@@ -173,7 +173,7 @@ function ChatbotMock() {
             className="font-sans font-semibold text-center"
             style={{ fontSize: 12, lineHeight: 1.25, color: "#727879", letterSpacing: 0.6 }}
           >
-            Basado en el análisis cualitativo de XX horas de entrevistas semiestructuradas con sistemas alimentarios locales.
+            ¿Qué estrategias han diseñado e implementado las iniciativas para lograr los cambios posibles?
           </p>
         </div>
         <div
@@ -245,33 +245,37 @@ export function ChatbotHighlightSection({ ctaHref = "/chatbot" }: ChatbotHighlig
         <div className="flex flex-col w-full lg:w-auto" style={{ gap: 24 }}>
           <FadeUp delay={0.1}>
             <h2 className="font-sans font-semibold text-[#BCB884] text-[24px] leading-[32px] md:text-[32px] md:leading-[42px] lg:text-[38.67px] lg:leading-[50.27px] lg:max-w-[552px]">
-              La información que necesitas, al
+              Conoce las iniciativas que ya están promoviendo cambios
               <br />
               <span className="font-serif font-medium italic text-[#395284] text-[24px] leading-[32px] md:text-[32px] md:leading-[42px] lg:text-[38.67px] lg:leading-[50.27px]">
-                alcance de una pregunta.
+                en los sistemas de alimentación en México.
               </span>
             </h2>
           </FadeUp>
 
           <FadeUp delay={0.2}>
-            <p
-              className="font-sans font-normal text-[#5e5e5e]"
-              style={{ fontSize: 16, lineHeight: 1.5, maxWidth: 413 }}
-            >
-              Nuestra plataforma utiliza procesamiento de lenguaje natural para navegar entre miles de puntos de datos,
-              permitiéndote obtener insights estratégicos en segundos sin necesidad de ser un experto en datos.
-            </p>
+            <div className="flex flex-col gap-3" style={{ maxWidth: 480 }}>
+              <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 16, lineHeight: 1.5 }}>
+                Hemos entrevistado a +60 iniciativas que ya han generado cambios tangibles para entender qué podemos mejorar para facilitar los cambios que necesitamos.
+              </p>
+              <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 16, lineHeight: 1.5 }}>
+                Explora y conoce las variables que inciden en que una iniciativa comience, se sostenga, crezca o produzca cambios más amplios.
+              </p>
+              <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 16, lineHeight: 1.5 }}>
+                Si te interesa cómo reducir o superar estas barreras, aprovecha esta plataforma para conocer de y sobre sus trayectorias haciendo preguntas para conocerlas mejor.
+              </p>
+            </div>
           </FadeUp>
 
           <FadeUp delay={0.3}>
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-3" style={{ maxWidth: 413 }}>
               {[
                 "Análisis comparativo por regiones",
-                "Detección de brechas de innovación",
+                "Información integrada, procesada y sistematizada de forma ética, respetando las voces, experiencias y aprendizajes de quienes participaron.",
                 "Reportes automáticos descargables",
               ].map((item) => (
-                <li key={item} className="flex items-center gap-3">
-                  <CheckCircle2 size={18} className="text-[#395284] flex-shrink-0" />
+                <li key={item} className="flex items-start gap-3">
+                  <CheckCircle2 size={18} className="text-[#395284] flex-shrink-0 mt-0.5" />
                   <span className="font-sans font-normal text-[#395284]" style={{ fontSize: 16, lineHeight: 1.5 }}>
                     {item}
                   </span>

@@ -57,9 +57,15 @@ export function ProblematicaSection() {
             <em className="font-serif not-italic" style={{ color: "#BCB884" }}>conocimiento</em>.
           </h2>
         </FadeUp>
-        <FadeUp delay={0.15} className="md:self-center">
+        <FadeUp delay={0.15} className="md:self-center flex flex-col gap-4">
           <p className="font-sans text-[#747474] leading-[1.7] text-[16px] md:text-[18px]">
-            Con más de 15 años de experiencia, nos especializamos en la entrega de soluciones personalizadas que impulsan el éxito a través de diversas dimensiones sociales.
+            Somos un equipo formado por personas con distintas áreas de estudio, experiencias y motivaciones, pero con una convicción compartida: los sistemas alimentarios necesitan cambiar para que todas las personas puedan ejercer su derecho a una alimentación sana y suficiente sin generar injusticias y sin degradar el medio ambiente.
+          </p>
+          <p className="font-sans text-[#747474] leading-[1.7] text-[16px] md:text-[18px]">
+            A partir de esta convicción hemos buscado a las personas y proyectos que ya están implementando cambios en los procesos de producción, transformación y distribución de los sistemas de alimentación en México para conocer sus trayectorias, aprender de ellas e integrarlas en una plataforma para conocer, vincular y ampliar el alcance de estos esfuerzos.
+          </p>
+          <p className="font-sans text-[#747474] leading-[1.7] text-[16px] md:text-[18px]">
+            Usamos herramientas de investigación cualitativa y la tecnología que nos permite sistematizarla para conocer, diagnosticar, y atender desde la academia un reto inminente para poder pensar en el futuro con esperanza.
           </p>
         </FadeUp>
       </div>

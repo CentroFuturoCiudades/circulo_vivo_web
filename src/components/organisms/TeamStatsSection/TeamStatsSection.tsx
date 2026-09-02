@@ -59,14 +59,12 @@ function AnimatedStat({ value, label }: { value: string; label: string }) {
 const STATS = [
   { value: "+450",  label: "HORAS DE ENTREVISTAS"  },
   { value: "12+",   label: "INSTITUCIONES ALIADAS" },
-  { value: "$2.4M", label: "FONDOS APLICADOS"      },
-  { value: "100%",  label: "OPEN ACCESO"           },
 ];
 
 export function TeamStatsSection() {
   return (
     <section className="py-12 md:py-16 px-6 md:px-16 lg:px-24" style={{ backgroundColor: "#395284" }}>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+      <div className="grid grid-cols-2 gap-6 md:gap-8">
         {STATS.map((s) => (
           <AnimatedStat key={s.label} value={s.value} label={s.label} />
         ))}
