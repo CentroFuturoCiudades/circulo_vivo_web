@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins, Playfair_Display } from "next/font/google";
+import { AppInsightsInit } from "@/components/atoms/AppInsightsInit";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -33,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${poppins.variable} ${playfair.variable} font-sans antialiased`}>
+        <AppInsightsInit />
         {children}
       </body>
     </html>

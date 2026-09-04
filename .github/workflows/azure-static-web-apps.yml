@@ -52,6 +52,7 @@ jobs:
           NEXT_PUBLIC_AZURE_STORAGE_ACCOUNT_URL: ${{ secrets.NEXT_PUBLIC_AZURE_STORAGE_ACCOUNT_URL }}
           NEXT_PUBLIC_AZURE_BLOB_SAS_TOKEN: ${{ secrets.NEXT_PUBLIC_AZURE_BLOB_SAS_TOKEN }}
           NEXT_PUBLIC_RAG_API_URL: ${{ secrets.NEXT_PUBLIC_RAG_API_URL }}
+          NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING: ${{ secrets.NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING }}
         run: npm run build
 
       # Azure's managed Functions deploy step is currently flaky platform-wide 
