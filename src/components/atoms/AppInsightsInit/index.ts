@@ -1,0 +1,1 @@
+export { AppInsightsInit } from "./AppInsightsInit";
