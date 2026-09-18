@@ -44,9 +44,9 @@ const defaultLegalLinks: FooterColumnLink[] = [
 ];
 
 export function Footer({
-  tagline = "Conociendo trayectorias para integrar y compartir aprendizajes para replantear los sistemas de alimentación en México: mejores para las personas, mejores para el planeta y más justas para quienes hacen posible cada alimento.",
+  tagline = "Generamos conocimiento a partir de las trayectorias y aprendizajes de quienes ya están transformando los sistemas de alimentación en la región con mejores modelos para las personas, para el planeta y para quienes hacen posible cada alimento.",
   columns = defaultColumns,
-  copyright = "Círculo Vivo es una iniciativa de investigación del Tecnológico de Monterrey. Colaboramos con pares académicos e institucionales para lograr Nuestro objetivo.",
+  copyright = "Círculo Vivo es un proyecto de investigación impulsada por el Tecnológico de Monterrey. Colaboramos con pares académicos e institucionales para lograr nuestro objetivo compartido.",
   legalLinks = defaultLegalLinks,
   socialLinks = {},
   className,

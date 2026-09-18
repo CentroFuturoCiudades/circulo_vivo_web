@@ -59,13 +59,13 @@ export function ProblematicaSection() {
         </FadeUp>
         <FadeUp delay={0.15} className="md:self-center flex flex-col gap-4">
           <p className="font-sans text-[#747474] leading-[1.7] text-[16px] md:text-[18px]">
-            Somos un equipo formado por personas con distintas áreas de estudio, experiencias y motivaciones, pero con una convicción compartida: los sistemas alimentarios necesitan cambiar para que todas las personas puedan ejercer su derecho a una alimentación sana y suficiente sin generar injusticias y sin degradar el medio ambiente.
+            Desde distintas áreas de estudio, experiencias y motivaciones, trabajamos con una convicción compartida: los sistemas alimentarios necesitan cambiar para que todas las personas puedan ejercer su derecho a una alimentación sana y suficiente sin generar injusticias y sin degradar el medio ambiente.
           </p>
           <p className="font-sans text-[#747474] leading-[1.7] text-[16px] md:text-[18px]">
-            A partir de esta convicción hemos buscado a las personas y proyectos que ya están implementando cambios en los procesos de producción, transformación y distribución de los sistemas de alimentación en México para conocer sus trayectorias, aprender de ellas e integrarlas en una plataforma para conocer, vincular y ampliar el alcance de estos esfuerzos.
+            A partir de esta convicción hemos buscado a personas y proyectos que ya están implementando cambios en los procesos de producción, transformación y distribución de los sistemas de alimentación en México y Centroamérica. Buscamos conocer sus trayectorias, aprender de ellas e integrarlas en una plataforma para vincular y ampliar el alcance de estos esfuerzos.
           </p>
           <p className="font-sans text-[#747474] leading-[1.7] text-[16px] md:text-[18px]">
-            Usamos herramientas de investigación cualitativa y la tecnología que nos permite sistematizarla para conocer, diagnosticar, y atender desde la academia un reto inminente para poder pensar en el futuro con esperanza.
+            Usamos herramientas de investigación cualitativa y tecnología; sistematizamos la información para contribuir, desde la academia, al conocimiento, diagnóstico y atención de los retos inminentes y promover acciones que nos permitan pensar en el futuro con esperanza.
           </p>
         </FadeUp>
       </div>

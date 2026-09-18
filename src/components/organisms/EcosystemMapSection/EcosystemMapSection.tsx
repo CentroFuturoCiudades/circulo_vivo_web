@@ -37,7 +37,7 @@ export interface EcosystemMapSectionProps {
 
 export function EcosystemMapSection({
   title = "Mapeo de experiencias",
-  description = "Visualiza iniciativas identificadas mediante investigación de campo y entrevistas, mostrando la diversidad de actores y experiencias vinculadas con la alimentación.",
+  description = "Visualiza la diversidad de actores y experiencias que están replanteando los sistemas de alimentación.",
   ctaLabel = "Abrir mapa completo",
   ctaHref = "/mapa",
 }: EcosystemMapSectionProps) {

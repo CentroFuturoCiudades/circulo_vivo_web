@@ -131,8 +131,8 @@ export function IniciativasEnCursoSection() {
               className="font-sans font-normal mt-6 mb-10"
               style={{ fontSize: 16, lineHeight: 1.625, color: "rgba(0,0,0,0.6)" }}
             >
-              Metodología diseñada para recolectar insights cualitativos profundos que las
-              encuestas tradicionales omiten a través de procesos etnográficos intensivos.
+              Metodología diseñada para recolectar aprendizajes cualitativos profundos que las
+              encuestas tradicionales omiten.
             </p>
 
             <div className="flex flex-col gap-3">

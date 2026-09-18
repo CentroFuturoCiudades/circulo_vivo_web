@@ -71,17 +71,17 @@ export function IndicatorsDashboardSection({
             className="font-sans font-semibold text-[#1a1c1c] text-2xl lg:text-[32px] lg:leading-[40px]"
             style={{ letterSpacing: "-0.32px" }}
           >
-            Visualiza lo{" "}
+            Conocimiento para{" "}
             <em className="font-serif not-italic text-[#bcb884] font-medium" style={{ fontStyle: "italic" }}>
-              invisible
+              conectar
             </em>
           </h2>
           <p
             className="font-sans font-normal text-[#5f5e5e]"
             style={{ fontSize: 16, lineHeight: 1.6, maxWidth: 373 }}
           >
-            Dashboards diseñados para la toma de decisiones. KPIs de resiliencia, salud del suelo e impacto social
-            integrados en una sola vista.
+            Un espacio para explorar indicadores sobre producción, acceso y consumo de alimentos que permiten
+            comprender la realidad alimentaria de la región.
           </p>
           <Button
             color="gold"
@@ -91,7 +91,7 @@ export function IndicatorsDashboardSection({
             onClick={() => router.push(ctaHref)}
             className="normal-case tracking-normal font-normal text-base h-auto py-3 px-8 w-fit text-[#bcb884] hover:text-white [&>svg]:text-[#bcb884] hover:[&>svg]:text-white"
           >
-            Ver Indicadores
+            Explorar datos
           </Button>
         </FadeUp>
 
