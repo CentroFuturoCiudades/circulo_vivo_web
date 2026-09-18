@@ -30,9 +30,9 @@ function FadeUp({
 }
 
 const PRODUCTS = [
-  { title: "Nota conceptual de Círculo vivo", subtitle: "",              size: "4.2MB" },
-  { title: "Último artículo publicado",       subtitle: "MARCO LEGAL",   size: "1.1MB" },
-  { title: "Dataset: Indicadores de Salud",   subtitle: "DATOS CRUDOS",  size: "12MB"  },
+  { title: "Reporte Anual de Impacto 2025", subtitle: "ANÁLISIS CUANTITATIVO", size: "4.2MB" },
+  { title: "Protocolo de Ética Comunitaria", subtitle: "MARCO LEGAL",           size: "1.1MB" },
+  { title: "Dataset: Indicadores de Salud",  subtitle: "DATOS CRUDOS",          size: "12MB"  },
 ];
 
 export function ProductosInvestigacionSection() {
@@ -50,9 +50,6 @@ export function ProductosInvestigacionSection() {
         >
           Productos de Investigación
         </h2>
-        <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 16, lineHeight: 1.5, maxWidth: 480 }}>
-          Conoce otros recursos de investigación que hemos generado
-        </p>
       </FadeUp>
 
       {/* Cards */}
@@ -100,14 +97,12 @@ export function ProductosInvestigacionSection() {
               </h3>
 
               {/* Subtitle */}
-              {p.subtitle && (
-                <p
-                  className="font-sans font-bold text-[#a1a1aa] pb-4 md:pb-6"
-                  style={{ fontSize: 12, letterSpacing: "0.6px", lineHeight: 1.333 }}
-                >
-                  {p.subtitle}
-                </p>
-              )}
+              <p
+                className="font-sans font-bold text-[#a1a1aa] pb-4 md:pb-6"
+                style={{ fontSize: 12, letterSpacing: "0.6px", lineHeight: 1.333 }}
+              >
+                {p.subtitle}
+              </p>
 
               {/* Download row */}
               <motion.div

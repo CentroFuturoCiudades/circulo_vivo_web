@@ -34,7 +34,7 @@ const DEFAULT_LINKS: NavLink[] = [
 export function HeroSection({
   links = DEFAULT_LINKS,
   title,
-  subtitle = "Presentamos historias y datos de quienes ya están replanteando cómo producimos, distribuimos y consumimos alimentos. Aprendemos en colectivo.",
+  subtitle = "Tejemos historias y datos para replantear cómo producimos, distribuimos y consumimos alimentos. Aprendemos en colectivo.",
   primaryCta = "Explorar Mapa",
   secondaryCta = "Ver Demostración",
   onPrimaryClick,
@@ -236,7 +236,7 @@ export function HeroSection({
                 +12 territorios
               </p>
               <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 14, lineHeight: 1.5 }}>
-                11 entidades federativas en México y 1 país en Centroamérica. Seguimos creciendo.
+                Iniciativas mapeadas en el territorio nacional.
               </p>
             </motion.div>
           </motion.div>

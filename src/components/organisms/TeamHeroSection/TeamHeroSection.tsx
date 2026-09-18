@@ -74,7 +74,7 @@ export function TeamHeroSection() {
             className="font-sans font-semibold uppercase text-white/50"
             style={{ fontSize: 12, letterSpacing: "0.2em" }}
           >
-            PROYECTO DE INVESTIGACIÓN INSTITUCIONAL Y COLABORATIVO
+            PROYECTO DE INVESTIGACIÓN INSTITUCIONAL
           </p>
 
           {/* Heading */}
@@ -83,7 +83,7 @@ export function TeamHeroSection() {
           >
             Muchas miradas,
             <br />
-            <span className="font-serif italic font-medium">una misma causa.</span>
+            <span className="font-serif italic font-medium">una misma causa</span>
           </h1>
 
           {/* Description */}

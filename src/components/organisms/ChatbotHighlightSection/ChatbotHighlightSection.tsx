@@ -256,10 +256,13 @@ export function ChatbotHighlightSection({ ctaHref = "/chatbot" }: ChatbotHighlig
           <FadeUp delay={0.2}>
             <div className="flex flex-col gap-3" style={{ maxWidth: 480 }}>
               <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 16, lineHeight: 1.5 }}>
-                Hemos entrevistado a +60 iniciativas que ya han generado cambios tangibles para entender cómo acelerar la transformación que necesitamos en los sistemas de alimentación.
+                Hemos entrevistado a +60 iniciativas que ya han generado cambios tangibles para entender qué podemos mejorar para facilitar los cambios que necesitamos.
               </p>
               <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 16, lineHeight: 1.5 }}>
-                Explora y conoce las variables que inciden en facilitar o frenar el impacto de las iniciativas de transformación.
+                Explora y conoce las variables que inciden en que una iniciativa comience, se sostenga, crezca o produzca cambios más amplios.
+              </p>
+              <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 16, lineHeight: 1.5 }}>
+                Si te interesa cómo reducir o superar estas barreras, aprovecha esta plataforma para conocer de y sobre sus trayectorias haciendo preguntas para conocerlas mejor.
               </p>
             </div>
           </FadeUp>
@@ -267,9 +270,9 @@ export function ChatbotHighlightSection({ ctaHref = "/chatbot" }: ChatbotHighlig
           <FadeUp delay={0.3}>
             <ul className="flex flex-col gap-3" style={{ maxWidth: 413 }}>
               {[
-                "Construido a partir de escuchar a personas e iniciativas en sus propios territorios.",
+                "Análisis comparativo por regiones",
                 "Información integrada, procesada y sistematizada de forma ética, respetando las voces, experiencias y aprendizajes de quienes participaron.",
-                "Construido con y desde las voces de quienes están replanteando las maneras de producir, compartir y consumir alimentos.",
+                "Reportes automáticos descargables",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <CheckCircle2 size={18} className="text-[#395284] flex-shrink-0 mt-0.5" />

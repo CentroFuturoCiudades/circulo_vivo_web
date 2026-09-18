@@ -53,7 +53,7 @@ export function ColaboraCTASection() {
             className="font-sans text-white/70 mt-4 max-w-xl mx-auto leading-[1.6]"
             style={{ fontSize: "16px" }}
           >
-            Este proyecto es posible gracias al apoyo del Fondo Semilla del Tecnológico de Monterrey.
+            Este proyecto fue posible gracias al apoyo del Fondo Semilla del Tecnológico de Monterrey.
           </p>
         </FadeUp>
       </div>
