@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import { Briefcase, Camera, GraduationCap, Globe, Link2, Mail, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { Eyebrow } from "@/components/atoms/Eyebrow";
 import { Chip } from "@/components/atoms/Chip";
 import { Button } from "@/components/atoms/Button";
 import { DataUnavailableMessage, type DataUnavailableVariant } from "@/components/molecules/DataUnavailableMessage";
@@ -56,6 +55,8 @@ export interface MiembroTecnico {
     doctorado?: string;
     email?: string;
     socials?: MiembroTecnicoSocial[];
+    /** Project-leadership label shown in red above the name, e.g. "Investigadora principal". From the CSV's "Rol en el proyecto" column. */
+    projectRole?: string;
 }
 
 const DEFAULT_MEMBERS: MiembroTecnico[] = [
@@ -145,20 +146,6 @@ const DEFAULT_MEMBERS: MiembroTecnico[] = [
     },
 ];
 
-/**
- * Project-leadership label for specific members — not part of the tecnico.csv
- * schema, so it's kept as a small hardcoded lookup here rather than a data
- * field. Keyed by exact `name` as it appears in the CSV.
- */
-const PROJECT_ROLE_OVERRIDES: Record<string, string> = {
-    "Dra. Abril Campos Rivera": "Investigadora principal",
-    "Dra. Alejandra González Moreno": "Coordinadora de proyecto",
-};
-
-function getProjectRole(name: string): string | undefined {
-    return PROJECT_ROLE_OVERRIDES[name.trim()];
-}
-
 /** Copyright-free, procedurally generated placeholder headshot (DiceBear Open Peeps, free for commercial use). */
 function placeholderPortraitUrl(name: string): string {
     const seed = encodeURIComponent(name.trim().toLowerCase());
@@ -169,7 +156,7 @@ function placeholderPortraitUrl(name: string): string {
 
 function MemberTile({ member, onOpen }: { member: MiembroTecnico; onOpen: () => void }) {
     const photoUrl = member.imageUrl?.trim() || placeholderPortraitUrl(member.name);
-    const projectRole = getProjectRole(member.name);
+    const projectRole = member.projectRole?.trim();
 
     return (
         <button
@@ -228,7 +215,7 @@ function MemberDetailModal({
 }) {
     const photoUrl = member.imageUrl?.trim() || placeholderPortraitUrl(member.name);
     const tag = member.tag?.trim().toUpperCase() ?? "";
-    const projectRole = getProjectRole(member.name);
+    const projectRole = member.projectRole?.trim();
 
     useEffect(() => {
         function onKeyDown(e: KeyboardEvent) {
@@ -440,7 +427,6 @@ export function EquipoTecnicoSection({
         <section className="py-20 md:py-28" style={{ backgroundColor: "#f6f9ff" }}>
             {/* Header */}
             <FadeUp delay={0} className="flex flex-col gap-2 px-6 md:px-16 lg:px-24">
-                <Eyebrow color="secondary">Especialistas operativos</Eyebrow>
                 <h2
                     className="font-serif font-bold text-[#203b6b] text-[24px] md:text-[32px]"
                     style={{ lineHeight: 1.25 }}

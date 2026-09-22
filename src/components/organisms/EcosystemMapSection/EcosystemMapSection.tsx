@@ -36,9 +36,9 @@ export interface EcosystemMapSectionProps {
 }
 
 export function EcosystemMapSection({
-  title = "Mapeo de experiencias",
-  description = "Visualiza iniciativas identificadas mediante investigación de campo y entrevistas, mostrando la diversidad de actores y experiencias vinculadas con la alimentación.",
-  ctaLabel = "Abrir mapa completo",
+  title = "Mapa interactivo",
+  description = "Visualiza la diversidad de actores y experiencias que están replanteando los sistemas de alimentación en los territorios.",
+  ctaLabel = "Explora el mapa",
   ctaHref = "/mapa",
 }: EcosystemMapSectionProps) {
   const router = useRouter();
@@ -46,7 +46,7 @@ export function EcosystemMapSection({
     <section className="relative w-full overflow-hidden h-[480px] md:h-[560px] lg:h-[640px]">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/navigate-eco.jpg')" }}
+        style={{ backgroundImage: "url('/map-bg.jpg')" }}
       />
       <div
         className="absolute inset-0"

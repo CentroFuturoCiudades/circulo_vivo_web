@@ -27,30 +27,80 @@ function FadeUp({
   );
 }
 
-const PARAGRAPHS = [
-  "La alimentación es el resultado de muchas historias que interactúan. Antes de llegar a nuestra mesa, los alimentos pasaron por las manos y las decisiones de productores, trabajadores, comunidades, empresas, comercios, gobiernos y otros consumidores. En ese recorrido se utilizó agua, suelo, energía, infraestructura y conocimiento. Esa red actúa de manera integrada, teniendo como resultado qué, cómo, cuánto y a qué precio podemos comer diferentes alimentos. A estas interacciones las conocemos como sistemas alimentarios.",
-  "A lo largo del tiempo, los sistemas alimentarios han enfrentado diferentes desafíos y se han transformado para satisfacerlos.",
-  "La manera en que hoy funcionan estos sistemas ha permitido producir y distribuir alimentos a una escala extraordinaria, pero también está generando resultados que necesitamos cambiar. Muchas personas todavía carecen de una alimentación suficiente y saludable; otras enfrentan enfermedades relacionadas con dietas de baja calidad. Quienes producen nuestros alimentos rara vez reciben una compensación justa y muchas prácticas productivas degradan los recursos naturales poniendo en riesgo nuestra alimentación futura y las condiciones de habitabilidad del planeta.",
-  "Estos problemas están interconectados. Cuando hablamos de replantear el sistema alimentario, hablamos de reconocer el reto como un reto complejo, con muchos actores y muchos procesos simultáneos y de replantear sus dinámicas para tener un sistema que produzca mejor alimento para las personas, procesos más sostenibles para el planeta y dinámicas más justas para quienes hacen posible cada comida.\n\nImplica producir alimentos diversos y nutritivos, hacerlos accesibles, fortalecer a los productores, reducir las pérdidas y el desperdicio, regenerar los recursos naturales y fomentar que las políticas públicas estén alineadas con este propósito.",
-  "En México y en otras partes del mundo ya hay comunidades, cooperativas, organizaciones, empresas y gobiernos construyendo alternativas. Sus experiencias ofrecen aprendizajes valiosos para entender lo que funciona, las barreras que impiden a este tipo de esfuerzos avanzar y las alianzas necesarias para sostener el cambio.",
-];
+export interface SistemasAlimentariosSectionProps {
+  eyebrow?: string;
+  lead?: string;
+  body?: string;
+}
 
-export function SistemasAlimentariosSection() {
+export function SistemasAlimentariosSection({
+  eyebrow = "Nuestro objetivo",
+  lead = "Contribuir a la transformación de los sistemas de alimentación",
+  body = "en México y Centroamérica. En esta página encontrarás historias y datos sobre iniciativas que ya están actuando para lograr esa transformación.",
+}: SistemasAlimentariosSectionProps) {
   return (
-    <section className="relative w-full bg-white py-16 md:py-20 lg:py-[120px] px-6 md:px-9">
-      <div className="mx-auto flex flex-col gap-6">
-        {PARAGRAPHS.map((paragraph, i) => (
-          <FadeUp key={i} delay={i * 0.08} className="flex flex-col gap-4">
-            {paragraph.split("\n\n").map((block, j) => (
-              <p
-                key={j}
-                className="font-sans text-[#5e5e5e] leading-[1.7] text-[16px] md:text-[18px]"
-              >
-                {block}
-              </p>
-            ))}
-          </FadeUp>
+    <section className="relative w-full overflow-hidden bg-[#395284] py-20 md:py-28 lg:py-[140px] px-6 md:px-9">
+      {/* Decorative sphere rings — echoes the Hero's motif for visual continuity */}
+      <div
+        className="absolute pointer-events-none select-none hidden md:block"
+        style={{ right: -120, top: "50%", width: 560, height: 560, transform: "translateY(-50%)" }}
+      >
+        {[220, 300, 380, 460, 540].map((size, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full border border-white/[0.08]"
+            style={{
+              width: size,
+              height: size * 0.58,
+              top: "50%",
+              left: "50%",
+              transform: `translate(-50%, -50%) rotate(${i * 22}deg)`,
+            }}
+          />
         ))}
+      </div>
+
+      {/* Soft blurred accent glow */}
+      <div
+        className="absolute pointer-events-none select-none"
+        style={{
+          width: 420,
+          height: 420,
+          left: -160,
+          bottom: -180,
+          background: "rgba(188,184,132,0.18)",
+          borderRadius: 9999,
+          filter: "blur(110px)",
+        }}
+      />
+
+      <div className="relative z-10 max-w-[860px] mx-auto flex flex-col gap-6">
+        <FadeUp delay={0}>
+          <div className="flex items-center gap-3">
+            <span className="h-px w-10 bg-[#bcb884]" />
+            <p
+              className="font-sans font-semibold uppercase text-[#bcb884]"
+              style={{ fontSize: 12, letterSpacing: "0.2em" }}
+            >
+              {eyebrow}
+            </p>
+          </div>
+        </FadeUp>
+
+        <FadeUp delay={0.1}>
+          <p className="font-serif italic font-medium text-white text-[26px] leading-[34px] md:text-[34px] md:leading-[44px] lg:text-[42px] lg:leading-[52px]">
+            {lead}
+          </p>
+        </FadeUp>
+
+        <FadeUp delay={0.2}>
+          <p
+            className="font-sans font-normal text-white/70 max-w-[620px]"
+            style={{ fontSize: 16, lineHeight: 1.7 }}
+          >
+            {body}
+          </p>
+        </FadeUp>
       </div>
     </section>
   );

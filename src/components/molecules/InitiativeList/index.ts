@@ -1,2 +1,2 @@
 export { InitiativeList } from "./InitiativeList";
-export type { InitiativeListProps, InitiativeListItem, InitiativeListFilter } from "./InitiativeList";
+export type { InitiativeListProps, InitiativeListItem } from "./InitiativeList";

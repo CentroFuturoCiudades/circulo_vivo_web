@@ -53,7 +53,7 @@ export function ColaboraCTASection() {
             className="font-sans text-white/70 mt-4 max-w-xl mx-auto leading-[1.6]"
             style={{ fontSize: "16px" }}
           >
-            Este proyecto fue posible gracias al apoyo del Fondo Semilla del Tecnológico de Monterrey.
+            Círculo Vivo es un proyecto de investigación impulsada por el Tecnológico de Monterrey. Colaboramos con pares académicos e institucionales para lograr nuestro objetivo compartido.
           </p>
         </FadeUp>
       </div>

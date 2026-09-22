@@ -7,7 +7,6 @@ import { Briefcase, Camera, Globe, Link2, Mail, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { CarouselArrow } from "@/components/atoms/CarouselArrow";
 import { Button } from "@/components/atoms/Button";
-import { Eyebrow } from "@/components/atoms/Eyebrow";
 import { DataUnavailableMessage, type DataUnavailableVariant } from "@/components/molecules/DataUnavailableMessage";
 import { cn } from "@/lib/utils";
 
@@ -392,7 +391,6 @@ export function ColaboracionesSection({
         className="flex flex-wrap items-center justify-between gap-4 px-6 md:px-16 lg:px-24"
       >
         <div>
-          <Eyebrow color="purple">COLABORACIONES</Eyebrow>
           <h2
             className="font-serif font-bold text-[#203b6b] text-[24px] md:text-[32px]"
             style={{ lineHeight: 1.25 }}
@@ -496,7 +494,6 @@ export function LegacyColaboracionesSection() {
     <section className="px-6 md:px-16 lg:px-24 pt-12 pb-12 md:pt-16 md:pb-16">
       {/* Header */}
       <FadeUp delay={0} className="flex flex-col gap-2">
-        <Eyebrow color="purple">COLABORACIONES</Eyebrow>
         <h2
           className="font-serif font-bold text-[#203b6b] text-[24px] md:text-[32px]"
           style={{ lineHeight: 1.25 }}

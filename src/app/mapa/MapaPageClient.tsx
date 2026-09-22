@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useSyncExternalStore } from "react";
-import { Info } from "lucide-react";
+import { Info, X } from "lucide-react";
 import { NavBar }           from "@/components/molecules/NavBar";
 import { SearchBar }        from "@/components/molecules/SearchBar";
 import { FilterDropdown }   from "@/components/molecules/FilterDropdown";
@@ -82,9 +82,28 @@ export function MapaPageClient({ initiatives, state }: MapaPageClientProps) {
   const [actor,    setActor]    = useState<string | undefined>();
   const [escala,   setEscala]   = useState<string | undefined>();
   const [category, setCategory] = useState<string | undefined>();
+  const [estado,   setEstado]   = useState<string | undefined>();
   const [forceIntroOpen, setForceIntroOpen] = useState(false);
   const [introDismissed, setIntroDismissed] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
   const isMobile = useIsMobile();
+
+  const estadoOptions = useMemo(() => {
+    const names = initiatives.map((i) => i.state).filter((s): s is string => Boolean(s));
+    return [...new Set(names)].sort().map((s) => ({ value: s, label: s }));
+  }, [initiatives]);
+
+  const hasActiveFilters = Boolean(search || actor || escala || category || estado);
+
+  function clearFilters() {
+    setSearch("");
+    setActor(undefined);
+    setEscala(undefined);
+    setCategory(undefined);
+    setEstado(undefined);
+    // Remounts the map+sidebar so their internal state-click selection resets too.
+    setResetKey((k) => k + 1);
+  }
 
   // Auto-opens once per visitor (until localStorage says otherwise); the info
   // button can always force it open again via forceIntroOpen.
@@ -115,9 +134,10 @@ export function MapaPageClient({ initiatives, state }: MapaPageClientProps) {
       if (actor    && !i.chips?.some((c) => c.label === actor))    return false;
       if (escala   && !i.chips?.some((c) => c.label === escala))   return false;
       if (category && !i.chips?.some((c) => c.label === category)) return false;
+      if (estado   && i.state !== estado)                          return false;
       return true;
     });
-  }, [initiatives, search, actor, escala, category]);
+  }, [initiatives, search, actor, escala, category, estado]);
 
   return (
     <div className="relative flex flex-col h-screen w-full overflow-hidden bg-white">
@@ -168,16 +188,27 @@ export function MapaPageClient({ initiatives, state }: MapaPageClientProps) {
               onSearch={setSearch}
             />
             <div className="flex items-center gap-2 shrink-0 overflow-x-auto -mx-6 px-6 lg:mx-0 lg:px-0 lg:overflow-visible">
-              <FilterDropdown label="Actor"     options={ACTOR_OPTIONS}    value={actor}    onChange={setActor}    />
-              <FilterDropdown label="Escala"    options={ESCALA_OPTIONS}   value={escala}   onChange={setEscala}   />
-              <FilterDropdown label="Categoría" options={CATEGORIA_OPTIONS} value={category} onChange={setCategory} align="right" />
+              <FilterDropdown label="Actor"     options={ACTOR_OPTIONS}     value={actor}    onChange={setActor}    />
+              <FilterDropdown label="Escala"    options={ESCALA_OPTIONS}    value={escala}   onChange={setEscala}   />
+              <FilterDropdown label="Categoría" options={CATEGORIA_OPTIONS} value={category} onChange={setCategory} />
+              <FilterDropdown label="Estado"    options={estadoOptions}     value={estado}   onChange={setEstado}   align="right" />
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full font-sans text-[11px] font-medium border border-neutral-300 text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50 transition-all active:scale-[0.96] shrink-0"
+                >
+                  <X size={12} />
+                  Limpiar filtros
+                </button>
+              )}
             </div>
           </div>
 
           {/* Map */}
           <h1 className="sr-only">Mapa de iniciativas</h1>
           <div className="relative z-10 flex-1 min-h-0">
-            <InitiativesMap initiatives={filtered} className="w-full h-full" />
+            <InitiativesMap key={resetKey} initiatives={filtered} className="w-full h-full" />
 
             {/* Floating info button — reopens the map explainer, tucked in a corner so it never overlaps the sidebar, search bar, or zoom controls */}
             <Button

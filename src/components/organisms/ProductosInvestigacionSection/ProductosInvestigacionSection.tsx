@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { FileText, ArrowRight } from "lucide-react";
-import { Eyebrow } from "@/components/atoms/Eyebrow";
 
 function FadeUp({
   children,
@@ -43,12 +42,11 @@ export function ProductosInvestigacionSection() {
     >
       {/* Header — centered */}
       <FadeUp delay={0} className="flex flex-col items-center gap-4 text-center">
-        <Eyebrow color="secondary">REPOSITORIO</Eyebrow>
         <h2
           className="font-serif italic font-bold text-[#395284] text-[26px] md:text-[36px]"
           style={{ letterSpacing: -0.9, lineHeight: 1.111 }}
         >
-          Productos de Investigación
+          Novedades
         </h2>
       </FadeUp>
 

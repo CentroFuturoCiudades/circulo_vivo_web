@@ -44,9 +44,9 @@ const defaultLegalLinks: FooterColumnLink[] = [
 ];
 
 export function Footer({
-  tagline = "Conociendo trayectorias para integrar y compartir aprendizajes para replantear los sistemas de alimentación en México: mejores para las personas, mejores para el planeta y más justas para quienes hacen posible cada alimento.",
+  tagline = "Trabajando para la transformación de los sistemas alimentarios.",
   columns = defaultColumns,
-  copyright = "Círculo Vivo es una iniciativa de investigación del Tecnológico de Monterrey. Colaboramos con pares académicos e institucionales para lograr Nuestro objetivo.",
+  copyright,
   legalLinks = defaultLegalLinks,
   socialLinks = {},
   className,
@@ -114,12 +114,17 @@ export function Footer({
 
       {/* ── Bottom bar ── */}
       <div
-        className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 md:px-9 bg-white border-t border-[#e4e4e7] gap-3 md:gap-0"
+        className={cn(
+          "flex flex-col md:flex-row items-start md:items-center px-6 md:px-9 bg-white border-t border-[#e4e4e7] gap-3 md:gap-0",
+          copyright ? "justify-between" : "justify-end"
+        )}
         style={{ paddingTop: 24, paddingBottom: 24 }}
       >
-        <span className="font-sans font-normal text-[12px] text-[#52525b] leading-[1.333]">
-          {copyright}
-        </span>
+        {copyright && (
+          <span className="font-sans font-normal text-[12px] text-[#52525b] leading-[1.333]">
+            {copyright}
+          </span>
+        )}
 
         <nav className="flex flex-wrap items-center gap-4 md:gap-6">
           {legalLinks.map((link) => (

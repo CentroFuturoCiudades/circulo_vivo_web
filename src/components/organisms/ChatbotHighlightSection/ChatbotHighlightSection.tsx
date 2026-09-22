@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { AnimatePresence, motion, useInView } from "framer-motion";
 import {
   ArrowRight,
   CheckCircle2,
@@ -12,6 +12,124 @@ import {
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/atoms/Button";
 import { Chip } from "@/components/atoms/Chip";
+
+// ── Looping demo conversation ───────────────────────────────
+// Cycles through the same topics offered as chips, typing the question into
+// the input, "sending" it, showing a thinking state, then the answer — so a
+// visitor scrolling past understands what the real chatbot does without
+// having to click into it.
+
+const DEMO_QA = [
+  {
+    chip: "Barreras",
+    question: "¿Qué barreras enfrentan las iniciativas para crecer y sostenerse?",
+    answer:
+      "Sobre todo falta de financiamiento, acceso limitado a mercados y poca infraestructura para distribuir sus productos.",
+  },
+  {
+    chip: "Estrategias",
+    question: "¿Qué estrategias han diseñado para lograr sus cambios?",
+    answer:
+      "Construyen redes de colaboración, diversifican sus canales de venta y fortalecen las capacidades técnicas de su equipo.",
+  },
+  {
+    chip: "Facilitadores",
+    question: "¿Qué las ayuda a mantenerse y crecer?",
+    answer:
+      "El respaldo de redes comunitarias, alianzas institucionales y el acceso a nuevas tecnologías.",
+  },
+  {
+    chip: "Motivaciones",
+    question: "¿Qué las motiva a hacer este trabajo?",
+    answer:
+      "La convicción de construir sistemas alimentarios más justos, saludables y sostenibles para sus comunidades.",
+  },
+] as const;
+
+type Phase = "typing" | "sent" | "thinking" | "answered" | "clearing";
+
+const TYPING_MS_PER_CHAR = 32;
+const HOLD_BEFORE_SEND_MS = 500;
+const HOLD_BEFORE_THINK_MS = 550;
+const THINKING_MS = 1300;
+const HOLD_ANSWER_MS = 3200;
+const CLEAR_MS = 450;
+
+// Reads prefers-reduced-motion without a hydration mismatch: the server
+// snapshot always reports "no preference" (SSR has no window), then React
+// re-checks the real client snapshot right after mount — same pattern as
+// the mapa page's useIsMobile/introSeen reads.
+function subscribeReducedMotion(callback: () => void) {
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mq.addEventListener("change", callback);
+  return () => mq.removeEventListener("change", callback);
+}
+function getReducedMotionSnapshot() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+function getReducedMotionServerSnapshot() {
+  return false;
+}
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(subscribeReducedMotion, getReducedMotionSnapshot, getReducedMotionServerSnapshot);
+}
+
+/** Drives the looping typing → send → thinking → answered → clearing state machine. */
+function useChatDemo() {
+  const reducedMotion = usePrefersReducedMotion();
+  const [index, setIndex] = useState(0);
+  const [phase, setPhase] = useState<Phase>("typing");
+  const [typedLength, setTypedLength] = useState(0);
+  const current = DEMO_QA[index];
+
+  // Character-by-character reveal while typing
+  useEffect(() => {
+    if (reducedMotion || phase !== "typing") return;
+    if (typedLength >= current.question.length) {
+      const t = setTimeout(() => setPhase("sent"), HOLD_BEFORE_SEND_MS);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setTypedLength((l) => l + 1), TYPING_MS_PER_CHAR);
+    return () => clearTimeout(t);
+  }, [phase, typedLength, current.question.length, reducedMotion]);
+
+  // Remaining phase transitions
+  useEffect(() => {
+    if (reducedMotion) return;
+    if (phase === "sent") {
+      const t = setTimeout(() => setPhase("thinking"), HOLD_BEFORE_THINK_MS);
+      return () => clearTimeout(t);
+    }
+    if (phase === "thinking") {
+      const t = setTimeout(() => setPhase("answered"), THINKING_MS);
+      return () => clearTimeout(t);
+    }
+    if (phase === "answered") {
+      const t = setTimeout(() => setPhase("clearing"), HOLD_ANSWER_MS);
+      return () => clearTimeout(t);
+    }
+    if (phase === "clearing") {
+      const t = setTimeout(() => {
+        setIndex((i) => (i + 1) % DEMO_QA.length);
+        setTypedLength(0);
+        setPhase("typing");
+      }, CLEAR_MS);
+      return () => clearTimeout(t);
+    }
+  }, [phase, reducedMotion]);
+
+  if (reducedMotion) {
+    // Static, non-animated frame — respects prefers-reduced-motion.
+    return { current: DEMO_QA[0], phase: "answered" as Phase, typedText: "", reducedMotion };
+  }
+
+  return {
+    current,
+    phase,
+    typedText: phase === "typing" ? current.question.slice(0, typedLength) : "",
+    reducedMotion,
+  };
+}
 
 function FadeUp({
   children,
@@ -38,10 +156,17 @@ function FadeUp({
 }
 
 function ChatbotMock() {
+  const { current, phase, typedText } = useChatDemo();
+  const showUserBubble = phase !== "typing";
+  const showThinking = phase === "thinking";
+  const showAnswer = phase === "answered" || phase === "clearing";
+  const isClearing = phase === "clearing";
+
   return (
     <div
       className="relative overflow-hidden bg-white"
       style={{ width: 572, height: 653, borderRadius: 16 }}
+      aria-hidden="true"
     >
       {/* Header */}
       <div
@@ -97,16 +222,16 @@ function ChatbotMock() {
       </div>
 
       {/* Chat canvas */}
-      <div className="flex flex-col overflow-hidden" style={{ padding: "96px 16px 148px 16px" }}>
+      <div className="flex flex-col overflow-hidden" style={{ padding: "88px 16px 148px 16px" }}>
         <div
           style={{
             background: "#fef4ce",
             borderRadius: "0 12px 12px 12px",
-            padding: 24,
+            padding: "16px 20px",
             border: "1px solid rgba(193,200,200,0.2)",
           }}
         >
-          <p className="font-sans text-[#201c05]" style={{ fontSize: 16, lineHeight: 1.5 }}>
+          <p className="font-sans text-[#201c05]" style={{ fontSize: 15, lineHeight: 1.5 }}>
             ¿Qué quieres saber sobre las personas y proyectos que están cambiando nuestra forma de producir, distribuir y consumir alimentos?
           </p>
         </div>
@@ -118,64 +243,105 @@ function ChatbotMock() {
           Selecciona un tema o escribe una pregunta para analizar nuestra base de datos cualitativa.
         </p>
 
-        <div className="flex" style={{ gap: 12, marginTop: 48, padding: "0 12px" }}>
-          {["Barreras", "Estrategias", "Facilitadores"].map((chip) => (
-            <Chip key={chip} color="secondary" className="text-[#455E90]">
-              {chip}
-            </Chip>
-          ))}
-          <Chip color="gold" selected className="text-white">
-            Motivaciones
-          </Chip>
+        <div className="flex" style={{ gap: 12, marginTop: 28, padding: "0 12px" }}>
+          {DEMO_QA.map((qa) => {
+            const active = qa.chip === current.chip;
+            return (
+              <Chip
+                key={qa.chip}
+                as="span"
+                color={active ? "gold" : "secondary"}
+                selected={active}
+                className={active ? "text-white" : "text-[#455E90]"}
+              >
+                {qa.chip}
+              </Chip>
+            );
+          })}
         </div>
 
-        <div className="flex justify-end" style={{ marginTop: 48 }}>
-          <div
-            style={{
-              background: "#395284",
-              borderRadius: "12px 0 12px 12px",
-              padding: 24,
-              width: 328,
-            }}
-          >
-            <p className="font-sans text-white" style={{ fontSize: 14, lineHeight: 1.5 }}>
-              ¿Qué retos enfrentan las iniciativas que buscan mejorar cómo producimos y compartimos los alimentos?
-            </p>
-          </div>
-        </div>
+        <AnimatePresence mode="wait">
+          {showUserBubble && (
+            <motion.div
+              key={`user-${current.question}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="flex justify-end"
+              style={{ marginTop: 28 }}
+            >
+              <div
+                style={{
+                  background: "#395284",
+                  borderRadius: "12px 0 12px 12px",
+                  padding: "16px 20px",
+                  maxWidth: 328,
+                }}
+              >
+                <p className="font-sans text-white" style={{ fontSize: 14, lineHeight: 1.5 }}>
+                  {current.question}
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Typing dots */}
-        <div className="flex items-center" style={{ gap: 4, marginTop: 48, padding: "12px 24px", opacity: 0.5 }}>
-          {[0, 150, 300].map((d) => (
-            <motion.span
-              key={d}
-              style={{ width: 6, height: 6, borderRadius: 9999, background: "#466062", display: "block" }}
-              animate={{ y: [0, -3, 0] }}
-              transition={{ duration: 0.8, repeat: Infinity, delay: d / 1000 }}
-            />
-          ))}
-        </div>
+        <AnimatePresence mode="wait">
+          {showThinking && (
+            <motion.div
+              key="thinking"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center"
+              style={{ gap: 4, marginTop: 20, padding: "12px 24px", opacity: 0.5 }}
+            >
+              {[0, 150, 300].map((d) => (
+                <motion.span
+                  key={d}
+                  style={{ width: 6, height: 6, borderRadius: 9999, background: "#466062", display: "block" }}
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{ duration: 0.8, repeat: Infinity, delay: d / 1000 }}
+                />
+              ))}
+            </motion.div>
+          )}
+          {showAnswer && (
+            <motion.div
+              key={`answer-${current.answer}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: isClearing ? 0 : 1, y: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              style={{
+                marginTop: 16,
+                background: "#fef4ce",
+                borderRadius: "0 12px 12px 12px",
+                padding: "16px 20px",
+                border: "1px solid rgba(193,200,200,0.2)",
+                maxWidth: 400,
+              }}
+            >
+              <p className="font-sans text-[#201c05]" style={{ fontSize: 14, lineHeight: 1.5 }}>
+                {current.answer}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Footer input bar */}
       <div
-        className="absolute left-0 right-0 flex flex-col"
+        className="absolute left-0 right-0 flex flex-col justify-center"
         style={{
           top: 541,
           height: 110,
-          padding: "12px 16px 8px 16px",
+          padding: "12px 16px",
           background: "rgba(255,249,237,0.90)",
           backdropFilter: "blur(10.5px)",
         }}
       >
-        <div style={{ paddingBottom: 12 }}>
-          <p
-            className="font-sans font-semibold text-center"
-            style={{ fontSize: 12, lineHeight: 1.25, color: "#727879", letterSpacing: 0.6 }}
-          >
-            ¿Qué estrategias han diseñado e implementado las iniciativas para lograr los cambios posibles?
-          </p>
-        </div>
         <div
           className="flex items-center bg-white"
           style={{
@@ -189,17 +355,31 @@ function ChatbotMock() {
             <Plus size={20} className="text-[#708b8d]" />
           </div>
           <div className="flex-1" style={{ padding: "9px 12px 10px 12px" }}>
-            <p className="font-sans text-[#a1a1aa]" style={{ fontSize: 14 }}>
-              Escribe tu pregunta aquí...
-            </p>
+            {typedText ? (
+              <p className="font-sans text-[#211f19]" style={{ fontSize: 14 }}>
+                {typedText}
+                <motion.span
+                  animate={{ opacity: [1, 0] }}
+                  transition={{ duration: 0.6, repeat: Infinity, repeatType: "reverse" }}
+                  className="inline-block ml-0.5 align-middle"
+                  style={{ width: 1.5, height: 14, background: "#211f19" }}
+                />
+              </p>
+            ) : (
+              <p className="font-sans text-[#a1a1aa]" style={{ fontSize: 14 }}>
+                Escribe tu pregunta aquí...
+              </p>
+            )}
           </div>
           <div style={{ paddingLeft: 12 }}>
-            <div
+            <motion.div
               className="flex items-center justify-center rounded-full"
               style={{ width: 40, height: 40, background: "#708b8d" }}
+              animate={phase === "sent" ? { scale: [1, 1.15, 1] } : { scale: 1 }}
+              transition={{ duration: 0.3 }}
             >
               <SendHorizontal size={16} className="text-white" />
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -245,10 +425,10 @@ export function ChatbotHighlightSection({ ctaHref = "/chatbot" }: ChatbotHighlig
         <div className="flex flex-col w-full lg:w-auto" style={{ gap: 24 }}>
           <FadeUp delay={0.1}>
             <h2 className="font-sans font-semibold text-[#BCB884] text-[24px] leading-[32px] md:text-[32px] md:leading-[42px] lg:text-[38.67px] lg:leading-[50.27px] lg:max-w-[552px]">
-              Conoce las iniciativas que ya están promoviendo cambios
+              Conoce las historias de las iniciativas que ya están promoviendo cambios
               <br />
               <span className="font-serif font-medium italic text-[#395284] text-[24px] leading-[32px] md:text-[32px] md:leading-[42px] lg:text-[38.67px] lg:leading-[50.27px]">
-                en los sistemas de alimentación en México.
+                en los sistemas de alimentación en la región.
               </span>
             </h2>
           </FadeUp>
@@ -256,13 +436,7 @@ export function ChatbotHighlightSection({ ctaHref = "/chatbot" }: ChatbotHighlig
           <FadeUp delay={0.2}>
             <div className="flex flex-col gap-3" style={{ maxWidth: 480 }}>
               <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 16, lineHeight: 1.5 }}>
-                Hemos entrevistado a +60 iniciativas que ya han generado cambios tangibles para entender qué podemos mejorar para facilitar los cambios que necesitamos.
-              </p>
-              <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 16, lineHeight: 1.5 }}>
-                Explora y conoce las variables que inciden en que una iniciativa comience, se sostenga, crezca o produzca cambios más amplios.
-              </p>
-              <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 16, lineHeight: 1.5 }}>
-                Si te interesa cómo reducir o superar estas barreras, aprovecha esta plataforma para conocer de y sobre sus trayectorias haciendo preguntas para conocerlas mejor.
+                El Chatbot te permite conocer de manera interactiva datos sobre las historias que presentamos.
               </p>
             </div>
           </FadeUp>

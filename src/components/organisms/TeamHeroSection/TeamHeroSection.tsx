@@ -74,7 +74,7 @@ export function TeamHeroSection() {
             className="font-sans font-semibold uppercase text-white/50"
             style={{ fontSize: 12, letterSpacing: "0.2em" }}
           >
-            PROYECTO DE INVESTIGACIÓN INSTITUCIONAL
+            PROYECTO DE INVESTIGACIÓN INSTITUCIONAL Y COLABORATIVO
           </p>
 
           {/* Heading */}
@@ -91,10 +91,8 @@ export function TeamHeroSection() {
             className="font-sans font-normal text-white/60 max-w-2xl"
             style={{ fontSize: 18, lineHeight: 1.6, paddingTop: 15 }}
           >
-            Somos un equipo con trayectorias y aprendizajes distintos,
-            motivados por la necesidad de ponernos en acción para
-            transformar los sistemas de alimentación en México y en el
-            mundo.
+            Somos un equipo multidisciplinario que busca transformar los
+            sistemas alimentarios en México y Centroamérica.
           </p>
 
           {/* Buttons */}

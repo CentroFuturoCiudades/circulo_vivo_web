@@ -70,7 +70,7 @@ export function IniciativasEnCursoSection() {
               className="font-serif italic font-semibold text-[#1a1c1c] text-[26px] md:text-[36px]"
               style={{ letterSpacing: -0.9, lineHeight: 1.111 }}
             >
-              Iniciativas en curso
+              Otros proyectos relacionados
             </h2>
           </FadeUp>
 

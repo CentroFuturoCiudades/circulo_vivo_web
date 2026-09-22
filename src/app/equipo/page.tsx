@@ -4,7 +4,6 @@ import { ProblematicaSection } from "@/components/organisms/ProblematicaSection"
 import { EquipoTecnicoSection } from "@/components/organisms/EquipoTecnicoSection";
 import { ColaboracionesSection } from "@/components/organisms/ColaboracionesSection";
 import { TeamStatsSection } from "@/components/organisms/TeamStatsSection";
-import { IniciativasEnCursoSection } from "@/components/organisms/IniciativasEnCursoSection";
 import { ProductosInvestigacionSection } from "@/components/organisms/ProductosInvestigacionSection";
 import { ColaboraCTASection } from "@/components/organisms/ColaboraCTASection";
 import { getEquipoTecnico, getEquipoColaboradores, getInstitucionesColaboradoras } from "@/lib/data/equipo";
@@ -33,7 +32,6 @@ export default async function EquipoPage() {
                 institucionesState={instituciones.state}
             />
             <TeamStatsSection />
-            <IniciativasEnCursoSection />
             <ProductosInvestigacionSection />
             <ColaboraCTASection />
             <Footer />
