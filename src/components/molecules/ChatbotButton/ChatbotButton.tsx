@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -50,7 +51,7 @@ export function ChatbotButton({
   );
 
   if (href) {
-    return <a href={href} className={cls}>{content}</a>;
+    return <Link href={href} className={cls}>{content}</Link>;
   }
 
   return (

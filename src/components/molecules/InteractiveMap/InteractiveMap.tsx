@@ -9,17 +9,17 @@ import { cn } from "@/lib/utils";
 
 // Mapbox demo — get a free token at https://account.mapbox.com/access-tokens/
 // and set NEXT_PUBLIC_MAPBOX_TOKEN in .env.local.
-const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
+export const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
-const MAP_STYLE = "mapbox://styles/mapbox/light-v11";
+export const MAP_STYLE = "mapbox://styles/mapbox/light-v11";
 
-// Default/overview viewport — framed to show all of Mexico *and* Central
-// America (not just Mexico), since sede states can be outside the mx-states
-// GeoJSON (e.g. Guatemala). Zoomed/centered further south+east than a
-// Mexico-only view would be.
-const MEXICO_CENTER = { longitude: -95, latitude: 18.5, zoom: 4.1 };
+// Default/overview viewport — a bounding box (not a fixed center+zoom) so the
+// framing adapts to the container size and stays centered on where initiatives
+// actually are: Sonora (NW) down to Guatemala (S) and Yucatán (E).
+export const OVERVIEW_BOUNDS: [[number, number], [number, number]] = [[-116, 13.5], [-86.5, 32.5]];
+const OVERVIEW_PADDING = 24;
 
-const MEXICO_STATES_URL =
+export const MEXICO_STATES_URL =
   "https://raw.githubusercontent.com/angelnmara/geojson/master/mexicoHigh.json";
 
 // World country polygons — used only for the Central American countries (the
@@ -27,13 +27,13 @@ const MEXICO_STATES_URL =
 // values outside Mexico (e.g. "Guatemala") still render as a colored fill
 // instead of nothing. Filtered down to CENTRAL_AMERICA_GEOJSON_NAMES via the
 // layer `filter` prop below.
-const WORLD_COUNTRIES_URL =
+export const WORLD_COUNTRIES_URL =
   "https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json";
 
 // Our data uses Spanish country names (matching the CSV); this GeoJSON's
 // `name` property is in English. Add more Central American countries here as
 // needed — both maps stay in sync automatically.
-const COUNTRY_NAME_TO_GEOJSON: Record<string, string> = {
+export const COUNTRY_NAME_TO_GEOJSON: Record<string, string> = {
   "Guatemala":   "Guatemala",
   "Belice":      "Belize",
   "El Salvador": "El Salvador",
@@ -45,7 +45,7 @@ const COUNTRY_NAME_TO_GEOJSON: Record<string, string> = {
 const GEOJSON_NAME_TO_COUNTRY: Record<string, string> = Object.fromEntries(
   Object.entries(COUNTRY_NAME_TO_GEOJSON).map(([ours, geojson]) => [geojson, ours])
 );
-const CENTRAL_AMERICA_GEOJSON_NAMES = Object.values(COUNTRY_NAME_TO_GEOJSON);
+export const CENTRAL_AMERICA_GEOJSON_NAMES = Object.values(COUNTRY_NAME_TO_GEOJSON);
 
 // ── GeoJSON prefetch (bbox source of truth) ───────────────────────────────
 // `map.querySourceFeatures` only returns features from *currently loaded*
@@ -55,22 +55,22 @@ const CENTRAL_AMERICA_GEOJSON_NAMES = Object.values(COUNTRY_NAME_TO_GEOJSON);
 // Monterrey initiative) silently returns nothing, so `fitBounds` never
 // fires and the camera just sits there. Fetching + caching the same GeoJSON
 // ourselves gives us every feature up front, independent of the camera.
-type FeatureCollectionLike = { features: Array<{ properties?: Record<string, unknown>; geometry: { type: string; coordinates: unknown } }> };
+export type FeatureCollectionLike = { features: Array<{ properties?: Record<string, unknown>; geometry: { type: string; coordinates: unknown } }> };
 
 let mxStatesPromise: Promise<FeatureCollectionLike> | null = null;
-function loadMxStatesGeojson(): Promise<FeatureCollectionLike> {
+export function loadMxStatesGeojson(): Promise<FeatureCollectionLike> {
   if (!mxStatesPromise) mxStatesPromise = fetch(MEXICO_STATES_URL).then((r) => r.json());
   return mxStatesPromise;
 }
 
 let worldCountriesPromise: Promise<FeatureCollectionLike> | null = null;
-function loadWorldCountriesGeojson(): Promise<FeatureCollectionLike> {
+export function loadWorldCountriesGeojson(): Promise<FeatureCollectionLike> {
   if (!worldCountriesPromise) worldCountriesPromise = fetch(WORLD_COUNTRIES_URL).then((r) => r.json());
   return worldCountriesPromise;
 }
 
 /** Bounding box of every ring in every feature matching `name`, or null if none match. */
-function boundsForFeature(data: FeatureCollectionLike, name: string): [[number, number], [number, number]] | null {
+export function boundsForFeature(data: FeatureCollectionLike, name: string): [[number, number], [number, number]] | null {
   const lngs: number[] = [];
   const lats: number[] = [];
   for (const f of data.features) {
@@ -103,9 +103,29 @@ const WATER_OPACITY = 0.55;
 const LAND_COLOR = "#fcfbf7"; // surface-sand
 const PARK_COLOR = "#f8eec9"; // gold-100
 
+type MapboxMap = ReturnType<MapRef["getMap"]>;
+
+/** Recolors water/land of the stock light-v11 style with design-system tones instead of the default grays. */
+export function tintBasemap(map: MapboxMap) {
+  const setPaint = (layerId: string, prop: string, value: string | number) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (map.getLayer(layerId)) map.setPaintProperty(layerId, prop as any, value);
+  };
+  setPaint("water", "fill-color", WATER_COLOR);
+  setPaint("water", "fill-opacity", WATER_OPACITY);
+  setPaint("waterway", "line-color", WATER_COLOR);
+  setPaint("waterway", "line-opacity", WATER_OPACITY);
+  setPaint("water-shadow", "fill-color", WATER_COLOR);
+  setPaint("water-shadow", "fill-opacity", WATER_OPACITY);
+  setPaint("background", "background-color", LAND_COLOR);
+  setPaint("land", "background-color", LAND_COLOR);
+  setPaint("landuse", "fill-color", PARK_COLOR);
+  setPaint("national-park", "fill-color", PARK_COLOR);
+}
+
 // Overview (unselected initiatives) — brand purple. Avoids gray/teal/blue,
 // which read as "disabled" rather than "clickable" against the light basemap.
-const ACTIVE_COLOR = "#a574a5";
+export const ACTIVE_COLOR = "#a574a5";
 // Sede + presencia (selected initiative) — same brand crimson; opacity (below)
 // differentiates sede (more saturated) from presencia (lighter). Kept out of
 // the green/blue family so it never reads as a body of water on the basemap.
@@ -124,6 +144,8 @@ export interface InteractiveMapProps {
   selectedPresenceStates?: string[];
   /** Called when the user clicks an active state on the map */
   onStateClick?: (stateName: string) => void;
+  /** Mapbox's own ←/→/↑/↓ panning. Turn off while something else (e.g. the drawer) owns the arrow keys. */
+  keyboard?: boolean;
   className?: string;
 }
 
@@ -134,6 +156,7 @@ export function InteractiveMap({
   selectedStateName,
   selectedPresenceStates = [],
   onStateClick,
+  keyboard = true,
   className,
 }: InteractiveMapProps) {
   const mapRef = useRef<MapRef>(null);
@@ -177,7 +200,6 @@ export function InteractiveMap({
   // The basemap's own state boundaries (admin-1) don't align with the
   // lower-resolution GeoJSON we fill/outline, which reads as a geometry
   // mismatch. Hide the basemap's boundary lines so ours are the only ones.
-  // Also recolor water/land to design-system tones instead of the stock grays.
   function handleMapLoad() {
     const map = mapRef.current?.getMap();
     if (!map) return;
@@ -187,21 +209,7 @@ export function InteractiveMap({
         map.setLayoutProperty(layer.id, "visibility", "none");
       }
     }
-
-    const setPaint = (layerId: string, prop: string, value: string | number) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (map.getLayer(layerId)) map.setPaintProperty(layerId, prop as any, value);
-    };
-    setPaint("water", "fill-color", WATER_COLOR);
-    setPaint("water", "fill-opacity", WATER_OPACITY);
-    setPaint("waterway", "line-color", WATER_COLOR);
-    setPaint("waterway", "line-opacity", WATER_OPACITY);
-    setPaint("water-shadow", "fill-color", WATER_COLOR);
-    setPaint("water-shadow", "fill-opacity", WATER_OPACITY);
-    setPaint("background", "background-color", LAND_COLOR);
-    setPaint("land", "background-color", LAND_COLOR);
-    setPaint("landuse", "fill-color", PARK_COLOR);
-    setPaint("national-park", "fill-color", PARK_COLOR);
+    tintBasemap(map);
   }
 
   // Fit to the sede state's bounding box when selection changes
@@ -210,12 +218,7 @@ export function InteractiveMap({
     if (!map) return;
 
     if (!selectedStateName) {
-      map.flyTo({
-        center: [MEXICO_CENTER.longitude, MEXICO_CENTER.latitude],
-        zoom: MEXICO_CENTER.zoom,
-        duration: 700,
-        essential: true,
-      });
+      map.fitBounds(OVERVIEW_BOUNDS, { padding: OVERVIEW_PADDING, duration: 700, essential: true });
       return;
     }
 
@@ -326,10 +329,11 @@ export function InteractiveMap({
       <Map
         ref={mapRef}
         mapboxAccessToken={MAPBOX_TOKEN}
-        initialViewState={MEXICO_CENTER}
+        initialViewState={{ bounds: OVERVIEW_BOUNDS, fitBoundsOptions: { padding: OVERVIEW_PADDING } }}
         style={{ width: "100%", height: "100%" }}
         mapStyle={MAP_STYLE}
         attributionControl={false}
+        keyboard={keyboard}
         reuseMaps
         interactiveLayerIds={onStateClick ? ["mx-states-fill", "ca-countries-fill"] : []}
         cursor={hoveredState ? "pointer" : undefined}

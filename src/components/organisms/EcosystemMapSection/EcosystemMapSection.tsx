@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { Map } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/atoms/Button";
+import { RegionMap } from "@/components/molecules/RegionMap";
 
 function FadeUp({
   children,
@@ -33,6 +34,8 @@ export interface EcosystemMapSectionProps {
   description?: string;
   ctaLabel?: string;
   ctaHref?: string;
+  /** States (Spanish names) with initiatives — filled on the static background map. */
+  states?: string[];
 }
 
 export function EcosystemMapSection({
@@ -40,18 +43,12 @@ export function EcosystemMapSection({
   description = "Visualiza la diversidad de actores y experiencias que están replanteando los sistemas de alimentación en los territorios.",
   ctaLabel = "Explora el mapa",
   ctaHref = "/mapa",
+  states,
 }: EcosystemMapSectionProps) {
   const router = useRouter();
   return (
     <section className="relative w-full overflow-hidden h-[480px] md:h-[560px] lg:h-[640px]">
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/map-bg.jpg')" }}
-      />
-      <div
-        className="absolute inset-0"
-        style={{ background: "rgba(86,20,39,0.5)", backdropFilter: "blur(0.875px)" }}
-      />
+      <RegionMap states={states} />
 
       <div className="relative z-10 h-full flex items-center justify-center">
         <FadeUp>

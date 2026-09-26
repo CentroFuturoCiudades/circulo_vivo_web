@@ -38,6 +38,15 @@ export function InitiativeList({
   className,
 }: InitiativeListProps) {
   const [estadoFilter, setEstadoFilter] = useState(ALL);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // Keep the selected initiative visible when it changes (e.g. via ←/→ in the drawer)
+  useEffect(() => {
+    if (!selectedId) return;
+    listRef.current
+      ?.querySelector(`[data-initiative-id="${CSS.escape(selectedId)}"]`)
+      ?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [selectedId]);
 
   // Keep a stable ref to onFilterChange to avoid stale closure in effects
   const onFilterChangeRef = useRef(onFilterChange);
@@ -93,7 +102,7 @@ export function InitiativeList({
       </div>
 
       {/* ── List — scrollable ── */}
-      <div className="flex flex-col overflow-y-auto flex-1 bg-white/5">
+      <div ref={listRef} className="flex flex-col overflow-y-auto flex-1 bg-white/5">
         {filteredItems.length === 0 ? (
           <div className="flex items-center justify-center py-12 px-4 text-center">
             <p className="font-sans text-sm text-[#9ca3af]">
@@ -102,13 +111,14 @@ export function InitiativeList({
           </div>
         ) : (
           filteredItems.map((item) => (
-            <InitiativeCard
-              key={item.id}
-              title={item.title}
-              chips={item.chips}
-              selected={item.id === selectedId}
-              onClick={() => onSelect?.(item.id)}
-            />
+            <div key={item.id} data-initiative-id={item.id}>
+              <InitiativeCard
+                title={item.title}
+                chips={item.chips}
+                selected={item.id === selectedId}
+                onClick={() => onSelect?.(item.id)}
+              />
+            </div>
           ))
         )}
       </div>

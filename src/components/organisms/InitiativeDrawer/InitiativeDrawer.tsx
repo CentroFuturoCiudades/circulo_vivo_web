@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { ExternalLink, ImageOff, MapPin, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, ImageOff, MapPin, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Chip } from "@/components/atoms/Chip";
 import { Button } from "@/components/atoms/Button";
@@ -56,6 +56,11 @@ export interface InitiativeDrawerProps {
   websiteUrl?: string;
   location?: string;
   onClose?: () => void;
+  /** When provided, prev/next arrow buttons are shown over the image. */
+  onPrev?: () => void;
+  onNext?: () => void;
+  /** Extra classes for the inner clipped panel (border/radius/background live there). */
+  innerClassName?: string;
   /** Target width for the open animation. Defaults to the fixed 319px desktop panel width — pass "100%" for a full-bleed mobile sheet. */
   width?: number | string;
   className?: string;
@@ -73,10 +78,18 @@ export function InitiativeDrawer({
   websiteUrl,
   location,
   className,
+  innerClassName,
   onClose,
+  onPrev,
+  onNext,
   width = 319,
 }: InitiativeDrawerProps) {
   if (!open) return null;
+
+  // Outer element animates the width and stays unclipped so the prev/next
+  // arrows can sit on the card's left/right edges; the inner panel clips.
+  const arrowClass =
+    "absolute top-[88px] lg:top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white/70 border border-[#c4c7c7] text-[#9a9a9a] opacity-70 hover:opacity-100 hover:bg-white hover:text-[#1a1c1c] transition-opacity";
 
   return (
     <motion.div
@@ -84,37 +97,72 @@ export function InitiativeDrawer({
       animate={{ width, opacity: 1 }}
       exit={{ width: 0, opacity: 0 }}
       transition={{ type: "spring", damping: 32, stiffness: 320 }}
-      className={cn(
-        "flex flex-col overflow-hidden rounded-xl border border-[#c4c7c7]",
-        className
-      )}
-      style={{ minWidth: 0, backgroundColor: "#fcfbf7" }}
+      className={cn("relative flex", className)}
+      style={{ minWidth: 0 }}
     >
-      {/* ── Image ── */}
+    {onPrev && (
+      <Button
+        variant="icon"
+        color="neutral"
+        iconLeft={ChevronLeft}
+        onClick={onPrev}
+        aria-label="Iniciativa anterior"
+        title="Anterior (←)"
+        className={cn(arrowClass, "left-2 lg:-left-3.5")}
+      />
+    )}
+    {onNext && (
+      <Button
+        variant="icon"
+        color="neutral"
+        iconLeft={ChevronRight}
+        onClick={onNext}
+        aria-label="Iniciativa siguiente"
+        title="Siguiente (→)"
+        className={cn(arrowClass, "right-2 lg:-right-3.5")}
+      />
+    )}
+    <div
+      className={cn("flex flex-col overflow-hidden rounded-xl border border-[#c4c7c7] w-full h-full", innerClassName)}
+      style={{ backgroundColor: "#fcfbf7" }}
+    >
+      {/* ── Image ── the whole picture is shown (contain) over a blurred copy of itself, so nothing is cropped and there are no empty bars */}
       <div
         className="relative flex-shrink-0 overflow-hidden bg-neutral-200"
-        style={{ height: 160 }}
+        style={{ height: 176 }}
       >
-        {imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={imageUrl}
-            alt={title}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center gap-1.5">
-            <ImageOff style={{ width: 24, height: 24, color: "#b4b2af", strokeWidth: 1.5 }} />
-            <span className="font-sans text-[10px] text-[#b4b2af] uppercase tracking-[0.1em]">Sin imagen</span>
-          </div>
-        )}
-        {/* Gradient overlay */}
-        <div
+        <motion.div
+          key={title}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2 }}
           className="absolute inset-0"
-          style={{ background: "linear-gradient(180deg, transparent 50%, #fcfbf7 100%)" }}
-        />
+        >
+          {imageUrl ? (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imageUrl}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-60"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imageUrl}
+                alt={title}
+                className="relative w-full h-full object-contain"
+              />
+            </>
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center gap-1.5">
+              <ImageOff style={{ width: 24, height: 24, color: "#b4b2af", strokeWidth: 1.5 }} />
+              <span className="font-sans text-[10px] text-[#b4b2af] uppercase tracking-[0.1em]">Sin imagen</span>
+            </div>
+          )}
+        </motion.div>
 
-        {/* Close button — same style as InitiativeDetailCard */}
+        {/* Close button */}
         {onClose && (
           <Button
             variant="icon"
@@ -128,7 +176,14 @@ export function InitiativeDrawer({
       </div>
 
       {/* ── Scrollable content ── */}
-      <div className="flex flex-col gap-6 overflow-y-auto flex-1 px-6 pt-6">
+      <div className="flex flex-col overflow-y-auto flex-1 px-6 pt-6">
+      <motion.div
+        key={title}
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
+        className="flex flex-col gap-6 pb-6"
+      >
 
         {/* Header: chips + title */}
         <div className="flex flex-col gap-1">
@@ -165,6 +220,21 @@ export function InitiativeDrawer({
           )}
         </div>
 
+        {/* Visitar sitio web — before the description; kept small and quiet */}
+        {websiteUrl && (
+          <Button
+            variant="outline"
+            color="teal"
+            radius="full"
+            size="sm"
+            iconRight={ExternalLink}
+            onClick={() => { window.open(websiteUrl, "_blank", "noopener,noreferrer"); }}
+            className="w-fit -mt-2 h-7 px-3 gap-1.5 text-[12px] font-normal normal-case tracking-normal"
+          >
+            Visitar sitio web
+          </Button>
+        )}
+
         {/* Descripción general */}
         {description && (
           <div className="flex flex-col gap-2">
@@ -190,23 +260,9 @@ export function InitiativeDrawer({
           </div>
         )}
 
-        {/* Actions */}
-        <div className="pb-6">
-          {websiteUrl && (
-            <Button
-              color="teal"
-              radius="full"
-              size="lg"
-              iconRight={ExternalLink}
-              onClick={() => { window.open(websiteUrl, "_blank", "noopener,noreferrer"); }}
-              className="w-full justify-center font-medium tracking-normal"
-            >
-              Visitar sitio web
-            </Button>
-          )}
-        </div>
-
+      </motion.div>
       </div>
+    </div>
     </motion.div>
   );
 }

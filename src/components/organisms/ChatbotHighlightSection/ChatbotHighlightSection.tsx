@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import {
   ArrowRight,
@@ -12,6 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/atoms/Button";
 import { Chip } from "@/components/atoms/Chip";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 // ── Looping demo conversation ───────────────────────────────
 // Cycles through the same topics offered as chips, typing the question into
@@ -54,25 +55,6 @@ const HOLD_BEFORE_THINK_MS = 550;
 const THINKING_MS = 1300;
 const HOLD_ANSWER_MS = 3200;
 const CLEAR_MS = 450;
-
-// Reads prefers-reduced-motion without a hydration mismatch: the server
-// snapshot always reports "no preference" (SSR has no window), then React
-// re-checks the real client snapshot right after mount — same pattern as
-// the mapa page's useIsMobile/introSeen reads.
-function subscribeReducedMotion(callback: () => void) {
-  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-  mq.addEventListener("change", callback);
-  return () => mq.removeEventListener("change", callback);
-}
-function getReducedMotionSnapshot() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-function getReducedMotionServerSnapshot() {
-  return false;
-}
-function usePrefersReducedMotion() {
-  return useSyncExternalStore(subscribeReducedMotion, getReducedMotionSnapshot, getReducedMotionServerSnapshot);
-}
 
 /** Drives the looping typing → send → thinking → answered → clearing state machine. */
 function useChatDemo() {

@@ -208,17 +208,22 @@ export function MapaPageClient({ initiatives, state }: MapaPageClientProps) {
           {/* Map */}
           <h1 className="sr-only">Mapa de iniciativas</h1>
           <div className="relative z-10 flex-1 min-h-0">
-            <InitiativesMap key={resetKey} initiatives={filtered} className="w-full h-full" />
-
-            {/* Floating info button — reopens the map explainer, tucked in a corner so it never overlaps the sidebar, search bar, or zoom controls */}
-            <Button
-              variant="icon"
-              color="neutral"
-              iconLeft={Info}
-              size="sm"
-              onClick={() => setForceIntroOpen(true)}
-              aria-label="Acerca del mapa"
-              className="absolute top-4 right-4 z-20 rounded-full bg-white shadow-md"
+            <InitiativesMap
+              key={resetKey}
+              initiatives={filtered}
+              className="w-full h-full"
+              mapCornerAction={
+                // Reopens the map explainer; lives inside the map panel so it never sits over the drawer
+                <Button
+                  variant="icon"
+                  color="neutral"
+                  iconLeft={Info}
+                  size="sm"
+                  onClick={() => setForceIntroOpen(true)}
+                  aria-label="Acerca del mapa"
+                  className="rounded-full bg-white shadow-md"
+                />
+              }
             />
           </div>
         </>
