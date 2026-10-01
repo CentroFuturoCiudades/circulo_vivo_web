@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ExternalLink, ImageOff, MapPin, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Chip } from "@/components/atoms/Chip";
@@ -89,7 +89,7 @@ export function InitiativeDrawer({
   // Outer element animates the width and stays unclipped so the prev/next
   // arrows can sit on the card's left/right edges; the inner panel clips.
   const arrowClass =
-    "absolute top-[88px] lg:top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white/70 border border-[#c4c7c7] text-[#9a9a9a] opacity-70 hover:opacity-100 hover:bg-white hover:text-[#1a1c1c] transition-opacity";
+    "absolute top-[88px] lg:top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-[#c4c7c7] text-[#1a1c1c] shadow-md hover:border-[#1a1c1c] hover:scale-105 active:scale-95 transition-transform";
 
   return (
     <motion.div
@@ -131,36 +131,39 @@ export function InitiativeDrawer({
         className="relative flex-shrink-0 overflow-hidden bg-neutral-200"
         style={{ height: 176 }}
       >
-        <motion.div
-          key={title}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.2 }}
-          className="absolute inset-0"
-        >
-          {imageUrl ? (
-            <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={imageUrl}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-60"
-              />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={imageUrl}
-                alt={title}
-                className="relative w-full h-full object-contain"
-              />
-            </>
-          ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center gap-1.5">
-              <ImageOff style={{ width: 24, height: 24, color: "#b4b2af", strokeWidth: 1.5 }} />
-              <span className="font-sans text-[10px] text-[#b4b2af] uppercase tracking-[0.1em]">Sin imagen</span>
-            </div>
-          )}
-        </motion.div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={title}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="absolute inset-0"
+          >
+            {imageUrl ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={imageUrl}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-60"
+                />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={imageUrl}
+                  alt={title}
+                  className="relative w-full h-full object-contain"
+                />
+              </>
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center gap-1.5">
+                <ImageOff style={{ width: 24, height: 24, color: "#b4b2af", strokeWidth: 1.5 }} />
+                <span className="font-sans text-[10px] text-[#b4b2af] uppercase tracking-[0.1em]">Sin imagen</span>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
 
         {/* Close button */}
         {onClose && (
@@ -177,11 +180,13 @@ export function InitiativeDrawer({
 
       {/* ── Scrollable content ── */}
       <div className="flex flex-col overflow-y-auto flex-1 px-6 pt-6">
+      <AnimatePresence mode="wait">
       <motion.div
         key={title}
-        initial={{ opacity: 0, y: 6 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
         className="flex flex-col gap-6 pb-6"
       >
 
@@ -261,6 +266,7 @@ export function InitiativeDrawer({
         )}
 
       </motion.div>
+      </AnimatePresence>
       </div>
     </div>
     </motion.div>

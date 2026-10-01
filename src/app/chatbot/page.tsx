@@ -1,7 +1,12 @@
 "use client";
 
+import { Info } from "lucide-react";
 import { NavBar } from "@/components/molecules/NavBar";
 import { ChatInterface } from "@/components/organisms/ChatInterface";
+import { Button } from "@/components/atoms/Button";
+import { GuidedTour, type GuidedTourStep } from "@/components/organisms/GuidedTour";
+import { useTourStore } from "@/stores/useTourStore";
+import { useIsMobile } from "@/lib/useIsMobile";
 import { getChatbotReply } from "@/app/actions/chatbot";
 import { exportConversationToPdf } from "@/lib/chat/exportConversationPdf";
 import type { ChatTopic } from "@/components/organisms/ChatSidebar";
@@ -44,6 +49,38 @@ async function handleSend(message: string): Promise<Omit<AssistantEntry, "id" | 
 }
 
 export default function ChatbotPage() {
+  const isMobile = useIsMobile();
+
+  // The sidebar panel is off-canvas by default below `lg` — on mobile this
+  // step points at the button that opens it instead, same copy either way.
+  const chatTourSteps: GuidedTourStep[] = [
+    {
+      target: isMobile ? '[data-tour="chat-sidebar-mobile"]' : '[data-tour="chat-sidebar"]',
+      title: "Conoce el enfoque",
+      content: "Aquí encontrarás la metodología y el tipo de preguntas que este asistente puede responder sobre las iniciativas.",
+    },
+    {
+      target: '[data-tour="chat-suggestions"]',
+      title: "Empieza con una sugerencia",
+      content: "¿No sabes qué preguntar? Elige una de estas preguntas para ver cómo funciona.",
+    },
+    {
+      target: '[data-tour="chat-input"]',
+      title: "Escribe tu pregunta",
+      content: "Pregunta lo que quieras sobre las iniciativas, sus barreras, estrategias o motivaciones, con tus propias palabras.",
+    },
+    {
+      target: '[data-tour="chat-chips"]',
+      title: "Atajos rápidos",
+      content: "Estos botones envían preguntas frecuentes con un solo clic, sin que tengas que escribirlas.",
+    },
+    {
+      target: "body",
+      title: "Respuestas con respaldo",
+      content: "Cada respuesta cita las fuentes de las que proviene. Cuando termines, descarga la conversación completa en PDF desde la parte superior.",
+    },
+  ];
+
   return (
     <main
       className="h-screen w-full overflow-hidden px-4 md:px-9"
@@ -68,6 +105,17 @@ export default function ChatbotPage() {
         />
       </div>
 
+      {/* Replays the guided tour */}
+      <Button
+        variant="icon"
+        color="neutral"
+        iconLeft={Info}
+        size="sm"
+        onClick={() => useTourStore.getState().startTour("chatbot")}
+        aria-label="Ver tutorial del asistente"
+        className="fixed top-[88px] right-4 md:right-9 z-40 rounded-full bg-white shadow-md"
+      />
+
       <div className="h-full pt-[100px]">
         <ChatInterface
           topics={TOPICS}
@@ -77,6 +125,8 @@ export default function ChatbotPage() {
           onDownload={exportConversationToPdf}
         />
       </div>
+
+      <GuidedTour tourId="chatbot" steps={chatTourSteps} />
     </main>
   );
 }

@@ -63,6 +63,7 @@ export function FeatureCard({
           color={accentBtnColor[accent]}
           size="sm"
           iconRight={ArrowRight}
+          className="normal-case tracking-normal"
         >
           {ctaLabel}
         </Button>

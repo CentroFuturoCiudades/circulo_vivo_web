@@ -2,6 +2,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { InitiativeCard, type InitiativeCardProps } from "@/components/molecules/InitiativeCard";
+import { Chip } from "@/components/atoms/Chip";
 
 // ── Types ──────────────────────────────────────────────────
 
@@ -77,7 +78,7 @@ export function InitiativeList({
   const countLabel = isFiltered
     ? `${filteredItems.length}/${items.length}`
     : String(items.length);
-  const displayLabel = `${label} (${countLabel})`.toUpperCase();
+  const displayLabel = label.toUpperCase();
 
   // ── Render ─────────────────────────────────────────────
 
@@ -88,9 +89,9 @@ export function InitiativeList({
         className
       )}
     >
-      {/* ── Header ── */}
+      {/* ── Header — label on the left, count as a quiet chip on the right so it doesn't compete with the title ── */}
       <div
-        className="flex items-center px-4 py-4 border-b border-[#c4c7c7]"
+        className="flex items-center justify-between gap-3 px-4 py-4 border-b border-[#c4c7c7]"
         style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.2), rgba(112,139,141,0.2))" }}
       >
         <span
@@ -99,6 +100,14 @@ export function InitiativeList({
         >
           {displayLabel}
         </span>
+        <Chip
+          as="span"
+          color="secondary"
+          selected={isFiltered}
+          className="pointer-events-none shrink-0 text-[11px] font-semibold"
+        >
+          {countLabel}
+        </Chip>
       </div>
 
       {/* ── List — scrollable ── */}

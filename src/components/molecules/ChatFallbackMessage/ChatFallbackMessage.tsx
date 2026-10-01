@@ -161,7 +161,7 @@ export function ChatFallbackMessage({
             radius="full"
             iconLeft={RefreshCw}
             onClick={onRetry}
-            className="h-8 text-xs font-medium px-4 text-[#444748] border-[#c4c7c7] hover:border-[#708b8d] hover:text-[#708b8d]"
+            className="h-8 text-xs font-medium px-4 normal-case tracking-normal text-[#444748] border-[#c4c7c7] hover:border-[#708b8d] hover:text-[#708b8d]"
           >
             Reintentar
           </Button>

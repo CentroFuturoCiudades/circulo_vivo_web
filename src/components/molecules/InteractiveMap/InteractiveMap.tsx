@@ -19,6 +19,13 @@ export const MAP_STYLE = "mapbox://styles/mapbox/light-v11";
 export const OVERVIEW_BOUNDS: [[number, number], [number, number]] = [[-116, 13.5], [-86.5, 32.5]];
 const OVERVIEW_PADDING = 24;
 
+// How far the user can pan/zoom out — generous enough to keep North + Central
+// America in view (so panning still feels free), but loose enough that Mexico
+// never scrolls fully out of frame.
+const PAN_BOUNDS: [[number, number], [number, number]] = [[-121, 8], [-82, 36]];
+// Caps how far the user can zoom in — state/regional detail, not street level.
+const MAX_ZOOM = 8.3;
+
 export const MEXICO_STATES_URL =
   "https://raw.githubusercontent.com/angelnmara/geojson/master/mexicoHigh.json";
 
@@ -126,12 +133,13 @@ export function tintBasemap(map: MapboxMap) {
 // Overview (unselected initiatives) — brand purple. Avoids gray/teal/blue,
 // which read as "disabled" rather than "clickable" against the light basemap.
 export const ACTIVE_COLOR = "#a574a5";
-// Sede + presencia (selected initiative) — same brand crimson; opacity (below)
-// differentiates sede (more saturated) from presencia (lighter). Kept out of
-// the green/blue family so it never reads as a body of water on the basemap.
-const SELECTED_COLOR = "#852038";
-const SEDE_COLOR = SELECTED_COLOR;
-const PRESENCE_COLOR = SELECTED_COLOR;
+// Sede + presencia (selected initiative) — same red family for both, so they
+// read as "related", but sede is the intense, saturated red (fill + a bold
+// border) while presencia is a much lighter tint of the same red (lighter
+// fill + a lighter-but-still-colored border) — never gray/blue/green, which
+// would read as "disabled" or be confused with the water on the basemap.
+const SEDE_COLOR = "#852038";
+const PRESENCE_COLOR = "#d98da0";
 
 // ── Types ──────────────────────────────────────────────────
 
@@ -253,6 +261,8 @@ export function InteractiveMap({
 
   function buildPaintExpressions(selected: string | undefined, presence: string[], overview: string[]) {
     /* eslint-disable @typescript-eslint/no-explicit-any -- Mapbox expression types don't line up with our dynamic case-list building */
+    // Presence uses a distinct hue (navy) from sede (crimson), so its border
+    // never reads as "this is also a sede" — just a lighter, related tone.
     const colorPairs = [
       ...(selected ? [["==", ["get", "name"], selected], SEDE_COLOR] : []),
       ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], PRESENCE_COLOR] : []),
@@ -260,12 +270,14 @@ export function InteractiveMap({
     ];
     const fillOpacityPairs = [
       ...(selected ? [["==", ["get", "name"], selected], 0.50] : []),
-      ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], 0.28] : []),
+      ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], 0.3] : []),
       ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], 0.30] : []),
     ];
+    // Sede's border is near-opaque (intense); presencia's is the lighter tint
+    // at a lower opacity — still clearly colored, just visibly softer than sede.
     const lineOpacityPairs = [
-      ...(selected ? [["==", ["get", "name"], selected], 0.70] : []),
-      ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], 0.50] : []),
+      ...(selected ? [["==", ["get", "name"], selected], 0.95] : []),
+      ...(presence.length > 0 ? [["in", ["get", "name"], ["literal", presence]], 0.6] : []),
       ...(overview.length > 0 ? [["in", ["get", "name"], ["literal", overview]], 0.35] : []),
     ];
     return {
@@ -320,7 +332,7 @@ export function InteractiveMap({
           )}
           {selectedPresenceStates.length > 0 && (
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-sm shrink-0" style={{ background: PRESENCE_COLOR, opacity: 0.35 }} />
+              <span className="w-3 h-3 rounded-sm shrink-0" style={{ background: PRESENCE_COLOR, opacity: 0.55 }} />
               <span className="font-sans text-[11px] font-semibold text-[#3d3d30] uppercase tracking-[0.08em]">Presencia</span>
             </div>
           )}
@@ -333,6 +345,8 @@ export function InteractiveMap({
         style={{ width: "100%", height: "100%" }}
         mapStyle={MAP_STYLE}
         attributionControl={false}
+        maxBounds={PAN_BOUNDS}
+        maxZoom={MAX_ZOOM}
         keyboard={keyboard}
         reuseMaps
         interactiveLayerIds={onStateClick ? ["mx-states-fill", "ca-countries-fill"] : []}

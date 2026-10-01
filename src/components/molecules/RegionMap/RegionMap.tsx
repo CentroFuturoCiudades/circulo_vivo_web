@@ -33,6 +33,16 @@ const DEFAULT_STATES = [
 // Water is washed out so the sea weighs less than the land + initiative states.
 const WATER_COLOR = "#e6edf4";
 const PADDING = 16;
+// On wide screens the card sits on the right (see EcosystemMapSection), so bias
+// the fitted bounds toward the left by padding the right side more — otherwise
+// the map centers under the card instead of reading as a left-side background.
+const LG_BREAKPOINT = 1024;
+function fitOptionsFor(width: number) {
+  if (width >= LG_BREAKPOINT) {
+    return { padding: { top: PADDING, bottom: PADDING, left: PADDING, right: Math.round(width * 0.42) }, duration: 0 as const };
+  }
+  return { padding: PADDING, duration: 0 as const };
+}
 
 export interface RegionMapProps {
   /** Spanish state/country names with initiatives — filled in the brand purple. */
@@ -52,8 +62,9 @@ export function RegionMap({ states = DEFAULT_STATES, className }: RegionMapProps
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const observer = new ResizeObserver(() => {
-      mapRef.current?.fitBounds(OVERVIEW_BOUNDS, { padding: PADDING, duration: 0 });
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width ?? el.clientWidth;
+      mapRef.current?.fitBounds(OVERVIEW_BOUNDS, fitOptionsFor(width));
     });
     observer.observe(el);
     return () => observer.disconnect();
@@ -62,6 +73,12 @@ export function RegionMap({ states = DEFAULT_STATES, className }: RegionMapProps
   function handleLoad() {
     const map = mapRef.current?.getMap();
     if (!map) return;
+    // The ResizeObserver's first callback can fire before the map finishes
+    // loading (mapRef.current still null then), so the left bias never
+    // applied on first paint — reapply it now that the map is ready.
+    if (containerRef.current) {
+      map.fitBounds(OVERVIEW_BOUNDS, fitOptionsFor(containerRef.current.clientWidth));
+    }
     for (const layer of map.getStyle()?.layers ?? []) {
       // No place names (symbol layers) and no political division lines.
       if (layer.type === "symbol" || /admin|boundary|national-park|landuse-overlay/.test(layer.id)) {

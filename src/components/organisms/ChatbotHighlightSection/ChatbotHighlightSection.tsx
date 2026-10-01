@@ -447,9 +447,9 @@ export function ChatbotHighlightSection({ ctaHref = "/chatbot" }: ChatbotHighlig
               radius="full"
               iconRight={ArrowRight}
               onClick={() => router.push(ctaHref)}
-              className="normal-case tracking-normal font-normal text-base h-auto py-1.5 px-2"
+              className="normal-case tracking-normal font-normal text-base h-auto py-3 px-7"
             >
-              EMPIEZA AHORA
+              Empieza ahora
             </Button>
           </FadeUp>
         </div>

@@ -39,6 +39,7 @@ export function ChatSidebar({
 }: ChatSidebarProps) {
   return (
     <div
+      data-tour="chat-sidebar"
       className={cn(
         // Mobile/tablet: fixed slide-over drawer, off-canvas by default.
         "fixed inset-y-0 left-0 z-[70] flex h-full w-[85%] max-w-[360px] flex-col justify-between overflow-y-auto rounded-r-2xl bg-white p-4 pt-6 shadow-2xl transition-transform duration-300 ease-in-out",

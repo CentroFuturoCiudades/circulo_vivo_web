@@ -134,9 +134,9 @@ export function InitiativeDetailCard({
             <Button
               iconRight={ArrowRight}
               onClick={onProfileClick ?? (() => { if (profileUrl) window.location.href = profileUrl; })}
-              className="rounded-full bg-[#ded4b0] hover:bg-[#cfc49e] text-black font-normal text-[16px] h-auto py-[6px] px-[10px] tracking-normal"
+              className="rounded-full bg-[#ded4b0] hover:bg-[#cfc49e] text-black font-normal text-[16px] h-auto py-[6px] px-[10px] normal-case tracking-normal"
             >
-              VER FICHA
+              Ver ficha
             </Button>
           )}
           {websiteUrl && (
@@ -144,9 +144,9 @@ export function InitiativeDetailCard({
               variant="link"
               iconRight={ExternalLink}
               onClick={() => { window.open(websiteUrl, "_blank", "noopener,noreferrer"); }}
-              className="text-[#444748] font-normal text-[16px] tracking-normal hover:opacity-70"
+              className="text-[#444748] font-normal text-[16px] normal-case tracking-normal hover:opacity-70"
             >
-              SITIO WEB
+              Sitio web
             </Button>
           )}
         </div>

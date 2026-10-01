@@ -179,8 +179,10 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], mapCornerActi
 
       {/* ── Sidebar (inline on desktop, bottom sheet on mobile) ── */}
       <div
+        data-tour="map-list"
         className={cn(
-          "absolute inset-x-0 bottom-0 z-20 flex flex-col rounded-t-2xl border-t border-[#c4c7c7] bg-[#faf8f5] shadow-[0_-4px_24px_rgba(0,0,0,0.15)] transition-[height] duration-300 ease-in-out overflow-hidden",
+          // z-30: sits above the map's corner info button (z-20) so the expanded sheet fully covers it instead of colliding with its own header on small screens.
+          "absolute inset-x-0 bottom-0 z-30 flex flex-col rounded-t-2xl border-t border-[#c4c7c7] bg-[#faf8f5] shadow-[0_-4px_24px_rgba(0,0,0,0.15)] transition-[height] duration-300 ease-in-out overflow-hidden",
           sheetExpanded ? "h-[75vh]" : "h-[104px]",
           "lg:static lg:inset-auto lg:z-auto lg:h-full lg:w-[280px] lg:shrink-0 lg:gap-6 lg:rounded-none lg:border-t-0 lg:bg-transparent lg:shadow-none lg:transition-none lg:overflow-visible"
         )}
@@ -236,7 +238,12 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], mapCornerActi
       </div>
 
       {/* ── Map panel (full-bleed on mobile, framed panel on desktop) ── */}
-      <div className="relative flex-1 h-full lg:rounded-xl bg-[#faf8f5] lg:border lg:border-[#c4c7c7] overflow-hidden">
+      <div data-tour="map-canvas" className="relative flex-1 h-full lg:rounded-xl bg-[#faf8f5] lg:border lg:border-[#c4c7c7] overflow-hidden">
+
+        {/* Small, stably-placed anchor for the guided tour's tooltip — the map panel
+            itself is too large/edge-to-edge for react-joyride to position a tooltip
+            against without running out of viewport space (see GuidedTourStep.spotlightTarget). */}
+        <div data-tour="map-canvas-anchor" className="absolute top-8 left-1/2 w-px h-px pointer-events-none" />
 
         {/* Active location filter chip — top-left of map */}
         <AnimatePresence>

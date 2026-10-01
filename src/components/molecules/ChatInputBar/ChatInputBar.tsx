@@ -83,7 +83,7 @@ export function ChatInputBar({
             ))}
           </div>
         ) : chips.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
+          <div data-tour="chat-chips" className="flex flex-wrap gap-2">
             {chips.map((chip, i) => (
               <FilterPill
                 key={i}
@@ -97,7 +97,7 @@ export function ChatInputBar({
           </div>
         ) : null}
 
-        <div className="rounded-lg border border-[#c1c8c8] bg-white p-2">
+        <div data-tour="chat-input" className="rounded-lg border border-[#c1c8c8] bg-white p-2">
           <div className="overflow-hidden rounded bg-white">
             <textarea
               ref={textareaRef}

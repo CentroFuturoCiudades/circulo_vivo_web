@@ -48,14 +48,14 @@ export function EcosystemMapSection({
   const router = useRouter();
   return (
     <section className="relative w-full overflow-hidden h-[480px] md:h-[560px] lg:h-[640px]">
-      <RegionMap states={states} />
+      <RegionMap states={states} className="lg:scale-[1.12]" />
 
-      <div className="relative z-10 h-full flex items-center justify-center">
+      <div className="relative z-10 h-full flex items-center justify-center lg:justify-end px-6 md:px-9 lg:pr-16">
         <FadeUp>
           <motion.div
             whileHover={{ scale: 1.01 }}
             transition={{ type: "spring", stiffness: 200 }}
-            className="relative overflow-hidden w-[calc(100vw-48px)] lg:w-[512px] rounded-2xl"
+            className="relative overflow-hidden w-[calc(100vw-48px)] lg:w-[460px] rounded-2xl"
           >
             <div className="absolute inset-0 bg-[#561427]" />
             <div className="relative z-10 p-6 md:p-8 lg:p-12 flex flex-col items-center gap-2">
