@@ -48,9 +48,9 @@ export function EcosystemMapSection({
   const router = useRouter();
   return (
     <section className="relative w-full overflow-hidden h-[480px] md:h-[560px] lg:h-[640px]">
-      <RegionMap states={states} className="lg:scale-[1.12]" />
+      <RegionMap states={states} animate />
 
-      <div className="relative z-10 h-full flex items-center justify-center lg:justify-end px-6 md:px-9 lg:pr-16">
+      <div className="relative z-10 h-full flex items-center justify-center lg:justify-end px-6 md:px-9 lg:pr-28">
         <FadeUp>
           <motion.div
             whileHover={{ scale: 1.01 }}
@@ -59,10 +59,10 @@ export function EcosystemMapSection({
           >
             <div className="absolute inset-0 bg-[#561427]" />
             <div className="relative z-10 p-6 md:p-8 lg:p-12 flex flex-col items-center gap-2">
-              <h2 className="font-serif font-semibold text-white text-center text-xl leading-7 lg:text-[32px] lg:leading-[40px] mb-3">
+              <h2 className="font-sans font-semibold text-white text-center text-2xl leading-7 lg:text-[29px] lg:leading-[34px] mb-3">
                 {title}
               </h2>
-              <p className="font-sans font-regular text-white text-center text-sm lg:text-base pb-8 lg:pb-10">
+              <p className="font-sans font-regular text-white text-center text-base lg:text-lg pb-8 lg:pb-10">
                 {description}
               </p>
               <Button
@@ -71,7 +71,7 @@ export function EcosystemMapSection({
                 iconLeft={Map}
                 radius="full"
                 onClick={() => router.push(ctaHref)}
-                className="normal-case tracking-normal font-normal text-base text-black h-auto py-4 px-8"
+                className="normal-case tracking-normal font-normal text-lg text-black h-auto py-4 px-8"
               >
                 {ctaLabel}
               </Button>

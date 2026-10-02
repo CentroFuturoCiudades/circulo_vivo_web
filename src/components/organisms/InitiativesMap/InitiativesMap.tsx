@@ -208,10 +208,10 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], mapCornerActi
             onClick={() => setSheetExpanded(true)}
             className="lg:hidden flex items-center justify-between px-4 pb-4"
           >
-            <span className="font-sans font-bold text-[#211f19]" style={{ fontSize: 16 }}>
+            <span className="font-sans font-bold text-[#211f19]" style={{ fontSize: 18 }}>
               {initiatives.length} iniciativas
             </span>
-            <span className="font-sans text-[#708b8d]" style={{ fontSize: 13 }}>
+            <span className="font-sans text-[#708b8d]" style={{ fontSize: 14 }}>
               Ver lista
             </span>
           </button>
@@ -258,7 +258,7 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], mapCornerActi
             >
               <Chip
                 color="neutral"
-                className="bg-[#f0ede4] text-[#3d3d30] border border-[#dedad2] hover:bg-[#e8e4da] cursor-default uppercase tracking-[0.08em] text-[11px] font-semibold"
+                className="bg-[#f0ede4] text-[#3d3d30] border border-[#dedad2] hover:bg-[#e8e4da] cursor-default uppercase tracking-[0.08em] text-[12px] font-semibold"
               >
                 Explorando: {activeLocation}
               </Chip>

@@ -112,7 +112,7 @@ export function InitiativeDetailCard({
                   </div>
                 )}
                 <h3
-                  className="font-serif font-bold text-black leading-[1.3]"
+                  className="font-sans font-bold text-black leading-[1.3]"
                   style={{ fontSize: "16px" }}
                 >
                   {title}

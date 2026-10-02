@@ -54,12 +54,12 @@ export function ConversionBannerSection({
       <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-0 px-6 md:px-9 py-10 md:py-16 lg:py-[80px]">
         <FadeUp delay={0} className="flex flex-col gap-2">
           <h2
-            className="font-sans font-semibold text-white text-2xl lg:text-[32px] max-w-full lg:max-w-[544px]"
+            className="font-sans font-semibold text-white text-2xl lg:text-[29px] max-w-full lg:max-w-[544px]"
             style={{ letterSpacing: "-0.32px", lineHeight: 1.2 }}
           >
             {title}
           </h2>
-          <p className="font-sans font-normal text-white" style={{ fontSize: 18, lineHeight: 1.6 }}>
+          <p className="font-sans font-normal text-white" style={{ fontSize: 20, lineHeight: 1.6 }}>
             {subtitle}
           </p>
         </FadeUp>
@@ -71,7 +71,7 @@ export function ConversionBannerSection({
             radius="full"
             onClick={() => router.push(ctaHref)}
             className="normal-case tracking-normal font-normal text-black hover:text-white h-auto py-5 px-12 bg-[#DED4B0] hover:bg-[#c9bc95]"
-            style={{ fontSize: 18 }}
+            style={{ fontSize: 20 }}
           >
             {ctaLabel}
           </Button>

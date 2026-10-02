@@ -57,7 +57,7 @@ function DirectivoCard({ name, role, description, src, className }: TeamMemberDi
         <p className="font-sans font-bold text-[11px] tracking-[0.15em] uppercase text-[#bcb884] leading-none">
           {role}
         </p>
-        <h3 className="font-serif font-bold text-[20px] leading-snug text-[#1c1c18]">
+        <h3 className="font-sans font-bold text-[20px] leading-snug text-[#1c1c18]">
           {name}
         </h3>
         {description && (
@@ -94,7 +94,7 @@ function TecnicoCard({ name, role, tag, src, className }: TeamMemberTecnicoProps
 
       {/* Text */}
       <div className="flex flex-col items-center gap-0 w-full">
-        <h4 className="font-serif font-bold italic text-[18px] leading-snug text-[#203b6b] text-center">
+        <h4 className="font-sans font-bold text-[18px] leading-snug text-[#203b6b] text-center">
           {name}
         </h4>
         <p className="font-sans text-[11px] text-[#747780] leading-normal pb-2.5">

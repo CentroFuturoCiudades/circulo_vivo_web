@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
-import { ArrowRight, Mic, Paperclip } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FilterPill } from "@/components/atoms/FilterPill";
 import { Button } from "@/components/atoms/Button";
@@ -20,13 +20,10 @@ export interface ChatInputBarProps {
   onChange?: (value: string) => void;
   onSend?: (value: string) => void;
   placeholder?: string;
-  disclaimer?: string;
   className?: string;
 }
 
 const DEFAULT_PLACEHOLDER = "Escribe tu pregunta aquí...";
-const DEFAULT_DISCLAIMER =
-  "ResearchAI puede producir errores. Verifica los fragmentos de audio originales adjuntos en cada respuesta.";
 
 export function ChatInputBar({
   chips = [],
@@ -35,7 +32,6 @@ export function ChatInputBar({
   onChange,
   onSend,
   placeholder = DEFAULT_PLACEHOLDER,
-  disclaimer = DEFAULT_DISCLAIMER,
   className,
 }: ChatInputBarProps) {
   const [internalValue, setInternalValue] = useState("");
@@ -88,7 +84,7 @@ export function ChatInputBar({
               <FilterPill
                 key={i}
                 variant="teal"
-                className="text-xs md:text-base h-auto py-1 px-2.5 md:px-3 font-normal"
+                className="text-sm md:text-lg h-auto py-1 px-2.5 md:px-3 font-normal"
                 onClick={chip.onClick}
               >
                 {chip.label}
@@ -106,31 +102,12 @@ export function ChatInputBar({
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
               rows={2}
-              className="w-full resize-none bg-white px-4 pt-4 pb-10 font-sans text-base font-normal text-[#111111] placeholder:text-[#a1a1aa] outline-none"
-              style={{ minHeight: "56px", fontSize: "16px" }}
+              className="w-full resize-none bg-white px-4 pt-4 pb-10 font-sans text-lg font-normal text-[#111111] placeholder:text-[#a1a1aa] outline-none"
+              style={{ minHeight: "56px", fontSize: "18px" }}
             />
           </div>
 
-          <div className="flex items-center justify-between px-4 pb-2">
-            {typeof process !== "undefined" && process.env.NEXT_PUBLIC_DEV_ENVIRONMENT === "dev" ? (
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="icon"
-                  color="neutral"
-                  iconLeft={Mic}
-                  aria-label="Micrófono"
-                  className="border-none bg-transparent text-[#a1a1aa] hover:bg-transparent hover:text-[#708b8d] w-9 h-9"
-                />
-                <Button
-                  variant="icon"
-                  color="neutral"
-                  iconLeft={Paperclip}
-                  aria-label="Adjuntar archivo"
-                  className="border-none bg-transparent text-[#a1a1aa] hover:bg-transparent hover:text-[#708b8d] w-9 h-9"
-                />
-              </div>
-            ) : <div />}
-
+          <div className="flex items-center justify-end px-4 pb-2">
             <Button
               color="teal"
               variant="icon"
@@ -147,19 +124,12 @@ export function ChatInputBar({
               radius="sm"
               iconRight={ArrowRight}
               onClick={handleSend}
-              className="hidden md:inline-flex normal-case tracking-normal font-normal text-base h-auto py-2 px-6"
+              className="hidden md:inline-flex normal-case tracking-normal font-normal text-lg h-auto py-2 px-6"
             >
               Enviar consulta
             </Button>
           </div>
         </div>
-
-        <p
-          className="text-center font-sans font-normal text-[#a1a1aa]"
-          style={{ fontSize: "16px", lineHeight: "1.5" }}
-        >
-          {disclaimer}
-        </p>
       </div>
     </div>
   );

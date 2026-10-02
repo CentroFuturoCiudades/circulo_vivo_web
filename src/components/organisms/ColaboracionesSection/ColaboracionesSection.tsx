@@ -194,11 +194,11 @@ function ColaboradorCard({
         transition={{ duration: 0.2 }}
         className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-1.5 p-4"
       >
-        <p className="font-serif italic font-bold text-white" style={{ fontSize: 16, lineHeight: 1.3 }}>
+        <p className="font-sans font-bold text-white" style={{ fontSize: 18, lineHeight: 1.3 }}>
           {colaborador.name}
         </p>
         {colaborador.role?.trim() && (
-          <p className="font-sans font-normal text-white/85" style={{ fontSize: 11, lineHeight: 1.4 }}>
+          <p className="font-sans font-normal text-white/85" style={{ fontSize: 12, lineHeight: 1.4 }}>
             {colaborador.role.trim()}
           </p>
         )}
@@ -262,11 +262,11 @@ function ColaboradorModal({ colaborador, color, onClose }: { colaborador: Colabo
 
         <div className="flex flex-col gap-4 p-6 md:p-8 overflow-y-auto" style={{ minHeight: 0 }}>
           <div className="flex flex-col gap-1.5">
-            <h3 className="font-serif italic font-bold text-[#203b6b]" style={{ fontSize: 26, lineHeight: 1.3 }}>
+            <h3 className="font-sans font-bold text-[#203b6b]" style={{ fontSize: 29, lineHeight: 1.3 }}>
               {colaborador.name}
             </h3>
             {colaborador.role?.trim() && (
-              <p className="font-sans font-normal text-[#747780]" style={{ fontSize: 13 }}>
+              <p className="font-sans font-normal text-[#747780]" style={{ fontSize: 14 }}>
                 {colaborador.role.trim()}
               </p>
             )}
@@ -275,7 +275,7 @@ function ColaboradorModal({ colaborador, color, onClose }: { colaborador: Colabo
           {colaborador.description?.trim() && (
             <>
               <div className="h-px bg-neutral-200" />
-              <p className="font-sans font-normal text-[#44474f]" style={{ fontSize: 14, lineHeight: 1.7 }}>
+              <p className="font-sans font-normal text-[#44474f]" style={{ fontSize: 15, lineHeight: 1.7 }}>
                 {colaborador.description.trim()}
               </p>
             </>
@@ -309,7 +309,7 @@ function ColaboradorModal({ colaborador, color, onClose }: { colaborador: Colabo
               onClick={() => {
                 window.location.href = `mailto:${colaborador.email}`;
               }}
-              className="w-full justify-center normal-case tracking-normal font-normal text-sm mt-1"
+              className="w-full justify-center normal-case tracking-normal font-normal text-base mt-1"
             >
               Contactar
             </Button>
@@ -344,8 +344,8 @@ function InstitutionLogoItem({ institution }: { institution: InstitutionLogo }) 
         </div>
       ) : (
         <span
-          className="font-serif italic font-bold text-[#1a1c1c] whitespace-nowrap"
-          style={{ fontSize: 22, lineHeight: 1 }}
+          className="font-sans font-bold text-[#1a1c1c] whitespace-nowrap"
+          style={{ fontSize: 24, lineHeight: 1 }}
         >
           {institution.name}
         </span>
@@ -392,7 +392,7 @@ export function ColaboracionesSection({
       >
         <div>
           <h2
-            className="font-serif font-bold text-[#203b6b] text-[24px] md:text-[32px]"
+            className="font-sans font-bold text-[#203b6b] text-[26px] md:text-[35px]"
             style={{ lineHeight: 1.25 }}
           >
             Red de Colaboración
@@ -495,7 +495,7 @@ export function LegacyColaboracionesSection() {
       {/* Header */}
       <FadeUp delay={0} className="flex flex-col gap-2">
         <h2
-          className="font-serif font-bold text-[#203b6b] text-[24px] md:text-[32px]"
+          className="font-sans font-bold text-[#203b6b] text-[26px] md:text-[35px]"
           style={{ lineHeight: 1.25 }}
         >
           Red de Colaboración
@@ -520,14 +520,14 @@ export function LegacyColaboracionesSection() {
               >
                 <div className="flex flex-col" style={{ gap: 10.9 }}>
                   <h3
-                    className="font-serif italic font-bold text-[#203b6b]"
-                    style={{ fontSize: 24, lineHeight: 1.4 }}
+                    className="font-sans font-bold text-[#203b6b]"
+                    style={{ fontSize: 26, lineHeight: 1.4 }}
                   >
                     {p.name}
                   </h3>
                   <p
                     className="font-sans font-normal text-[#44474f]"
-                    style={{ fontSize: 14, lineHeight: 1.625 }}
+                    style={{ fontSize: 15, lineHeight: 1.625 }}
                   >
                     {p.description}
                   </p>
@@ -541,7 +541,7 @@ export function LegacyColaboracionesSection() {
                     <span
                       key={tag}
                       className="font-sans font-normal text-[#1a1b21]"
-                      style={{ fontSize: 10, lineHeight: 1.5 }}
+                      style={{ fontSize: 11, lineHeight: 1.5 }}
                     >
                       {tag}
                     </span>
@@ -567,14 +567,14 @@ export function LegacyColaboracionesSection() {
           >
             <div className="flex flex-col" style={{ gap: 10.9, maxWidth: 672 }}>
               <h3
-                className="font-serif italic font-bold text-[#d8e2ff]"
-                style={{ fontSize: 24, lineHeight: 1.4 }}
+                className="font-sans font-bold text-[#d8e2ff]"
+                style={{ fontSize: 26, lineHeight: 1.4 }}
               >
                 MIT Media Lab
               </h3>
               <p
                 className="font-sans font-normal text-[#aec6ff]"
-                style={{ fontSize: 16, lineHeight: 1.625 }}
+                style={{ fontSize: 18, lineHeight: 1.625 }}
               >
                 Visualización de datos complejos para gobernanza participativa y gemelos digitales urbanos.
               </p>
@@ -585,7 +585,7 @@ export function LegacyColaboracionesSection() {
                 <span
                   key={tag}
                   className="font-sans font-normal text-[#aec6ff]"
-                  style={{ fontSize: 10, lineHeight: 1.5 }}
+                  style={{ fontSize: 11, lineHeight: 1.5 }}
                 >
                   {tag}
                 </span>

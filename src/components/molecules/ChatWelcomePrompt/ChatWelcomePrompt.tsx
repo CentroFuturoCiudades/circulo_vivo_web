@@ -32,13 +32,13 @@ export function ChatWelcomePrompt({
     <div className={cn("flex flex-col items-center gap-4", className)}>
       <div className="flex flex-col items-center gap-4">
         <p
-          className="font-serif font-bold text-[#303f40] text-center"
-          style={{ fontSize: "23.82px", lineHeight: 1.538, maxWidth: 586 }}
+          className="font-sans font-bold text-[#303f40] text-center"
+          style={{ fontSize: "26px", lineHeight: 1.538, maxWidth: 586 }}
         >
           {question}
         </p>
         <p
-          className="font-sans font-normal text-[#000000] text-center whitespace-pre-line text-base"
+          className="font-sans font-normal text-[#000000] text-center whitespace-pre-line text-lg"
           style={{ lineHeight: 1.6, maxWidth: 500, padding: "0 7.69px" }}
         >
           {subtitle}
@@ -48,7 +48,7 @@ export function ChatWelcomePrompt({
       <div
         data-tour="chat-suggestions"
         className="flex flex-wrap justify-center gap-2 md:gap-3 px-4 md:px-[67px]"
-        style={{ paddingTop: 16 }}
+        style={{ paddingTop: 8 }}
       >
         {isLoadingSuggestions ? (
           // Skeletons mientras el servicio genera sugerencias
@@ -68,7 +68,7 @@ export function ChatWelcomePrompt({
                 variant="default"
                 onClick={suggestion.onClick}
                 className={cn(
-                  "h-auto min-h-7 md:min-h-8 max-w-full whitespace-normal px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-white border font-sans text-xs md:text-sm font-medium text-[#000000] text-center",
+                  "h-auto min-h-7 md:min-h-8 max-w-full whitespace-normal px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-white border font-sans text-sm md:text-base font-medium text-[#000000] text-center",
                   isLast ? "border-[#e1e1e6]" : "border-[#f0efef]"
                 )}
               >

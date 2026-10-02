@@ -43,7 +43,7 @@ export function FeatureCard({
 
       {/* Title */}
       <h3
-        className="font-serif font-bold text-[#1a1c1c] leading-[1.3]"
+        className="font-sans font-bold text-[#1a1c1c] leading-[1.3]"
         style={{ fontSize: "24px" }}
       >
         {title}

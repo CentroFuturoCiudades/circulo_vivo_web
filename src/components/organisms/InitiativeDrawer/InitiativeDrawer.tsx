@@ -207,7 +207,7 @@ export function InitiativeDrawer({
             </div>
           )}
           <h2
-            className="font-serif font-bold text-black"
+            className="font-sans font-bold text-black"
             style={{ fontSize: "24px", lineHeight: "1.25" }}
           >
             {title}

@@ -1,9 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { ChartColumn } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/atoms/Button";
 
 function FadeUp({
@@ -30,34 +29,12 @@ function FadeUp({
   );
 }
 
-export interface ChartDataItem {
-  state: string;
-  value: number;
-  color?: string;
-}
+// Alturas de barra puramente ilustrativas — un mockup de panel, no datos reales.
+// La sección de indicadores todavía no está conectada a datos en vivo.
+const PLACEHOLDER_BARS = [0.9, 0.65, 0.8, 0.45, 0.7, 0.3, 0.55, 0.4];
 
-export interface IndicatorsDashboardSectionProps {
-  data?: ChartDataItem[];
-  ctaHref?: string;
-}
-
-const DEFAULT_DATA: ChartDataItem[] = [
-  { state: "Chiapas",          value: 0.09,  color: "#bcb884" },
-  { state: "Hidalgo",          value: 0.081, color: "#395284" },
-  { state: "Veracruz",         value: 0.062, color: "#708b8d" },
-  { state: "Puebla",           value: 0.061, color: "#395284" },
-  { state: "San Luis Potosí",  value: 0.06,  color: "#708b8d" },
-  { state: "Oaxaca",           value: 0.06,  color: "#708b8d" },
-  { state: "Tabasco",          value: 0.048, color: "#582a56" },
-  { state: "Guerrero",         value: 0.035, color: "#582a56" },
-];
-
-export function IndicatorsDashboardSection({
-  data = DEFAULT_DATA,
-  ctaHref = "/indicadores",
-}: IndicatorsDashboardSectionProps) {
-  const router = useRouter();
-  const maxVal = Math.max(...data.map((d) => d.value));
+export function IndicatorsDashboardSection() {
+  const [showTooltip, setShowTooltip] = useState(false);
 
   return (
     <section className="w-full py-16 md:py-20 lg:py-[120px]">
@@ -68,28 +45,44 @@ export function IndicatorsDashboardSection({
           className="flex flex-col gap-5 w-full lg:shrink-0 lg:w-[379px]"
         >
           <h2
-            className="font-sans font-semibold text-[#1a1c1c] text-2xl lg:text-[32px] lg:leading-[40px]"
+            className="font-sans font-semibold text-[#1a1c1c] text-2xl lg:text-[29px] lg:leading-[34px]"
             style={{ letterSpacing: "-0.32px" }}
           >
             Conocimiento para conectar
           </h2>
           <p
             className="font-sans font-normal text-[#5f5e5e]"
-            style={{ fontSize: 16, lineHeight: 1.6, maxWidth: 373 }}
+            style={{ fontSize: 18, lineHeight: 1.6, maxWidth: 373 }}
           >
             Un espacio para explorar indicadores sobre producción, acceso y consumo de alimentos que permiten
             comprender la realidad alimentaria de la región. Explora los indicadores....
           </p>
-          <Button
-            color="gold"
-            variant="outline"
-            radius="full"
-            iconRight={ChartColumn}
-            onClick={() => router.push(ctaHref)}
-            className="normal-case tracking-normal font-normal text-base h-auto py-3 px-8 w-fit text-[#bcb884] hover:text-white [&>svg]:text-[#bcb884] hover:[&>svg]:text-white"
+          <div
+            className="relative w-fit"
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
           >
-            Explorar datos
-          </Button>
+            <Button
+              color="gold"
+              variant="outline"
+              radius="full"
+              iconRight={ChartColumn}
+              disabled
+              className="normal-case tracking-normal font-normal text-lg h-auto py-3 px-8 w-fit text-[#bcb884] cursor-not-allowed [&>svg]:text-[#bcb884]"
+            >
+              Explorar datos
+            </Button>
+            <motion.div
+              initial={false}
+              animate={{ opacity: showTooltip ? 1 : 0, y: showTooltip ? 0 : 6 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 w-max max-w-[240px] -translate-x-1/2 rounded-lg bg-[#1a1c1c] px-3.5 py-2 text-center font-sans text-white shadow-lg"
+              style={{ fontSize: 14, lineHeight: 1.4 }}
+            >
+              Próximamente podrás explorar estos datos
+              <div className="absolute left-1/2 bottom-full -translate-x-1/2 border-4 border-transparent border-b-[#1a1c1c]" />
+            </motion.div>
+          </div>
         </FadeUp>
 
         {/* Right — chart card */}
@@ -101,64 +94,25 @@ export function IndicatorsDashboardSection({
                 "0 1px 2.625px rgba(0,0,0,0.04), 0 2px 10.5px rgba(57,82,132,0.07)",
             }}
           >
-            {/* Chart header */}
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex flex-col gap-0.5">
-                <p className="font-sans font-semibold text-[#1a1c1c]" style={{ fontSize: 14 }}>
-                  Top 8 Ganadores de Impacto
-                </p>
-                <p className="font-sans text-[#71717a]" style={{ fontSize: 11 }}>
-                  Estados con mayor ganancia en índice IISE
-                </p>
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <span className="w-2 h-2 rounded-full" style={{ background: "#bcb884" }} />
-                <span className="font-sans text-[#71717a]" style={{ fontSize: 11 }}>
-                  Delta IISE
-                </span>
-              </div>
+            {/* Header — generic, no invented titles/metrics */}
+            <div className="flex items-center gap-2">
+              <ChartColumn size={16} className="text-[#bcb884]" />
+              <p className="font-sans font-semibold text-[#1a1c1c]" style={{ fontSize: 15 }}>
+                Panel de indicadores
+              </p>
             </div>
 
-            {/* Bars */}
-            <div className="flex flex-col gap-2.5">
-              {data.map((item) => (
-                <div key={item.state} className="flex items-center gap-3">
-                  <span
-                    className="font-sans text-[#71717a] text-right shrink-0"
-                    style={{ fontSize: 11, width: 100 }}
-                  >
-                    {item.state}
-                  </span>
-                  <div className="flex-1 h-5 bg-[#f4f4f5] rounded-sm overflow-hidden">
-                    <motion.div
-                      className="h-full rounded-sm"
-                      style={{ backgroundColor: item.color ?? "#708b8d" }}
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${(item.value / maxVal) * 100}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-                    />
-                  </div>
-                  <span
-                    className="font-sans font-semibold text-[#1a1c1c] shrink-0"
-                    style={{ fontSize: 11, width: 48, textAlign: "right" }}
-                  >
-                    +{item.value.toFixed(3)}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* X-axis ticks */}
-            <div className="flex items-center" style={{ paddingLeft: 112, paddingRight: 60 }}>
-              {[0, 0.025, 0.05, 0.075, 0.1].map((tick) => (
-                <span
-                  key={tick}
-                  className="font-sans text-[#a1a1aa] flex-1 text-center"
-                  style={{ fontSize: 10 }}
-                >
-                  {tick === 0 ? "0" : tick.toFixed(3)}
-                </span>
+            {/* Placeholder bars — illustrative shapes only, no labels or values */}
+            <div className="flex items-end gap-2.5" style={{ height: 240 }}>
+              {PLACEHOLDER_BARS.map((h, i) => (
+                <motion.div
+                  key={i}
+                  className="flex-1 rounded-t-sm bg-[#e3e1d4]"
+                  initial={{ height: 0 }}
+                  whileInView={{ height: `${h * 100}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: i * 0.05 }}
+                />
               ))}
             </div>
           </div>

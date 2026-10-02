@@ -52,10 +52,10 @@ export function ChatSidebar({
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-2">
-            <h2 className="font-sans font-semibold text-[#18181b]" style={{ fontSize: "18px", lineHeight: "1.4" }}>
+            <h2 className="font-sans font-semibold text-[#18181b]" style={{ fontSize: "20px", lineHeight: "1.4" }}>
               {title}
             </h2>
-            <p className="font-sans font-normal text-[#71717a]" style={{ fontSize: "14px", lineHeight: "1.6" }}>
+            <p className="font-sans font-normal text-[#71717a]" style={{ fontSize: "15px", lineHeight: "1.6" }}>
               {description}
             </p>
           </div>
@@ -75,7 +75,7 @@ export function ChatSidebar({
       <div className="mt-auto flex flex-col gap-3 border-t border-[#e4e4e7] pt-6">
         <p
           className="font-sans font-normal text-[#71717a]"
-          style={{ fontSize: "16px", lineHeight: "1.625" }}
+          style={{ fontSize: "18px", lineHeight: "1.625" }}
         >
           {methodologyNote}
         </p>

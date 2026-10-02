@@ -182,18 +182,18 @@ function MemberTile({ member, onOpen }: { member: MiembroTecnico; onOpen: () => 
                 {projectRole && (
                     <p
                         className="font-sans font-bold uppercase text-crimson-400"
-                        style={{ fontSize: 11, letterSpacing: 0.8, lineHeight: 1.3 }}
+                        style={{ fontSize: 12, letterSpacing: 0.8, lineHeight: 1.3 }}
                     >
                         {projectRole}
                     </p>
                 )}
-                <p className="font-sans font-bold text-[#203b6b]" style={{ fontSize: 20, lineHeight: 1.3 }}>
+                <p className="font-sans font-bold text-[#203b6b]" style={{ fontSize: 22, lineHeight: 1.3 }}>
                     {member.name}
                 </p>
                 {member.role?.trim() && (
                     <p
                         className="font-sans font-normal text-[#3d5a8a] line-clamp-2"
-                        style={{ fontSize: 15, lineHeight: 1.4 }}
+                        style={{ fontSize: 16, lineHeight: 1.4 }}
                     >
                         {member.role.trim()}
                     </p>
@@ -269,7 +269,7 @@ function MemberDetailModal({
                         {projectRole && (
                             <p
                                 className="font-sans font-bold uppercase text-crimson-400"
-                                style={{ fontSize: 12, letterSpacing: 1, lineHeight: 1.3 }}
+                                style={{ fontSize: 13, letterSpacing: 1, lineHeight: 1.3 }}
                             >
                                 {projectRole}
                             </p>
@@ -278,14 +278,14 @@ function MemberDetailModal({
                             <Chip
                                 color="purple"
                                 selected
-                                className="pointer-events-none w-fit text-[9px] h-6 px-2"
+                                className="pointer-events-none w-fit text-[10px] h-6 px-2"
                             >
                                 {tag}
                             </Chip>
                         )}
                         <h3
-                            className="font-serif italic font-bold text-[#203b6b]"
-                            style={{ fontSize: 26, lineHeight: 1.3 }}
+                            className="font-sans font-bold text-[#203b6b]"
+                            style={{ fontSize: 29, lineHeight: 1.3 }}
                         >
                             {member.name}
                         </h3>
@@ -299,11 +299,11 @@ function MemberDetailModal({
                                     <div className="flex flex-col gap-0.5">
                                         <span
                                             className="font-sans font-semibold uppercase text-neutral-400"
-                                            style={{ fontSize: 10, letterSpacing: 0.4 }}
+                                            style={{ fontSize: 11, letterSpacing: 0.4 }}
                                         >
                                             Puesto actual
                                         </span>
-                                        <p className="font-sans font-normal text-[#1a1c1c]" style={{ fontSize: 14 }}>
+                                        <p className="font-sans font-normal text-[#1a1c1c]" style={{ fontSize: 15 }}>
                                             {member.role.trim()}
                                         </p>
                                     </div>
@@ -315,11 +315,11 @@ function MemberDetailModal({
                                     <div className="flex flex-col gap-0.5">
                                         <span
                                             className="font-sans font-semibold uppercase text-neutral-400"
-                                            style={{ fontSize: 10, letterSpacing: 0.4 }}
+                                            style={{ fontSize: 11, letterSpacing: 0.4 }}
                                         >
                                             Doctorado
                                         </span>
-                                        <p className="font-sans font-normal text-[#1a1c1c]" style={{ fontSize: 14 }}>
+                                        <p className="font-sans font-normal text-[#1a1c1c]" style={{ fontSize: 15 }}>
                                             {member.doctorado.trim()}
                                         </p>
                                     </div>
@@ -334,11 +334,11 @@ function MemberDetailModal({
                             <div className="flex flex-col gap-1.5">
                                 <span
                                     className="font-sans font-semibold uppercase text-neutral-400"
-                                    style={{ fontSize: 10, letterSpacing: 0.4 }}
+                                    style={{ fontSize: 11, letterSpacing: 0.4 }}
                                 >
                                     Semblanza
                                 </span>
-                                <p className="font-sans font-normal text-[#44474f]" style={{ fontSize: 14, lineHeight: 1.7 }}>
+                                <p className="font-sans font-normal text-[#44474f]" style={{ fontSize: 15, lineHeight: 1.7 }}>
                                     {member.description.trim()}
                                 </p>
                             </div>
@@ -365,7 +365,7 @@ function MemberDetailModal({
                                             <span
                                                 role="tooltip"
                                                 className="pointer-events-none absolute left-1/2 bottom-full mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#1a1c1c] px-2 py-1 text-white opacity-0 transition-opacity duration-150 group-hover/tooltip:opacity-100"
-                                                style={{ fontSize: 11 }}
+                                                style={{ fontSize: 12 }}
                                             >
                                                 {label}
                                             </span>
@@ -383,7 +383,7 @@ function MemberDetailModal({
                                 onClick={() => {
                                     window.location.href = `mailto:${member.email}`;
                                 }}
-                                className="justify-center normal-case tracking-normal font-normal text-sm flex-1"
+                                className="justify-center normal-case tracking-normal font-normal text-base flex-1"
                             >
                                 Contactar
                             </Button>
@@ -428,7 +428,7 @@ export function EquipoTecnicoSection({
             {/* Header */}
             <FadeUp delay={0} className="flex flex-col gap-2 px-6 md:px-16 lg:px-24">
                 <h2
-                    className="font-serif font-bold text-[#203b6b] text-[24px] md:text-[32px]"
+                    className="font-sans font-bold text-[#203b6b] text-[26px] md:text-[35px]"
                     style={{ lineHeight: 1.25 }}
                 >
                     Equipo de Investigación

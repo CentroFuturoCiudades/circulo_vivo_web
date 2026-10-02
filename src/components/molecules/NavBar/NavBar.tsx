@@ -92,7 +92,7 @@ export function NavBar({
                 key={link.href}
                 href={link.href}
                 aria-current="page"
-                className="flex items-center self-stretch rounded-full px-4 font-sans font-medium text-[12px] tracking-[0.1em] uppercase leading-[1.333] whitespace-nowrap select-none"
+                className="flex items-center self-stretch rounded-full px-4 font-sans font-medium text-[13px] tracking-[0.1em] uppercase leading-[1.333] whitespace-nowrap select-none"
                 style={{
                   backgroundColor: toRgba(activeLinkColor, activeLinkOpacity),
                   color: activeLinkTextColor,
@@ -104,7 +104,7 @@ export function NavBar({
               <a
                 key={link.href}
                 href={link.href}
-                className="flex items-center self-stretch px-4 font-sans font-light text-[12px] tracking-[0.1em] uppercase leading-[1.333] whitespace-nowrap select-none hover:opacity-60 transition-opacity"
+                className="flex items-center self-stretch px-4 font-sans font-light text-[13px] tracking-[0.1em] uppercase leading-[1.333] whitespace-nowrap select-none hover:opacity-60 transition-opacity"
                 style={{ color: linkTextColor }}
               >
                 {link.label}
@@ -139,7 +139,7 @@ export function NavBar({
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="flex items-center px-6 py-4 font-sans font-medium text-[13px] tracking-[0.1em] uppercase border-b border-white/10 last:border-0 transition-opacity hover:opacity-70"
+              className="flex items-center px-6 py-4 font-sans font-medium text-[14px] tracking-[0.1em] uppercase border-b border-white/10 last:border-0 transition-opacity hover:opacity-70"
               style={{
                 color: link.active ? activeLinkTextColor : linkTextColor,
                 backgroundColor: link.active

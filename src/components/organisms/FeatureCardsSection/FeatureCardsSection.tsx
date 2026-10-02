@@ -72,15 +72,15 @@ export function FeatureCardsSection({ features }: FeatureCardsSectionProps) {
               </motion.div>
 
               <h3
-                className="font-serif font-bold text-[#1a1c1c] mt-1"
-                style={{ fontSize: 24, lineHeight: 1.3 }}
+                className="font-sans font-bold text-[#1a1c1c] mt-1"
+                style={{ fontSize: 26, lineHeight: 1.3 }}
               >
                 {feature.title}
               </h3>
 
               <p
                 className="font-sans font-normal text-[#5e5e5e]"
-                style={{ fontSize: 16, lineHeight: 1.5 }}
+                style={{ fontSize: 18, lineHeight: 1.5 }}
               >
                 {feature.description}
               </p>
@@ -92,7 +92,7 @@ export function FeatureCardsSection({ features }: FeatureCardsSectionProps) {
                   radius="full"
                   iconRight={ArrowRight}
                   onClick={() => feature.href && router.push(feature.href)}
-                  className="normal-case tracking-normal font-normal text-base h-auto py-1.5 px-4 w-fit"
+                  className="normal-case tracking-normal font-normal text-lg h-auto py-1.5 px-4 w-fit"
                 >
                   {feature.cta}
                 </Button>

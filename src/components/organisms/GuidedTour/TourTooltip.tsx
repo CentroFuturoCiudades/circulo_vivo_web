@@ -46,7 +46,7 @@ export function TourTooltip({
       </p>
 
       {step.title && (
-        <h3 className="font-serif font-bold text-[#1a1c1c] mt-1.5" style={{ fontSize: 19, lineHeight: 1.3 }}>
+        <h3 className="font-sans font-bold text-[#1a1c1c] mt-1.5" style={{ fontSize: 19, lineHeight: 1.3 }}>
           {step.title}
         </h3>
       )}

@@ -80,7 +80,7 @@ export function SistemasAlimentariosSection({
             <span className="h-px w-10 bg-[#bcb884]" />
             <p
               className="font-sans font-semibold uppercase text-[#bcb884]"
-              style={{ fontSize: 12, letterSpacing: "0.2em" }}
+              style={{ fontSize: 13, letterSpacing: "0.2em" }}
             >
               {eyebrow}
             </p>
@@ -88,7 +88,7 @@ export function SistemasAlimentariosSection({
         </FadeUp>
 
         <FadeUp delay={0.1}>
-          <p className="font-serif italic font-medium text-white text-[26px] leading-[34px] md:text-[34px] md:leading-[44px] lg:text-[42px] lg:leading-[52px]">
+          <p className="font-sans font-light text-white text-[24px] leading-[30px] md:text-[29px] md:leading-[36px] lg:text-[33px] lg:leading-[40px]">
             {lead}
           </p>
         </FadeUp>
@@ -96,7 +96,7 @@ export function SistemasAlimentariosSection({
         <FadeUp delay={0.2}>
           <p
             className="font-sans font-normal text-white/70 max-w-[620px]"
-            style={{ fontSize: 16, lineHeight: 1.7 }}
+            style={{ fontSize: 18, lineHeight: 1.7 }}
           >
             {body}
           </p>

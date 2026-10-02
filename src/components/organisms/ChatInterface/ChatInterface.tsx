@@ -264,7 +264,7 @@ export function ChatInterface({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
-                className="flex min-h-full items-center justify-center px-4 py-10 md:px-8 md:py-16"
+                className="flex min-h-full items-center justify-center px-4 py-6 md:px-8 md:py-8"
               >
                 <ChatWelcomePrompt
                   suggestions={suggestions.map((s) => ({

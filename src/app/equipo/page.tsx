@@ -25,6 +25,7 @@ export default async function EquipoPage() {
             <TeamHeroSection />
             <ProblematicaSection />
             <EquipoTecnicoSection members={equipoTecnico.items} state={equipoTecnico.state} />
+            <ColaboraCTASection />
             <ColaboracionesSection
                 colaboradores={colaboradores.items}
                 instituciones={instituciones.items}
@@ -33,7 +34,6 @@ export default async function EquipoPage() {
             />
             <TeamStatsSection />
             <ProductosInvestigacionSection />
-            <ColaboraCTASection />
             <Footer />
         </main>
     );

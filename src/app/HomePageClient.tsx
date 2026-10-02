@@ -1,6 +1,6 @@
 "use client";
 
-import { Map, BarChart2 } from "lucide-react";
+import { Map, BarChart2, MessageCircle } from "lucide-react";
 import { Footer } from "@/components/molecules/Footer";
 import { HeroSection } from "@/components/organisms/HeroSection";
 import { SistemasAlimentariosSection } from "@/components/organisms/SistemasAlimentariosSection";
@@ -17,14 +17,19 @@ const NAV_LINKS = [
     { label: "Chatbot",     href: "/chatbot" },
 ];
 
-// Solo 2 tarjetas — la de "Asistente IA" se ocultó a pedido del cliente, y los
-// botones de CTA se ocultaron (sin `cta`) porque el guion de copy los marcó como "Nada".
+// Los botones de CTA se ocultaron (sin `cta`) porque el guion de copy los marcó como "Nada".
 const FEATURES: Feature[] = [
     {
         icon: Map,
         title: "Mapa Interactivo",
         description:
             "Descubre proyectos que están replanteando la forma en que conocemos, producimos, distribuimos y consumimos alimentos hacia procesos compatibles con la salud, la vida y la justicia social.",
+    },
+    {
+        icon: MessageCircle,
+        title: "Asistente IA",
+        description:
+            "Conversa con nuestro chatbot y descubre de forma interactiva las historias y los datos de las iniciativas que ya están transformando los sistemas alimentarios.",
     },
     {
         icon: BarChart2,

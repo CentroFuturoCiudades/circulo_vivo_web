@@ -187,12 +187,12 @@ function ChatbotMock() {
             />
           </div>
           <div>
-            <p className="font-sans font-semibold text-[#1a1c1c]" style={{ fontSize: 14, lineHeight: 1.3 }}>
+            <p className="font-sans font-semibold text-[#1a1c1c]" style={{ fontSize: 15, lineHeight: 1.3 }}>
               Círculo Vivo
             </p>
             <div className="flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#bcb884ff]" />
-              <p className="font-sans text-[#466062b2]" style={{ fontSize: 11 }}>
+              <p className="font-sans text-[#466062b2]" style={{ fontSize: 12 }}>
                 EN LÍNEA
               </p>
             </div>
@@ -213,14 +213,14 @@ function ChatbotMock() {
             border: "1px solid rgba(193,200,200,0.2)",
           }}
         >
-          <p className="font-sans text-[#201c05]" style={{ fontSize: 15, lineHeight: 1.5 }}>
+          <p className="font-sans text-[#201c05]" style={{ fontSize: 16, lineHeight: 1.5 }}>
             ¿Qué quieres saber sobre las personas y proyectos que están cambiando nuestra forma de producir, distribuir y consumir alimentos?
           </p>
         </div>
 
         <p
-          className="font-sans italic text-[#414848]"
-          style={{ fontSize: 14, lineHeight: 1.43, marginTop: 12, padding: "0 12px" }}
+          className="font-sans text-[#414848]"
+          style={{ fontSize: 15, lineHeight: 1.43, marginTop: 12, padding: "0 12px" }}
         >
           Selecciona un tema o escribe una pregunta para analizar nuestra base de datos cualitativa.
         </p>
@@ -261,7 +261,7 @@ function ChatbotMock() {
                   maxWidth: 328,
                 }}
               >
-                <p className="font-sans text-white" style={{ fontSize: 14, lineHeight: 1.5 }}>
+                <p className="font-sans text-white" style={{ fontSize: 15, lineHeight: 1.5 }}>
                   {current.question}
                 </p>
               </div>
@@ -305,7 +305,7 @@ function ChatbotMock() {
                 maxWidth: 400,
               }}
             >
-              <p className="font-sans text-[#201c05]" style={{ fontSize: 14, lineHeight: 1.5 }}>
+              <p className="font-sans text-[#201c05]" style={{ fontSize: 15, lineHeight: 1.5 }}>
                 {current.answer}
               </p>
             </motion.div>
@@ -338,7 +338,7 @@ function ChatbotMock() {
           </div>
           <div className="flex-1" style={{ padding: "9px 12px 10px 12px" }}>
             {typedText ? (
-              <p className="font-sans text-[#211f19]" style={{ fontSize: 14 }}>
+              <p className="font-sans text-[#211f19]" style={{ fontSize: 15 }}>
                 {typedText}
                 <motion.span
                   animate={{ opacity: [1, 0] }}
@@ -348,7 +348,7 @@ function ChatbotMock() {
                 />
               </p>
             ) : (
-              <p className="font-sans text-[#a1a1aa]" style={{ fontSize: 14 }}>
+              <p className="font-sans text-[#a1a1aa]" style={{ fontSize: 15 }}>
                 Escribe tu pregunta aquí...
               </p>
             )}
@@ -406,10 +406,10 @@ export function ChatbotHighlightSection({ ctaHref = "/chatbot" }: ChatbotHighlig
         {/* Right — text */}
         <div className="flex flex-col w-full lg:w-auto" style={{ gap: 24 }}>
           <FadeUp delay={0.1}>
-            <h2 className="font-sans font-semibold text-[#BCB884] text-[24px] leading-[32px] md:text-[32px] md:leading-[42px] lg:text-[38.67px] lg:leading-[50.27px] lg:max-w-[552px]">
+            <h2 className="font-sans font-semibold text-[#BCB884] text-[24px] leading-[29px] md:text-[29px] md:leading-[34px] lg:text-[33px] lg:leading-[40px] lg:max-w-[552px]">
               Conoce las historias de las iniciativas que ya están promoviendo cambios
               <br />
-              <span className="font-serif font-medium italic text-[#395284] text-[24px] leading-[32px] md:text-[32px] md:leading-[42px] lg:text-[38.67px] lg:leading-[50.27px]">
+              <span className="font-sans font-light text-[#395284] text-[26px] leading-[32px] md:text-[35px] md:leading-[42px] lg:text-[43px] lg:leading-[50.27px]">
                 en los sistemas de alimentación en la región.
               </span>
             </h2>
@@ -417,7 +417,7 @@ export function ChatbotHighlightSection({ ctaHref = "/chatbot" }: ChatbotHighlig
 
           <FadeUp delay={0.2}>
             <div className="flex flex-col gap-3" style={{ maxWidth: 480 }}>
-              <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 16, lineHeight: 1.5 }}>
+              <p className="font-sans font-normal text-[#5e5e5e]" style={{ fontSize: 18, lineHeight: 1.5 }}>
                 El Chatbot te permite conocer de manera interactiva datos sobre las historias que presentamos.
               </p>
             </div>
@@ -432,7 +432,7 @@ export function ChatbotHighlightSection({ ctaHref = "/chatbot" }: ChatbotHighlig
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <CheckCircle2 size={18} className="text-[#395284] flex-shrink-0 mt-0.5" />
-                  <span className="font-sans font-normal text-[#395284]" style={{ fontSize: 16, lineHeight: 1.5 }}>
+                  <span className="font-sans font-normal text-[#395284]" style={{ fontSize: 18, lineHeight: 1.5 }}>
                     {item}
                   </span>
                 </li>
@@ -447,7 +447,7 @@ export function ChatbotHighlightSection({ ctaHref = "/chatbot" }: ChatbotHighlig
               radius="full"
               iconRight={ArrowRight}
               onClick={() => router.push(ctaHref)}
-              className="normal-case tracking-normal font-normal text-base h-auto py-3 px-7"
+              className="normal-case tracking-normal font-normal text-lg h-auto py-3 px-7"
             >
               Empieza ahora
             </Button>

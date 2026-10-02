@@ -55,10 +55,10 @@ export function DataUnavailableMessage({
         <Icon size={20} color={cfg.iconColor} strokeWidth={2} />
       </div>
       <div className="flex flex-col gap-1">
-        <p className="font-sans font-semibold text-[#1a1c1c]" style={{ fontSize: 16 }}>
+        <p className="font-sans font-semibold text-[#1a1c1c]" style={{ fontSize: 18 }}>
           {title ?? cfg.defaultTitle}
         </p>
-        <p className="font-sans font-normal text-[#6b7280] max-w-md" style={{ fontSize: 14, lineHeight: 1.6 }}>
+        <p className="font-sans font-normal text-[#6b7280] max-w-md" style={{ fontSize: 15, lineHeight: 1.6 }}>
           {description ?? cfg.defaultDescription}
         </p>
       </div>

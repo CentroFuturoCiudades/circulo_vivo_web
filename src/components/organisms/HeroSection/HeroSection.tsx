@@ -132,16 +132,16 @@ export function HeroSection({
             priority
           />
           {title ?? (
-            <h1 className="font-sans font-semibold text-white text-[28px] leading-[36px] md:text-[36px] md:leading-[46px] lg:text-[48px] lg:leading-[60px]">
+            <h1 className="font-sans font-semibold text-white text-[29px] leading-[33px] md:text-[35px] md:leading-[40px] lg:text-[42px] lg:leading-[48px]">
               Sistemas alimentarios que sostienen{" "}
-              <span className="font-serif italic font-medium" style={{ fontWeight: 500 }}>
+              <span className="font-sans font-light">
                 la vida
               </span>
             </h1>
           )}
           <p
             className="font-sans font-normal text-white/90"
-            style={{ fontSize: 18, lineHeight: 1.6, maxWidth: 800 }}
+            style={{ fontSize: 20, lineHeight: 1.6, maxWidth: 800 }}
           >
             {subtitle}
           </p>
@@ -174,20 +174,14 @@ export function HeroSection({
               }}
               className="bg-[#395284] p-6 rounded-xl cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
-              <div className="flex items-start justify-between gap-2">
-                <p
-                  className="font-sans font-medium text-white/80 uppercase"
-                  style={{ fontSize: 12, letterSpacing: "1.2px", lineHeight: 1 }}
-                >
-                  Levantamiento de información en territorio
-                </p>
+              <div className="flex items-start justify-end gap-2">
                 <MoveUpRight className="text-white/70 shrink-0" size={16} aria-hidden="true" />
               </div>
-              <p className="font-sans font-semibold text-white mt-2" style={{ fontSize: 24, lineHeight: 1.3 }}>
+              <p className="font-sans font-semibold text-white mt-2" style={{ fontSize: 26, lineHeight: 1.3 }}>
                 +60
               </p>
-              <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 14, lineHeight: 1.5 }}>
-                Historias documentadas
+              <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 15, lineHeight: 1.5 }}>
+                iniciativas que están cambiando los sistemas alimentarios
               </p>
             </motion.div>
           </motion.div>
@@ -214,19 +208,13 @@ export function HeroSection({
               }}
               className="bg-[#bcb884] p-6 rounded-xl cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
-              <div className="flex items-start justify-between gap-2">
-                <p
-                  className="font-sans font-medium text-white/80 uppercase"
-                  style={{ fontSize: 12, letterSpacing: "1.2px", lineHeight: 1 }}
-                >
-                  Aprende de sus trayectorias.
-                </p>
+              <div className="flex items-start justify-end gap-2">
                 <MoveUpRight className="text-white/70 shrink-0" size={16} aria-hidden="true" />
               </div>
-              <p className="font-sans font-semibold text-white mt-2" style={{ fontSize: 24, lineHeight: 1.3 }}>
+              <p className="font-sans font-semibold text-white mt-2" style={{ fontSize: 26, lineHeight: 1.3 }}>
                 12 territorios
               </p>
-              <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 14, lineHeight: 1.5 }}>
+              <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 15, lineHeight: 1.5 }}>
                 Ubica y conoce las iniciativas en México y Centroamérica. Explora el mapa.
               </p>
             </motion.div>

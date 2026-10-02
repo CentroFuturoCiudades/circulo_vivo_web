@@ -69,27 +69,19 @@ export function TeamHeroSection() {
           transition={{ duration: 0.75, ease: "easeOut", delay: 0.1 }}
           className="flex flex-col items-center text-center gap-4 w-full max-w-4xl py-24"
         >
-          {/* Eyebrow */}
-          <p
-            className="font-sans font-semibold uppercase text-white/50"
-            style={{ fontSize: 12, letterSpacing: "0.2em" }}
-          >
-            PROYECTO DE INVESTIGACIÓN INSTITUCIONAL Y COLABORATIVO
-          </p>
-
           {/* Heading */}
           <h1
-            className="font-sans font-semibold text-white text-[28px] leading-[36px] md:text-[36px] md:leading-[46px] lg:text-[48px] lg:leading-[60px]"
+            className="font-sans font-semibold text-white text-[29px] leading-[33px] md:text-[35px] md:leading-[40px] lg:text-[42px] lg:leading-[48px]"
           >
             Muchas miradas,
             <br />
-            <span className="font-serif italic font-medium">una misma causa</span>
+            <span className="font-sans font-light">una misma causa</span>
           </h1>
 
           {/* Description */}
           <p
             className="font-sans font-normal text-white/60 max-w-2xl"
-            style={{ fontSize: 18, lineHeight: 1.6, paddingTop: 15 }}
+            style={{ fontSize: 20, lineHeight: 1.6, paddingTop: 15 }}
           >
             Somos un equipo multidisciplinario que busca transformar los
             sistemas alimentarios en México y Centroamérica.
@@ -103,7 +95,7 @@ export function TeamHeroSection() {
                 color="gold"
                 radius="full"
                 size="lg"
-                className="font-normal text-base normal-case tracking-normal"
+                className="font-normal text-lg normal-case tracking-normal"
               >
                 Explorar hallazgos
               </Button>
@@ -114,7 +106,7 @@ export function TeamHeroSection() {
                 color="white"
                 radius="full"
                 size="lg"
-                className="font-normal text-base normal-case tracking-normal"
+                className="font-normal text-lg normal-case tracking-normal"
               >
                 Ver metodología
               </Button>

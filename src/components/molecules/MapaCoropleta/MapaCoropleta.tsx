@@ -185,7 +185,7 @@ export function MapaCoropleta({
       <div className="flex items-start justify-between gap-4 mb-4">
         <div>
           <h3
-            className="font-serif font-bold"
+            className="font-sans font-bold"
             style={{ fontSize: 18, lineHeight: 1.25, color: "#1c1018", margin: 0 }}
           >
             {title}

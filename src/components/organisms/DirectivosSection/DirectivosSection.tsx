@@ -63,7 +63,7 @@ export function DirectivosSection({ directivos = DEFAULT_DIRECTIVOS }: Directivo
     <section className="py-16 px-6 md:px-16 lg:px-24">
       <FadeUp delay={0}>
         <h2
-          className="font-serif italic font-semibold text-[#395284] text-[26px] md:text-[36px]"
+          className="font-sans font-semibold text-[#395284] text-[26px] md:text-[36px]"
           style={{ letterSpacing: -0.9, lineHeight: 1.111 }}
         >
           Directivos
@@ -89,7 +89,7 @@ export function DirectivosSection({ directivos = DEFAULT_DIRECTIVOS }: Directivo
               {/* Text */}
               <div className="flex flex-col sm:pt-1.5">
                 <h3
-                  className="font-serif italic font-bold text-[#203b6b]"
+                  className="font-sans font-bold text-[#203b6b]"
                   style={{ fontSize: 24, lineHeight: 1.4 }}
                 >
                   {d.name}

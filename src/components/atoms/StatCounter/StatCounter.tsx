@@ -21,7 +21,7 @@ export function StatCounter({ value, label, color = "light", className, ...props
     <div className={cn("flex flex-col items-center gap-2", className)} {...props}>
       <span
         className={cn(
-          "font-display font-normal italic leading-none tracking-[-0.05em]",
+          "font-sans font-light leading-none tracking-[-0.05em]",
           "text-[60px]",
           valueColor
         )}
