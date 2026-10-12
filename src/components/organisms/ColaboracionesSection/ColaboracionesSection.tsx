@@ -247,7 +247,7 @@ function ColaboradorModal({ colaborador, color, onClose }: { colaborador: Colabo
             alt={colaborador.name}
             fill
             sizes="400px"
-            className="object-contain"
+            className={colaborador.imageUrl?.trim() ? "object-cover" : "object-contain"}
             unoptimized={!colaborador.imageUrl?.trim()}
           />
           <Button
