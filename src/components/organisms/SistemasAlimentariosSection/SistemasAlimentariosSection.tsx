@@ -35,8 +35,8 @@ export interface SistemasAlimentariosSectionProps {
 
 export function SistemasAlimentariosSection({
   eyebrow = "Nuestro objetivo",
-  lead = "Contribuir a la transformación de los sistemas de alimentación",
-  body = "en México y Centroamérica. En esta página encontrarás historias y datos sobre iniciativas que ya están actuando para lograr esa transformación.",
+  lead = "Contribuir a la transformación de los sistemas de alimentación en México y Centroamérica.",
+  body = "En esta página encontrarás historias y datos sobre iniciativas que ya están actuando para lograr esa transformación.",
 }: SistemasAlimentariosSectionProps) {
   return (
     <section className="relative w-full overflow-hidden bg-[#395284] py-20 md:py-28 lg:py-[140px] px-6 md:px-9">

@@ -31,14 +31,21 @@ export function ProblematicaSection() {
   return (
     <section className="bg-white py-12 md:py-20 px-6 md:px-16 lg:px-24">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
-        <FadeUp delay={0}>
+        <FadeUp delay={0} className="flex flex-col gap-6 md:gap-8">
           <h2
             className="font-sans font-semibold text-[#211f19] leading-[1.2] text-[24px] md:text-[29px]"
           >
             Nuestra motivación
           </h2>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/bg-images/manos.jpg"
+            alt="Manos de distintas personas extendidas en círculo sobre el pasto"
+            className="w-full aspect-[4/3] object-cover rounded-2xl"
+            loading="lazy"
+          />
         </FadeUp>
-        <FadeUp delay={0.15} className="md:self-center flex flex-col gap-4">
+        <FadeUp delay={0.15} className="md:self-start flex flex-col gap-4">
           <p className="font-sans text-[#747474] leading-[1.7] text-[18px] md:text-[20px]">
             Los sistemas alimentarios significan una red compleja de procesos y actores que, en su interacción, determinan las opciones de alimentación que tienen las comunidades. Hoy estas opciones significan riesgos para la salud de las personas y para la sostenibilidad del planeta.
           </p>

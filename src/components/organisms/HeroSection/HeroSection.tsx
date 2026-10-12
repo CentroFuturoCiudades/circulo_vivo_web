@@ -177,11 +177,12 @@ export function HeroSection({
               <div className="flex items-start justify-end gap-2">
                 <MoveUpRight className="text-white/70 shrink-0" size={16} aria-hidden="true" />
               </div>
-              <p className="font-sans font-semibold text-white mt-2" style={{ fontSize: 26, lineHeight: 1.3 }}>
-                +60
+              <p className="font-sans text-white mt-2" style={{ lineHeight: 1.3 }}>
+                <span className="font-semibold" style={{ fontSize: 26 }}>+60</span>{" "}
+                <span className="font-semibold" style={{ fontSize: 26 }}>iniciativas</span>
               </p>
               <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 15, lineHeight: 1.5 }}>
-                iniciativas que están cambiando los sistemas alimentarios
+                que están cambiando los sistemas alimentarios
               </p>
             </motion.div>
           </motion.div>

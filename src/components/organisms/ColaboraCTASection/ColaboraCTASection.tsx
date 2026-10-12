@@ -45,7 +45,7 @@ export function ColaboraCTASection() {
             className="font-sans text-white mx-auto leading-[1.6]"
             style={{ fontSize: "clamp(18px, 2.4vw, 24px)", maxWidth: 720 }}
           >
-            Círculo Vivo es un proyecto de investigación impulsada por el Tecnológico de Monterrey. Colaboramos con pares académicos e institucionales para lograr nuestro objetivo compartido.
+            Círculo Vivo es un proyecto de investigación impulsado por el Tecnológico de Monterrey. Colaboramos con pares académicos e institucionales para lograr nuestro objetivo compartido.
           </p>
         </FadeUp>
       </div>

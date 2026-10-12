@@ -37,7 +37,7 @@ export interface ConversionBannerSectionProps {
 }
 
 export function ConversionBannerSection({
-  title = "Personas detrás de Círculo Vivo",
+  title = "Personas que forman Círculo Vivo",
   subtitle = "Conoce a quienes contribuyen desde diferentes disciplinas y experiencias a comprender y replantear la alimentación en nuestra región.",
   ctaLabel = "Conocer al equipo",
   ctaHref = "/equipo",
