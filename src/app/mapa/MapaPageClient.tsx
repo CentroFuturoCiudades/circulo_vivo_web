@@ -1,39 +1,54 @@
 "use client";
 
-import { useState, useMemo, useSyncExternalStore } from "react";
-import { Info } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Info, X } from "lucide-react";
 import { NavBar }           from "@/components/molecules/NavBar";
 import { SearchBar }        from "@/components/molecules/SearchBar";
 import { FilterDropdown }   from "@/components/molecules/FilterDropdown";
 import { InitiativesMap }   from "@/components/organisms/InitiativesMap";
 import { MapFooter }        from "@/components/molecules/MapFooter";
-import { MapIntroModal }    from "@/components/molecules/MapIntroModal";
 import { Button }           from "@/components/atoms/Button";
 import { useIsMobile }      from "@/lib/useIsMobile";
 import { DataUnavailableMessage } from "@/components/molecules/DataUnavailableMessage";
+import { GuidedTour, type GuidedTourStep } from "@/components/organisms/GuidedTour";
+import { useTourStore } from "@/stores/useTourStore";
 import type { Initiative }  from "@/components/organisms/InitiativesMap";
 
 // ── Static config ──────────────────────────────────────────────────────────
 
-const MAP_INTRO_STORAGE_KEY = "circulo-vivo:mapa-intro-seen";
-
-// Mirrors the useIsMobile pattern: reads a browser-only source without a
-// hydration mismatch — the server snapshot reports "seen" so the modal never
-// renders during SSR, then React re-checks the real client snapshot right
-// after mount.
-function subscribeIntroSeen() {
-  return () => {};
-}
-function getIntroSeenSnapshot() {
-  try {
-    return localStorage.getItem(MAP_INTRO_STORAGE_KEY) === "true";
-  } catch {
-    return true;
-  }
-}
-function getIntroSeenServerSnapshot() {
-  return true;
-}
+const MAP_TOUR_STEPS: GuidedTourStep[] = [
+  {
+    target: '[data-tour="map-search"]',
+    title: "Busca lo que necesitas",
+    content: "Escribe una pregunta o palabras clave, como “producción agroecológica en el centro del país”, y encuentra iniciativas al instante.",
+  },
+  {
+    target: '[data-tour="map-filters"]',
+    title: "Filtra los resultados",
+    content: "Acota la búsqueda por actor, escala, categoría o estado. “Limpiar filtros” te regresa a la vista completa.",
+  },
+  {
+    target: '[data-tour="map-list"]',
+    title: "Explora el listado",
+    content: "Aquí aparecen todas las iniciativas que coinciden con tu búsqueda. Haz clic en cualquiera para abrir su ficha completa.",
+  },
+  {
+    // The map fills most of the screen, so anchoring the tooltip to it directly
+    // (via "auto"/"top") either overlaps the sidebar or gets clipped by the
+    // viewport edge. Anchor to a small fixed point near the top of the map instead,
+    // while still spotlighting the whole map panel.
+    target: '[data-tour="map-canvas-anchor"]',
+    spotlightTarget: '[data-tour="map-canvas"]',
+    placement: "bottom",
+    title: "Ubícalas en el mapa",
+    content: "Los estados coloreados tienen iniciativas registradas. Haz clic en uno para ver las que se encuentran ahí.",
+  },
+  {
+    target: "body",
+    title: "Conoce cada iniciativa",
+    content: "Al seleccionar una, verás su foto, descripción y sitio web. Usa las flechas ← → para pasar a la siguiente sin cerrar la ficha.",
+  },
+];
 
 const NAV_LINKS = [
   { label: "Inicio",      href: "/" },
@@ -82,23 +97,25 @@ export function MapaPageClient({ initiatives, state }: MapaPageClientProps) {
   const [actor,    setActor]    = useState<string | undefined>();
   const [escala,   setEscala]   = useState<string | undefined>();
   const [category, setCategory] = useState<string | undefined>();
-  const [forceIntroOpen, setForceIntroOpen] = useState(false);
-  const [introDismissed, setIntroDismissed] = useState(false);
+  const [estado,   setEstado]   = useState<string | undefined>();
+  const [resetKey, setResetKey] = useState(0);
   const isMobile = useIsMobile();
 
-  // Auto-opens once per visitor (until localStorage says otherwise); the info
-  // button can always force it open again via forceIntroOpen.
-  const introSeen = useSyncExternalStore(subscribeIntroSeen, getIntroSeenSnapshot, getIntroSeenServerSnapshot);
-  const introOpen = forceIntroOpen || (!introSeen && !introDismissed);
+  const estadoOptions = useMemo(() => {
+    const names = initiatives.map((i) => i.state).filter((s): s is string => Boolean(s));
+    return [...new Set(names)].sort().map((s) => ({ value: s, label: s }));
+  }, [initiatives]);
 
-  function closeIntro() {
-    setForceIntroOpen(false);
-    setIntroDismissed(true);
-    try {
-      localStorage.setItem(MAP_INTRO_STORAGE_KEY, "true");
-    } catch {
-      // ignore — worst case the modal reopens next visit
-    }
+  const hasActiveFilters = Boolean(search || actor || escala || category || estado);
+
+  function clearFilters() {
+    setSearch("");
+    setActor(undefined);
+    setEscala(undefined);
+    setCategory(undefined);
+    setEstado(undefined);
+    // Remounts the map+sidebar so their internal state-click selection resets too.
+    setResetKey((k) => k + 1);
   }
 
   const filtered = useMemo(() => {
@@ -115,9 +132,10 @@ export function MapaPageClient({ initiatives, state }: MapaPageClientProps) {
       if (actor    && !i.chips?.some((c) => c.label === actor))    return false;
       if (escala   && !i.chips?.some((c) => c.label === escala))   return false;
       if (category && !i.chips?.some((c) => c.label === category)) return false;
+      if (estado   && i.state !== estado)                          return false;
       return true;
     });
-  }, [initiatives, search, actor, escala, category]);
+  }, [initiatives, search, actor, escala, category, estado]);
 
   return (
     <div className="relative flex flex-col h-screen w-full overflow-hidden bg-white">
@@ -160,34 +178,52 @@ export function MapaPageClient({ initiatives, state }: MapaPageClientProps) {
         <>
           {/* Search + filter bar */}
           <div className="relative z-20 flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-4 px-4 md:px-9 py-3">
-            <SearchBar
-              size={isMobile ? "lg" : "sm"}
-              className="flex-1"
-              value={search}
-              onChange={setSearch}
-              onSearch={setSearch}
-            />
-            <div className="flex items-center gap-2 shrink-0 overflow-x-auto -mx-6 px-6 lg:mx-0 lg:px-0 lg:overflow-visible">
-              <FilterDropdown label="Actor"     options={ACTOR_OPTIONS}    value={actor}    onChange={setActor}    />
-              <FilterDropdown label="Escala"    options={ESCALA_OPTIONS}   value={escala}   onChange={setEscala}   />
-              <FilterDropdown label="Categoría" options={CATEGORIA_OPTIONS} value={category} onChange={setCategory} align="right" />
+            <div data-tour="map-search" className="flex-1">
+              <SearchBar
+                size={isMobile ? "lg" : "sm"}
+                className="w-full"
+                value={search}
+                onChange={setSearch}
+                onSearch={setSearch}
+              />
+            </div>
+            <div data-tour="map-filters" className="flex items-center gap-2 shrink-0 overflow-x-auto -mx-6 px-6 lg:mx-0 lg:px-0 lg:overflow-visible">
+              <FilterDropdown label="Actor"     options={ACTOR_OPTIONS}     value={actor}    onChange={setActor}    />
+              <FilterDropdown label="Escala"    options={ESCALA_OPTIONS}    value={escala}   onChange={setEscala}   />
+              <FilterDropdown label="Categoría" options={CATEGORIA_OPTIONS} value={category} onChange={setCategory} />
+              <FilterDropdown label="Estado"    options={estadoOptions}     value={estado}   onChange={setEstado}   align="right" />
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full font-sans text-[11px] font-medium border border-neutral-300 text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50 transition-all active:scale-[0.96] shrink-0"
+                >
+                  <X size={12} />
+                  Limpiar filtros
+                </button>
+              )}
             </div>
           </div>
 
           {/* Map */}
           <h1 className="sr-only">Mapa de iniciativas</h1>
           <div className="relative z-10 flex-1 min-h-0">
-            <InitiativesMap initiatives={filtered} className="w-full h-full" />
-
-            {/* Floating info button — reopens the map explainer, tucked in a corner so it never overlaps the sidebar, search bar, or zoom controls */}
-            <Button
-              variant="icon"
-              color="neutral"
-              iconLeft={Info}
-              size="sm"
-              onClick={() => setForceIntroOpen(true)}
-              aria-label="Acerca del mapa"
-              className="absolute top-4 right-4 z-20 rounded-full bg-white shadow-md"
+            <InitiativesMap
+              key={resetKey}
+              initiatives={filtered}
+              className="w-full h-full"
+              mapCornerAction={
+                // Replays the guided tour; lives inside the map panel so it never sits over the drawer
+                <Button
+                  variant="icon"
+                  color="neutral"
+                  iconLeft={Info}
+                  size="sm"
+                  onClick={() => useTourStore.getState().startTour("mapa")}
+                  aria-label="Ver tutorial del mapa"
+                  className="rounded-full bg-white shadow-md"
+                />
+              }
             />
           </div>
         </>
@@ -198,7 +234,7 @@ export function MapaPageClient({ initiatives, state }: MapaPageClientProps) {
         <MapFooter />
       </div>
 
-      <MapIntroModal open={introOpen} onClose={closeIntro} />
+      <GuidedTour tourId="mapa" steps={MAP_TOUR_STEPS} />
     </div>
   );
 }

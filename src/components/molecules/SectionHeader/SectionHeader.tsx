@@ -40,7 +40,7 @@ export function SectionHeader({
       )}
 
       <h2
-        className="font-serif font-bold text-[32px] leading-[1.2] tracking-[-0.02em]"
+        className="font-sans font-bold text-[32px] leading-[1.2] tracking-[-0.02em]"
         style={titleColor ? { color: titleColor } : undefined}
       >
         {title}

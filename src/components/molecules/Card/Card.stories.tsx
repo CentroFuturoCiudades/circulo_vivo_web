@@ -41,15 +41,15 @@ export const WithAccent: Story = {
     <div className="flex flex-col gap-4">
       <Card accent="teal">
         <CardHeader title="Promedio Nacional" subtitle="IISE 2024" />
-        <CardBody><p className="font-display font-bold text-4xl text-primary">0.542</p></CardBody>
+        <CardBody><p className="font-sans font-bold text-4xl text-primary">0.542</p></CardBody>
       </Card>
       <Card accent="navy">
         <CardHeader title="Estados Resilientes" subtitle="De un total de 32" />
-        <CardBody><p className="font-display font-bold text-4xl text-secondary">08</p></CardBody>
+        <CardBody><p className="font-sans font-bold text-4xl text-secondary">08</p></CardBody>
       </Card>
       <Card accent="gold">
         <CardHeader title="Impacto Programático" subtitle="Cobertura" />
-        <CardBody><p className="font-display font-bold text-4xl text-neutral-900">84%</p></CardBody>
+        <CardBody><p className="font-sans font-bold text-4xl text-neutral-900">84%</p></CardBody>
       </Card>
     </div>
   ),

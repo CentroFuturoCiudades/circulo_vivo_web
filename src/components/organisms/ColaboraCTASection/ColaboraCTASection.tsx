@@ -41,19 +41,11 @@ export function ColaboraCTASection() {
 
       <div className="relative z-10 w-full text-center px-6 md:px-16">
         <FadeUp delay={0.1}>
-          <h2
-            className="font-serif font-bold text-white mt-4 leading-[1.1]"
-            style={{ fontSize: "clamp(28px, 4vw, 40px)" }}
-          >
-            Con el respaldo del Fondo Semilla
-          </h2>
-        </FadeUp>
-        <FadeUp delay={0.2}>
           <p
-            className="font-sans text-white/70 mt-4 max-w-xl mx-auto leading-[1.6]"
-            style={{ fontSize: "16px" }}
+            className="font-sans text-white mx-auto leading-[1.6]"
+            style={{ fontSize: "clamp(18px, 2.4vw, 24px)", maxWidth: 720 }}
           >
-            Este proyecto fue posible gracias al apoyo del Fondo Semilla del Tecnológico de Monterrey.
+            Círculo Vivo es un proyecto de investigación impulsado por el Tecnológico de Monterrey. Colaboramos con pares académicos e institucionales para lograr nuestro objetivo compartido.
           </p>
         </FadeUp>
       </div>

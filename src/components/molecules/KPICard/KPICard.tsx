@@ -58,7 +58,7 @@ export function KPICard({
 
         <div className="flex items-end gap-2 mt-1">
           <span
-            className={cn("font-serif font-bold leading-none", accentValue[accent])}
+            className={cn("font-sans font-bold leading-none", accentValue[accent])}
             style={{ fontSize: 36 }}
           >
             {value}

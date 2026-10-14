@@ -51,7 +51,7 @@ export function DownloadBanner({
           <div className="flex items-center gap-3">
             <Download size={24} className="text-[#708b8d] shrink-0" strokeWidth={2} />
             <h3
-              className="font-serif font-bold text-[#1c1c18]"
+              className="font-sans font-bold text-[#1c1c18]"
               style={{ fontSize: 24, lineHeight: 1.4 }}
             >
               {title}

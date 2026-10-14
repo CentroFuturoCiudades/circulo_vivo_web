@@ -21,13 +21,13 @@ export function MapFooter({
     >
       <span
         className="font-sans font-normal text-[#444748]"
-        style={{ fontSize: 10, lineHeight: 1.5 }}
+        style={{ fontSize: 11, lineHeight: 1.5 }}
       >
         {versionLabel}
       </span>
       <span
         className="font-sans font-normal text-[#444748]"
-        style={{ fontSize: 10, lineHeight: 1.5 }}
+        style={{ fontSize: 11, lineHeight: 1.5 }}
       >
         {copyrightLabel}
       </span>

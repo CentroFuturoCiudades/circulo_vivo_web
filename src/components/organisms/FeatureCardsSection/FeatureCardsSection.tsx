@@ -4,14 +4,16 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { ArrowRight, type LucideIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/atoms/Button";
 
 export interface Feature {
   icon: LucideIcon;
   title: string;
   description: string;
-  cta: string;
-  href: string;
+  /** Omit to render the card without a CTA button. */
+  cta?: string;
+  href?: string;
 }
 
 export interface FeatureCardsSectionProps {
@@ -54,7 +56,12 @@ export function FeatureCardsSection({ features }: FeatureCardsSectionProps) {
         }}
       />
       <div className="relative px-6 md:px-9">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-16">
+        <div
+          className={cn(
+            "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16",
+            features.length >= 3 ? "lg:grid-cols-3" : "lg:grid-cols-2 lg:max-w-3xl lg:mx-auto"
+          )}
+        >
           {features.map((feature, i) => (
             <FadeUp key={feature.title} delay={i * 0.12} className="flex flex-col gap-3">
               <motion.div
@@ -65,29 +72,31 @@ export function FeatureCardsSection({ features }: FeatureCardsSectionProps) {
               </motion.div>
 
               <h3
-                className="font-serif font-bold text-[#1a1c1c] mt-1"
-                style={{ fontSize: 24, lineHeight: 1.3 }}
+                className="font-sans font-bold text-[#1a1c1c] mt-1"
+                style={{ fontSize: 26, lineHeight: 1.3 }}
               >
                 {feature.title}
               </h3>
 
               <p
                 className="font-sans font-normal text-[#5e5e5e]"
-                style={{ fontSize: 16, lineHeight: 1.5 }}
+                style={{ fontSize: 18, lineHeight: 1.5 }}
               >
                 {feature.description}
               </p>
 
-              <Button
-                color="crimson"
-                variant="primary"
-                radius="full"
-                iconRight={ArrowRight}
-                onClick={() => router.push(feature.href)}
-                className="normal-case tracking-normal font-normal text-base h-auto py-1.5 px-4 w-fit"
-              >
-                {feature.cta}
-              </Button>
+              {feature.cta && (
+                <Button
+                  color="crimson"
+                  variant="primary"
+                  radius="full"
+                  iconRight={ArrowRight}
+                  onClick={() => feature.href && router.push(feature.href)}
+                  className="normal-case tracking-normal font-normal text-lg h-auto py-1.5 px-4 w-fit"
+                >
+                  {feature.cta}
+                </Button>
+              )}
             </FadeUp>
           ))}
         </div>

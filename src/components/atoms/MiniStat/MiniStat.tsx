@@ -31,7 +31,7 @@ export function MiniStat({ label, value, color = "neutral", className, ...props 
       <span className="font-sans font-semibold text-[7px] tracking-[0.1em] uppercase text-[#8a7888] leading-none">
         {label}
       </span>
-      <span className={cn("font-display font-black text-[16px] leading-tight", valueCls)}>
+      <span className={cn("font-sans font-black text-[16px] leading-tight", valueCls)}>
         {value}
       </span>
     </div>

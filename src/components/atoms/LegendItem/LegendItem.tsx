@@ -30,7 +30,7 @@ export function LegendItem({ value, label, color = "neutral", className, ...prop
     >
       <span className={cn("w-2 h-2 rounded-full flex-shrink-0", dot)} />
       <div className="flex flex-col gap-0.5">
-        <span className={cn("font-display font-bold text-[13px] leading-tight", valueCls)}>
+        <span className={cn("font-sans font-bold text-[13px] leading-tight", valueCls)}>
           {String(value).padStart(2, "0")}
         </span>
         <span className="font-sans text-[10px] text-[#8a7888] leading-none">

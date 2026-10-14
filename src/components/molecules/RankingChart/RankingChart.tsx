@@ -119,7 +119,7 @@ export function RankingChart({
       {/* Header */}
       <div style={{ padding: "0 24px 16px" }}>
         <h3
-          className="font-serif font-bold"
+          className="font-sans font-bold"
           style={{ fontSize: 24, lineHeight: 1.4, color: "#1c1c18", margin: 0 }}
         >
           {title}

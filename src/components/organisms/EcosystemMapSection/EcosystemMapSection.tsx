@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { Map } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/atoms/Button";
+import { RegionMap } from "@/components/molecules/RegionMap";
 
 function FadeUp({
   children,
@@ -33,39 +34,35 @@ export interface EcosystemMapSectionProps {
   description?: string;
   ctaLabel?: string;
   ctaHref?: string;
+  /** States (Spanish names) with initiatives — filled on the static background map. */
+  states?: string[];
 }
 
 export function EcosystemMapSection({
-  title = "Mapeo de experiencias",
-  description = "Visualiza iniciativas identificadas mediante investigación de campo y entrevistas, mostrando la diversidad de actores y experiencias vinculadas con la alimentación.",
-  ctaLabel = "Abrir mapa completo",
+  title = "Mapa interactivo",
+  description = "Visualiza la diversidad de actores y experiencias que están replanteando los sistemas de alimentación en los territorios.",
+  ctaLabel = "Explora el mapa",
   ctaHref = "/mapa",
+  states,
 }: EcosystemMapSectionProps) {
   const router = useRouter();
   return (
     <section className="relative w-full overflow-hidden h-[480px] md:h-[560px] lg:h-[640px]">
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/navigate-eco.jpg')" }}
-      />
-      <div
-        className="absolute inset-0"
-        style={{ background: "rgba(86,20,39,0.5)", backdropFilter: "blur(0.875px)" }}
-      />
+      <RegionMap states={states} animate />
 
-      <div className="relative z-10 h-full flex items-center justify-center">
+      <div className="relative z-10 h-full flex items-center justify-center lg:justify-end px-6 md:px-9 lg:pr-28">
         <FadeUp>
           <motion.div
             whileHover={{ scale: 1.01 }}
             transition={{ type: "spring", stiffness: 200 }}
-            className="relative overflow-hidden w-[calc(100vw-48px)] lg:w-[512px] rounded-2xl"
+            className="relative overflow-hidden w-[calc(100vw-48px)] lg:w-[460px] rounded-2xl"
           >
             <div className="absolute inset-0 bg-[#561427]" />
             <div className="relative z-10 p-6 md:p-8 lg:p-12 flex flex-col items-center gap-2">
-              <h2 className="font-serif font-semibold text-white text-center text-xl leading-7 lg:text-[32px] lg:leading-[40px] mb-3">
+              <h2 className="font-sans font-semibold text-white text-center text-2xl leading-7 lg:text-[29px] lg:leading-[34px] mb-3">
                 {title}
               </h2>
-              <p className="font-sans font-regular text-white text-center text-sm lg:text-base pb-8 lg:pb-10">
+              <p className="font-sans font-regular text-white text-center text-base lg:text-lg pb-8 lg:pb-10">
                 {description}
               </p>
               <Button
@@ -74,7 +71,7 @@ export function EcosystemMapSection({
                 iconLeft={Map}
                 radius="full"
                 onClick={() => router.push(ctaHref)}
-                className="normal-case tracking-normal font-normal text-base text-black h-auto py-4 px-8"
+                className="normal-case tracking-normal font-normal text-lg text-black h-auto py-4 px-8"
               >
                 {ctaLabel}
               </Button>

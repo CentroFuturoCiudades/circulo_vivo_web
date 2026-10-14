@@ -220,6 +220,7 @@ export function ChatInterface({
         >
           <button
             type="button"
+            data-tour="chat-sidebar-mobile"
             onClick={() => setSidebarOpen(true)}
             aria-label="Explorar temas"
             className="lg:hidden inline-flex items-center gap-2 rounded-full border border-[#d4d4d8] bg-white px-3 py-1.5 text-xs font-medium text-[#444748] transition-colors hover:border-[#708b8d] hover:text-[#708b8d]"
@@ -263,7 +264,7 @@ export function ChatInterface({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
-                className="flex min-h-full items-center justify-center px-4 py-10 md:px-8 md:py-16"
+                className="flex min-h-full items-center justify-center px-4 py-6 md:px-8 md:py-8"
               >
                 <ChatWelcomePrompt
                   suggestions={suggestions.map((s) => ({

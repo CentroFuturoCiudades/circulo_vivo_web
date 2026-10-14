@@ -43,13 +43,13 @@ function AnimatedStat({ value, label }: { value: string; label: string }) {
     >
       <span
         className={cn(
-          "font-display font-normal italic leading-none tracking-[-0.05em]",
+          "font-sans font-light leading-none tracking-[-0.05em]",
           "text-[42px] sm:text-[52px] md:text-[60px] text-white"
         )}
       >
         {prefix}{display}{suffix}
       </span>
-      <span className="font-sans font-bold text-[10px] sm:text-[12px] tracking-[0.2em] uppercase text-white text-center">
+      <span className="font-sans font-bold text-[11px] sm:text-[13px] tracking-[0.2em] uppercase text-white text-center">
         {label}
       </span>
     </motion.div>

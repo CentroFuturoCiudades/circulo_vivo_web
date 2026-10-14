@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronUp } from "lucide-react";
@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { Chip } from "@/components/atoms/Chip";
 import { ChatbotButton } from "@/components/molecules/ChatbotButton";
 import { InitiativeList } from "@/components/molecules/InitiativeList";
-import { InitiativeDetailCard } from "@/components/molecules/InitiativeDetailCard";
 import { InteractiveMap } from "@/components/molecules/InteractiveMap";
 import { InitiativeDrawer } from "@/components/organisms/InitiativeDrawer";
 import { useIsMobile } from "@/lib/useIsMobile";
@@ -37,6 +36,8 @@ export interface Initiative {
 
 export interface InitiativesMapProps {
   initiatives?: Initiative[];
+  /** Rendered in the top-right corner of the map panel (stays inside the map, never over the drawer). */
+  mapCornerAction?: React.ReactNode;
   onChatbotClick?: () => void;
   className?: string;
 }
@@ -52,16 +53,15 @@ function matchesFilters(chips: Initiative["chips"], filterValues: Record<string,
   });
 }
 
-export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClick, className }: InitiativesMapProps) {
+export function InitiativesMap({ initiatives: rawInitiatives = [], mapCornerAction, onChatbotClick, className }: InitiativesMapProps) {
   const initiatives = (rawInitiatives ?? []).filter((i) => i?.id);
   const [selectedId, setSelectedId]     = useState<string | undefined>();
-  const [drawerOpen, setDrawerOpen]     = useState(false);
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
   const [mapSelectedState, setMapSelectedState] = useState<string | undefined>();
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const isMobile = useIsMobile();
 
-  // Filtered initiatives — react to filter changes from the sidebar
+  // Filtered initiatives — react to the sidebar list's location filter
   const filteredInitiatives = useMemo(
     () => initiatives.filter((i) => matchesFilters(i.chips, filterValues)),
     [initiatives, filterValues]
@@ -75,22 +75,18 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
     return [...new Set(names)];
   }, [filteredInitiatives]);
 
-  // Null out selection when filters hide the selected initiative
-  const activeSelectedId = useMemo(
-    () => (selectedId && filteredInitiatives.some((i) => i.id === selectedId) ? selectedId : undefined),
-    [selectedId, filteredInitiatives]
-  );
+  // When the filter bar hides the selected initiative, drop the selection *and*
+  // the map-driven state filter with it. Otherwise the leftover state filter
+  // stacks on top of the new filters and the list/map end up empty.
+  const selectionLost =
+    selectedId !== undefined && !initiatives.some((i) => i.id === selectedId);
+  if (selectionLost) {
+    setSelectedId(undefined);
+    setMapSelectedState("");
+  }
+
+  const activeSelectedId = selectionLost ? undefined : selectedId;
   const selected = initiatives.find((i) => i.id === activeSelectedId);
-  const effectiveDrawerOpen = drawerOpen && !!activeSelectedId;
-
-  // All visible initiatives in the same sede state — drives the paginator
-  const stateGroup = useMemo(() => {
-    if (!selected) return [];
-    if (!selected.state) return [selected];
-    return filteredInitiatives.filter((i) => i.state === selected.state);
-  }, [selected, filteredInitiatives]);
-
-  const currentPage = Math.max(1, stateGroup.findIndex((i) => i.id === activeSelectedId) + 1);
 
   // Active location filter label (Estado) shown as overlay chip on the map
   const activeLocation =
@@ -100,20 +96,45 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
 
   function handleSelect(id: string) {
     setSelectedId(id);
-    setDrawerOpen(false);
-    // On mobile, collapse the sheet so the map + result card become visible.
+    // On mobile, collapse the sheet so the map + drawer become visible.
     setSheetExpanded(false);
   }
 
-  function handleCloseCard() {
+  function handleCloseDrawer() {
     setSelectedId(undefined);
-    setDrawerOpen(false);
     setMapSelectedState("");
   }
 
+  // Prev/next walk exactly the listing that is currently shown (filter bar +
+  // any state picked on the map), wrapping around. They never change a filter.
+  const activeIndex = filteredInitiatives.findIndex((i) => i.id === activeSelectedId);
+  const canNavigate = activeIndex >= 0 && filteredInitiatives.length > 1;
+  const goToOffset = useCallback(
+    (delta: number) => {
+      if (!canNavigate) return;
+      const count = filteredInitiatives.length;
+      setSelectedId(filteredInitiatives[(activeIndex + delta + count) % count].id);
+    },
+    [canNavigate, activeIndex, filteredInitiatives]
+  );
+
+  // ←/→ move between initiatives while the drawer is open (ignored while typing in a field).
+  useEffect(() => {
+    if (!canNavigate) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT" || target.isContentEditable)) return;
+      e.preventDefault();
+      goToOffset(e.key === "ArrowRight" ? 1 : -1);
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [canNavigate, goToOffset]);
+
   function handleFilterChange(values: Record<string, string>) {
     setFilterValues(values);
-    // If the user manually changed the Estado filter from the sidebar, release map control
+    // If the Estado filter changed from somewhere other than the map, release map control
     if (mapSelectedState !== undefined && values["Estado"] !== mapSelectedState) {
       setMapSelectedState(undefined);
     }
@@ -121,7 +142,6 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
 
   function handleMapStateClick(stateName: string) {
     const isDeselecting = mapSelectedState === stateName;
-    setDrawerOpen(false);
     setMapSelectedState(isDeselecting ? "" : stateName);
 
     if (isDeselecting) {
@@ -135,6 +155,22 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
     }
   }
 
+  const drawerProps = selected
+    ? {
+        open: true,
+        title: selected.title,
+        chips: selected.chips,
+        imageUrl: selected.imageUrl,
+        description: selected.description,
+        whatTheyDo: selected.whatTheyDo,
+        websiteUrl: selected.websiteUrl,
+        location: selected.location,
+        onClose: handleCloseDrawer,
+        onPrev: canNavigate ? () => goToOffset(-1) : undefined,
+        onNext: canNavigate ? () => goToOffset(1) : undefined,
+      }
+    : null;
+
   return (
     // Mobile/tablet: the map is edge-to-edge and primary (Google-Maps-style); the list
     // becomes a bottom sheet the user can peek/expand, instead of pushing the map off-screen.
@@ -143,8 +179,10 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
 
       {/* ── Sidebar (inline on desktop, bottom sheet on mobile) ── */}
       <div
+        data-tour="map-list"
         className={cn(
-          "absolute inset-x-0 bottom-0 z-20 flex flex-col rounded-t-2xl border-t border-[#c4c7c7] bg-[#faf8f5] shadow-[0_-4px_24px_rgba(0,0,0,0.15)] transition-[height] duration-300 ease-in-out overflow-hidden",
+          // z-30: sits above the map's corner info button (z-20) so the expanded sheet fully covers it instead of colliding with its own header on small screens.
+          "absolute inset-x-0 bottom-0 z-30 flex flex-col rounded-t-2xl border-t border-[#c4c7c7] bg-[#faf8f5] shadow-[0_-4px_24px_rgba(0,0,0,0.15)] transition-[height] duration-300 ease-in-out overflow-hidden",
           sheetExpanded ? "h-[75vh]" : "h-[104px]",
           "lg:static lg:inset-auto lg:z-auto lg:h-full lg:w-[280px] lg:shrink-0 lg:gap-6 lg:rounded-none lg:border-t-0 lg:bg-transparent lg:shadow-none lg:transition-none lg:overflow-visible"
         )}
@@ -170,10 +208,10 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
             onClick={() => setSheetExpanded(true)}
             className="lg:hidden flex items-center justify-between px-4 pb-4"
           >
-            <span className="font-sans font-bold text-[#211f19]" style={{ fontSize: 16 }}>
+            <span className="font-sans font-bold text-[#211f19]" style={{ fontSize: 18 }}>
               {initiatives.length} iniciativas
             </span>
-            <span className="font-sans text-[#708b8d]" style={{ fontSize: 13 }}>
+            <span className="font-sans text-[#708b8d]" style={{ fontSize: 14 }}>
               Ver lista
             </span>
           </button>
@@ -195,12 +233,17 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
             selectedState={mapSelectedState}
             className="flex-1 min-h-0 mx-4 lg:mx-0"
           />
-          <ChatbotButton onClick={onChatbotClick} className="shrink-0 mx-4 mb-4 lg:mx-0 lg:mb-0 hidden lg:flex" />
+          <ChatbotButton href={onChatbotClick ? undefined : "/chatbot"} onClick={onChatbotClick} className="shrink-0 mx-4 mb-4 lg:mx-0 lg:mb-0 hidden lg:flex" />
         </div>
       </div>
 
       {/* ── Map panel (full-bleed on mobile, framed panel on desktop) ── */}
-      <div className="relative flex-1 h-full lg:rounded-xl bg-[#faf8f5] lg:border lg:border-[#c4c7c7] overflow-hidden">
+      <div data-tour="map-canvas" className="relative flex-1 h-full lg:rounded-xl bg-[#faf8f5] lg:border lg:border-[#c4c7c7] overflow-hidden">
+
+        {/* Small, stably-placed anchor for the guided tour's tooltip — the map panel
+            itself is too large/edge-to-edge for react-joyride to position a tooltip
+            against without running out of viewport space (see GuidedTourStep.spotlightTarget). */}
+        <div data-tour="map-canvas-anchor" className="absolute top-8 left-1/2 w-px h-px pointer-events-none" />
 
         {/* Active location filter chip — top-left of map */}
         <AnimatePresence>
@@ -215,7 +258,7 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
             >
               <Chip
                 color="neutral"
-                className="bg-[#f0ede4] text-[#3d3d30] border border-[#dedad2] hover:bg-[#e8e4da] cursor-default uppercase tracking-[0.08em] text-[11px] font-semibold"
+                className="bg-[#f0ede4] text-[#3d3d30] border border-[#dedad2] hover:bg-[#e8e4da] cursor-default uppercase tracking-[0.08em] text-[12px] font-semibold"
               >
                 Explorando: {activeLocation}
               </Chip>
@@ -228,28 +271,11 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
           selectedStateName={selected?.state}
           selectedPresenceStates={selected?.presenceStates}
           onStateClick={handleMapStateClick}
+          keyboard={!selected}
           className="w-full h-full"
         />
 
-        <AnimatePresence mode="wait">
-          {selected && !effectiveDrawerOpen && (
-            <InitiativeDetailCard
-              key={selected.state ?? selected.id}
-              title={selected.title}
-              description={selected.description}
-              chips={selected.chips}
-              imageUrl={selected.imageUrl}
-              websiteUrl={selected.websiteUrl}
-              location={selected.location}
-              onClose={handleCloseCard}
-              onProfileClick={() => setDrawerOpen(true)}
-              total={stateGroup.length > 1 ? stateGroup.length : undefined}
-              current={currentPage}
-              onPageChange={(page) => handleSelect(stateGroup[page - 1].id)}
-              className="absolute left-4 right-4 top-4 bottom-[148px] w-auto max-h-none lg:left-auto lg:right-6 lg:top-6 lg:bottom-auto lg:w-[320px] lg:max-h-[calc(100%-3rem)] z-10"
-            />
-          )}
-        </AnimatePresence>
+        {mapCornerAction && <div className="absolute top-4 right-4 z-20">{mapCornerAction}</div>}
       </div>
 
       {/* ── Drawer ──
@@ -264,20 +290,13 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
       {isMobile && typeof document !== "undefined" ? (
         createPortal(
           <AnimatePresence>
-            {selected && effectiveDrawerOpen && (
+            {drawerProps && (
               <InitiativeDrawer
-                key={selected.id}
-                open
-                title={selected.title}
-                chips={selected.chips}
-                imageUrl={selected.imageUrl}
-                description={selected.description}
-                whatTheyDo={selected.whatTheyDo}
-                websiteUrl={selected.websiteUrl}
-                location={selected.location}
-                onClose={() => setDrawerOpen(false)}
+                key="drawer"
+                {...drawerProps}
                 width="100%"
-                className="fixed inset-0 z-[100] w-full h-full rounded-none border-0"
+                className="fixed inset-0 z-[100] w-full h-full"
+                innerClassName="rounded-none border-0"
               />
             )}
           </AnimatePresence>,
@@ -285,20 +304,12 @@ export function InitiativesMap({ initiatives: rawInitiatives = [], onChatbotClic
         )
       ) : (
         <AnimatePresence>
-          {selected && effectiveDrawerOpen && (
+          {drawerProps && (
             <InitiativeDrawer
-              key={selected.id}
-              open
-              title={selected.title}
-              chips={selected.chips}
-              imageUrl={selected.imageUrl}
-              description={selected.description}
-              whatTheyDo={selected.whatTheyDo}
-              websiteUrl={selected.websiteUrl}
-              location={selected.location}
-              onClose={() => setDrawerOpen(false)}
+              key="drawer"
+              {...drawerProps}
               width={319}
-              className="h-full shrink-0 rounded-xl border"
+              className="h-full shrink-0"
             />
           )}
         </AnimatePresence>

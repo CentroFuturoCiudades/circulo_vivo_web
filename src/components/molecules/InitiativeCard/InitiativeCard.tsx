@@ -35,7 +35,7 @@ export function InitiativeCard({
       )}
     >
       <span className={cn(
-        "font-serif font-bold text-[16px] leading-snug transition-colors duration-150",
+        "font-sans font-bold text-[16px] leading-snug transition-colors duration-150",
         selected ? "text-[#708b8d]" : "text-[#000000]"
       )}>
         {title}

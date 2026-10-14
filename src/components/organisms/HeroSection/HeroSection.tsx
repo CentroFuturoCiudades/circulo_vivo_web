@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { MoveUpRight, PlayCircle } from "lucide-react";
+import { MoveUpRight } from "lucide-react";
 import { NavBar, type NavLink } from "@/components/molecules/NavBar";
-import { Button } from "@/components/atoms/Button";
 import { resolveSignedVideoUrl, resolveSignedImageUrl } from "@/lib/azure/paths";
 import heroBg from "@/assets/bg-images/hero.jpg";
 import circuloVivoLogoWhite from "@/assets/logos/logo-white.png";
@@ -18,10 +18,6 @@ export interface HeroSectionProps {
   links?: NavLink[];
   title?: React.ReactNode;
   subtitle?: string;
-  primaryCta?: string;
-  secondaryCta?: string;
-  onPrimaryClick?: () => void;
-  onSecondaryClick?: () => void;
 }
 
 const DEFAULT_LINKS: NavLink[] = [
@@ -34,12 +30,9 @@ const DEFAULT_LINKS: NavLink[] = [
 export function HeroSection({
   links = DEFAULT_LINKS,
   title,
-  subtitle = "Tejemos historias y datos para replantear cómo producimos, distribuimos y consumimos alimentos. Aprendemos en colectivo.",
-  primaryCta = "Explorar Mapa",
-  secondaryCta = "Ver Demostración",
-  onPrimaryClick,
-  onSecondaryClick,
+  subtitle = "Presentamos historias y datos de quienes ya están replanteando cómo producimos, distribuimos y consumimos alimentos. Aprendamos en colectivo.",
 }: HeroSectionProps) {
+  const router = useRouter();
   const videoUrl = resolveSignedVideoUrl(HERO_VIDEO_PATH);
   const posterUrl = resolveSignedImageUrl(HERO_VIDEO_POSTER_PATH);
 
@@ -139,45 +132,19 @@ export function HeroSection({
             priority
           />
           {title ?? (
-            <h1 className="font-sans font-semibold text-white text-[28px] leading-[36px] md:text-[36px] md:leading-[46px] lg:text-[48px] lg:leading-[60px]">
+            <h1 className="font-sans font-semibold text-white text-[29px] leading-[33px] md:text-[35px] md:leading-[40px] lg:text-[42px] lg:leading-[48px]">
               Sistemas alimentarios que sostienen{" "}
-              <span className="font-serif italic font-medium" style={{ fontWeight: 500 }}>
+              <span className="font-sans font-light">
                 la vida
               </span>
             </h1>
           )}
           <p
             className="font-sans font-normal text-white/90"
-            style={{ fontSize: 18, lineHeight: 1.6, maxWidth: 800 }}
+            style={{ fontSize: 20, lineHeight: 1.6, maxWidth: 800 }}
           >
             {subtitle}
           </p>
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <Button
-                color="gold"
-                variant="primary"
-                radius="full"
-                iconRight={MoveUpRight}
-                onClick={onPrimaryClick}
-                className="normal-case tracking-normal font-normal text-base h-auto py-4 px-8 text-black"
-              >
-                {primaryCta}
-              </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <Button
-                color="white"
-                variant="outline"
-                radius="full"
-                iconRight={PlayCircle}
-                onClick={onSecondaryClick}
-                className="normal-case tracking-normal font-normal text-base h-auto py-4 px-8"
-              >
-                {secondaryCta}
-              </Button>
-            </motion.div>
-          </div>
         </motion.div>
 
         {/* Right — floating stat cards */}
@@ -196,19 +163,26 @@ export function HeroSection({
             <motion.div
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="bg-[#395284] p-6 rounded-xl"
+              role="link"
+              tabIndex={0}
+              onClick={() => router.push("/chatbot")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  router.push("/chatbot");
+                }
+              }}
+              className="bg-[#395284] p-6 rounded-xl cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
-              <p
-                className="font-sans font-medium text-white/80 uppercase"
-                style={{ fontSize: 12, letterSpacing: "1.2px", lineHeight: 1 }}
-              >
-                Levantamiento de información en territorio
+              <div className="flex items-start justify-end gap-2">
+                <MoveUpRight className="text-white/70 shrink-0" size={16} aria-hidden="true" />
+              </div>
+              <p className="font-sans text-white mt-2" style={{ lineHeight: 1.3 }}>
+                <span className="font-semibold" style={{ fontSize: 26 }}>+60</span>{" "}
+                <span className="font-semibold" style={{ fontSize: 26 }}>iniciativas</span>
               </p>
-              <p className="font-sans font-semibold text-white mt-2" style={{ fontSize: 24, lineHeight: 1.3 }}>
-                +60
-              </p>
-              <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 14, lineHeight: 1.5 }}>
-                Iniciativas entrevistadas y documentadas
+              <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 15, lineHeight: 1.5 }}>
+                que están cambiando los sistemas alimentarios
               </p>
             </motion.div>
           </motion.div>
@@ -224,19 +198,25 @@ export function HeroSection({
             <motion.div
               animate={{ y: [0, -6, 0] }}
               transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              className="bg-[#bcb884] p-6 rounded-xl"
+              role="link"
+              tabIndex={0}
+              onClick={() => router.push("/mapa")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  router.push("/mapa");
+                }
+              }}
+              className="bg-[#bcb884] p-6 rounded-xl cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
-              <p
-                className="font-sans font-medium text-white/80 uppercase"
-                style={{ fontSize: 12, letterSpacing: "1.2px", lineHeight: 1 }}
-              >
-                +60 historias
+              <div className="flex items-start justify-end gap-2">
+                <MoveUpRight className="text-white/70 shrink-0" size={16} aria-hidden="true" />
+              </div>
+              <p className="font-sans font-semibold text-white mt-2" style={{ fontSize: 26, lineHeight: 1.3 }}>
+                12 territorios
               </p>
-              <p className="font-sans font-semibold text-white mt-2" style={{ fontSize: 24, lineHeight: 1.3 }}>
-                +12 territorios
-              </p>
-              <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 14, lineHeight: 1.5 }}>
-                Iniciativas mapeadas en el territorio nacional.
+              <p className="font-sans font-normal text-white/90 mt-1" style={{ fontSize: 15, lineHeight: 1.5 }}>
+                Ubica y conoce las iniciativas en México y Centroamérica. Explora el mapa.
               </p>
             </motion.div>
           </motion.div>

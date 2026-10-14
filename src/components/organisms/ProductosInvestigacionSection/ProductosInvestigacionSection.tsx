@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { FileText, ArrowRight } from "lucide-react";
-import { Eyebrow } from "@/components/atoms/Eyebrow";
 
 function FadeUp({
   children,
@@ -43,12 +42,11 @@ export function ProductosInvestigacionSection() {
     >
       {/* Header — centered */}
       <FadeUp delay={0} className="flex flex-col items-center gap-4 text-center">
-        <Eyebrow color="secondary">REPOSITORIO</Eyebrow>
         <h2
-          className="font-serif italic font-bold text-[#395284] text-[26px] md:text-[36px]"
+          className="font-sans font-bold text-[#395284] text-[29px] md:text-[40px]"
           style={{ letterSpacing: -0.9, lineHeight: 1.111 }}
         >
-          Productos de Investigación
+          Novedades
         </h2>
       </FadeUp>
 
@@ -78,7 +76,7 @@ export function ProductosInvestigacionSection() {
                 <span
                   className="font-mono text-[#1a1c1c] rounded-lg"
                   style={{
-                    fontSize: 10,
+                    fontSize: 11,
                     lineHeight: 1.5,
                     backgroundColor: "#f4f4f5",
                     padding: "4px 8px",
@@ -90,8 +88,8 @@ export function ProductosInvestigacionSection() {
 
               {/* Title */}
               <h3
-                className="font-serif italic font-bold text-[#1a1c1c] pt-6 md:pt-10"
-                style={{ fontSize: 18, lineHeight: 1.556 }}
+                className="font-sans font-bold text-[#1a1c1c] pt-6 md:pt-10"
+                style={{ fontSize: 20, lineHeight: 1.556 }}
               >
                 {p.title}
               </h3>
@@ -99,7 +97,7 @@ export function ProductosInvestigacionSection() {
               {/* Subtitle */}
               <p
                 className="font-sans font-bold text-[#a1a1aa] pb-4 md:pb-6"
-                style={{ fontSize: 12, letterSpacing: "0.6px", lineHeight: 1.333 }}
+                style={{ fontSize: 13, letterSpacing: "0.6px", lineHeight: 1.333 }}
               >
                 {p.subtitle}
               </p>
@@ -112,7 +110,7 @@ export function ProductosInvestigacionSection() {
               >
                 <span
                   className="font-sans font-black text-[#1a1c1c] uppercase"
-                  style={{ fontSize: 12, letterSpacing: "1.2px", lineHeight: 1.333 }}
+                  style={{ fontSize: 13, letterSpacing: "1.2px", lineHeight: 1.333 }}
                 >
                   DESCARGAR
                 </span>

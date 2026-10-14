@@ -39,7 +39,7 @@ export function DataCard({
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-0.5">
-            <h3 className="font-serif font-bold text-[18px] leading-snug text-[#1c1018]">
+            <h3 className="font-sans font-bold text-[18px] leading-snug text-[#1c1018]">
               {title}
             </h3>
             {subtitle && (

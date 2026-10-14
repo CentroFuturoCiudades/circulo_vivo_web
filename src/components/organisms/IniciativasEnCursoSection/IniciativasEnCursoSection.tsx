@@ -67,10 +67,10 @@ export function IniciativasEnCursoSection() {
         <div className="flex flex-col gap-10 md:gap-12 lg:flex-[0_0_57%]">
           <FadeUp delay={0}>
             <h2
-              className="font-serif italic font-semibold text-[#1a1c1c] text-[26px] md:text-[36px]"
+              className="font-sans font-semibold text-[#1a1c1c] text-[26px] md:text-[36px]"
               style={{ letterSpacing: -0.9, lineHeight: 1.111 }}
             >
-              Iniciativas en curso
+              Otros proyectos relacionados
             </h2>
           </FadeUp>
 

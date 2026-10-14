@@ -72,7 +72,7 @@ export function ChatAssistantMessage({
             <Sparkles size={11} color="white" />
           </div>
           <span
-            className="font-sans font-bold text-[#708b8d] text-xs"
+            className="font-sans font-bold text-[#708b8d] text-sm"
             style={{ letterSpacing: "1.2px" }}
           >
             ASISTENTE CÍRCULO VIVO
@@ -114,7 +114,7 @@ export function ChatAssistantMessage({
             {!markdown && (
               <>
                 {intro && (
-                  <p className="font-sans font-normal text-[14px] text-[#1a1c1c] leading-[1.5]">
+                  <p className="font-sans font-normal text-[15px] text-[#1a1c1c] leading-[1.5]">
                     {intro}
                   </p>
                 )}
@@ -124,16 +124,16 @@ export function ChatAssistantMessage({
                     {items.map((item) => (
                       <div key={item.number} className="flex flex-col gap-0.5">
                         <div className="flex items-baseline gap-2">
-                          <span className="font-['Inter',sans-serif] font-bold text-[14px] text-[#708b8d]">
+                          <span className="font-['Inter',sans-serif] font-bold text-[15px] text-[#708b8d]">
                             {item.number}
                           </span>
-                          <span className="font-['Inter',sans-serif] font-bold text-[14px] text-[#1a1c1c]">
+                          <span className="font-['Inter',sans-serif] font-bold text-[15px] text-[#1a1c1c]">
                             {item.title}
                           </span>
                         </div>
                         {item.description && (
                           <p
-                            className="font-['Inter',sans-serif] font-normal text-[14px] text-[#6b7280] leading-[1.5]"
+                            className="font-['Inter',sans-serif] font-normal text-[15px] text-[#6b7280] leading-[1.5]"
                             style={{ paddingLeft: 22 }}
                           >
                             {item.description}
@@ -147,7 +147,7 @@ export function ChatAssistantMessage({
             )}
 
             {citation && (
-              <p className="font-sans italic font-normal text-[10px] text-[#a1a1aa]">
+              <p className="font-sans font-normal text-[11px] text-[#a1a1aa]">
                 {citation}
               </p>
             )}
@@ -156,7 +156,7 @@ export function ChatAssistantMessage({
           {followUps && followUps.length > 0 && (
             <div className="flex flex-col gap-3 border-t border-[#f3f4f6] pt-4">
               <span
-                className="font-sans font-medium italic text-[12px] text-[#708b8d]"
+                className="font-sans font-medium text-[13px] text-[#708b8d]"
                 style={{ letterSpacing: "0.24px" }}
               >
                 Preguntas sugeridas basadas en la respuesta:
@@ -167,7 +167,7 @@ export function ChatAssistantMessage({
                     key={i}
                     variant="tealOutline"
                     onClick={followUp.onClick}
-                    className="h-[26px] text-xs font-semibold tracking-[0.02em] px-3"
+                    className="h-[26px] text-sm font-semibold tracking-[0.02em] px-3"
                   >
                     {followUp.text}
                   </FilterPill>

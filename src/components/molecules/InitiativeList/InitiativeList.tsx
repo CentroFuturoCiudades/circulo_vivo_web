@@ -1,19 +1,10 @@
 "use client";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { ListFilter, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Select } from "@/components/atoms/Select";
-import { Button } from "@/components/atoms/Button";
 import { InitiativeCard, type InitiativeCardProps } from "@/components/molecules/InitiativeCard";
+import { Chip } from "@/components/atoms/Chip";
 
 // ── Types ──────────────────────────────────────────────────
-
-export interface InitiativeListFilter {
-  label: string;
-  /** If omitted, options are auto-derived from the items' chips at that index. */
-  options?: string[];
-}
 
 export interface InitiativeListItem extends Omit<InitiativeCardProps, "selected" | "onClick"> {
   id: string;
@@ -22,21 +13,13 @@ export interface InitiativeListItem extends Omit<InitiativeCardProps, "selected"
 export interface InitiativeListProps {
   label?: string;
   items: InitiativeListItem[];
-  /**
-   * Filter definitions. By default two filters are shown:
-   *   - "Estado"  → derived from chips[0] across all items
-   *   - "Tema"    → derived from chips[1+] across all items
-   *
-   * Pass explicit `options` to override auto-derivation.
-   */
-  filters?: InitiativeListFilter[];
   selectedId?: string;
   onSelect?: (id: string) => void;
-  /** Called whenever the active filter values change, with the full current values map. */
+  /** Called whenever the active Estado filter changes, as `{ Estado: value }`. */
   onFilterChange?: (values: Record<string, string>) => void;
   /**
-   * When set from outside (e.g. a map click), overrides the Estado filter.
-   * Pass an empty string to clear back to "Todos".
+   * Location filter, driven from outside (the shared filter bar, or a map click).
+   * Pass an empty string / undefined to clear back to "Todos".
    */
   selectedState?: string;
   className?: string;
@@ -49,90 +32,53 @@ const ALL = "Todos";
 export function InitiativeList({
   label = "Iniciativas",
   items,
-  filters: filterDefs = [
-    { label: "Estado" },
-    { label: "Tema" },
-  ],
   selectedId,
   onSelect,
   onFilterChange,
   selectedState,
   className,
 }: InitiativeListProps) {
-  const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filterValues, setFilterValues] = useState<Record<string, string>>(
-    Object.fromEntries(filterDefs.map((f) => [f.label, ALL]))
-  );
+  const [estadoFilter, setEstadoFilter] = useState(ALL);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // Keep the selected initiative visible when it changes (e.g. via ←/→ in the drawer)
+  useEffect(() => {
+    if (!selectedId) return;
+    listRef.current
+      ?.querySelector(`[data-initiative-id="${CSS.escape(selectedId)}"]`)
+      ?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [selectedId]);
 
   // Keep a stable ref to onFilterChange to avoid stale closure in effects
   const onFilterChangeRef = useRef(onFilterChange);
   useLayoutEffect(() => { onFilterChangeRef.current = onFilterChange; });
 
-  // Single source of truth: notify parent whenever filterValues changes
+  // Notify parent whenever the Estado filter changes
   useEffect(() => {
-    onFilterChangeRef.current?.(filterValues);
-  }, [filterValues]);
+    onFilterChangeRef.current?.({ Estado: estadoFilter });
+  }, [estadoFilter]);
 
-  // Sync external selectedState into the Estado filter (no onFilterChange call here)
+  // Sync external selectedState (e.g. a map click) into the Estado filter
   useEffect(() => {
-    if (selectedState === undefined) return;
-    const val = selectedState === "" ? ALL : selectedState;
+    const val = !selectedState ? ALL : selectedState;
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setFilterValues((prev) => {
-      if (prev["Estado"] === val) return prev;
-      return { ...prev, Estado: val };
-    });
+    setEstadoFilter((prev) => (prev === val ? prev : val));
   }, [selectedState]);
 
-  // ── Derive options from chips ──────────────────────────
-
-  const resolvedFilters = useMemo<Array<{ label: string; options: string[] }>>(() => {
-    return filterDefs.map((f, filterIndex) => {
-      if (f.options) return { label: f.label, options: f.options };
-
-      // First filter → first chip of each item (location / estado)
-      // Remaining filters → remaining chips (category / tema)
-      const labelsSet = new Set<string>();
-      items.forEach((item) => {
-        const chips = item.chips ?? [];
-        if (filterIndex === 0) {
-          if (chips[0]) labelsSet.add(chips[0].label);
-        } else {
-          chips.slice(1).forEach((c) => labelsSet.add(c.label));
-        }
-      });
-
-      return {
-        label: f.label,
-        options: [ALL, ...Array.from(labelsSet).sort()],
-      };
-    });
-  }, [filterDefs, items]);
-
-  // ── Apply filters ──────────────────────────────────────
+  // ── Apply filter ─────────────────────────────────────
 
   const filteredItems = useMemo(() => {
-    return items.filter((item) =>
-      resolvedFilters.every((f) => {
-        const val = filterValues[f.label];
-        if (!val || val === ALL) return true;
-        return item.chips?.some((c) => c.label === val) ?? false;
-      })
-    );
-  }, [items, resolvedFilters, filterValues]);
+    if (estadoFilter === ALL) return items;
+    return items.filter((item) => item.chips?.[0]?.label === estadoFilter);
+  }, [items, estadoFilter]);
 
   // ── Helpers ────────────────────────────────────────────
 
-  const isFiltered = resolvedFilters.some((f) => filterValues[f.label] !== ALL);
+  const isFiltered = estadoFilter !== ALL;
   const countLabel = isFiltered
     ? `${filteredItems.length}/${items.length}`
     : String(items.length);
-  const displayLabel = `${label} (${countLabel})`.toUpperCase();
-
-  function handleFilterChange(filterLabel: string, value: string) {
-    setFilterValues({ ...filterValues, [filterLabel]: value });
-    // notification sent via filterValues effect above
-  }
+  const displayLabel = label.toUpperCase();
 
   // ── Render ─────────────────────────────────────────────
 
@@ -143,9 +89,9 @@ export function InitiativeList({
         className
       )}
     >
-      {/* ── Header ── */}
+      {/* ── Header — label on the left, count as a quiet chip on the right so it doesn't compete with the title ── */}
       <div
-        className="flex items-center justify-between px-4 py-4 border-b border-[#c4c7c7]"
+        className="flex items-center justify-between gap-3 px-4 py-4 border-b border-[#c4c7c7]"
         style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.2), rgba(112,139,141,0.2))" }}
       >
         <span
@@ -154,48 +100,18 @@ export function InitiativeList({
         >
           {displayLabel}
         </span>
-
-        <Button
-          variant="icon"
-          color="neutral"
-          size="sm"
-          iconLeft={filtersOpen ? X : ListFilter}
-          aria-label={filtersOpen ? "Cerrar filtros" : "Abrir filtros"}
-          onClick={() => setFiltersOpen((v) => !v)}
-          className="border-0 text-[#211f19] hover:opacity-60 hover:bg-transparent"
-        />
+        <Chip
+          as="span"
+          color="secondary"
+          selected={isFiltered}
+          className="pointer-events-none shrink-0 text-[11px] font-semibold"
+        >
+          {countLabel}
+        </Chip>
       </div>
 
-      {/* ── Filter panel ── */}
-      <AnimatePresence>
-        {filtersOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            className="flex items-center gap-2.5 px-4 py-4 border-b border-[#c4c7c7] bg-white/80"
-          >
-            {resolvedFilters.map((f) => {
-              const active = filterValues[f.label] !== ALL;
-              return (
-                <div key={f.label} className="flex-1 min-w-0">
-                  <Select
-                    size="sm"
-                    value={filterValues[f.label] ?? ALL}
-                    options={f.options.map((o) => ({ value: o, label: o }))}
-                    onChange={(e) => handleFilterChange(f.label, e.target.value)}
-                    className={active ? "ring-1 ring-[#708b8d] border-[#708b8d]" : ""}
-                  />
-                </div>
-              );
-            })}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* ── List — scrollable ── */}
-      <div className="flex flex-col overflow-y-auto flex-1 bg-white/5">
+      <div ref={listRef} className="flex flex-col overflow-y-auto flex-1 bg-white/5">
         {filteredItems.length === 0 ? (
           <div className="flex items-center justify-center py-12 px-4 text-center">
             <p className="font-sans text-sm text-[#9ca3af]">
@@ -204,13 +120,14 @@ export function InitiativeList({
           </div>
         ) : (
           filteredItems.map((item) => (
-            <InitiativeCard
-              key={item.id}
-              title={item.title}
-              chips={item.chips}
-              selected={item.id === selectedId}
-              onClick={() => onSelect?.(item.id)}
-            />
+            <div key={item.id} data-initiative-id={item.id}>
+              <InitiativeCard
+                title={item.title}
+                chips={item.chips}
+                selected={item.id === selectedId}
+                onClick={() => onSelect?.(item.id)}
+              />
+            </div>
           ))
         )}
       </div>

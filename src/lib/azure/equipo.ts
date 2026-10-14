@@ -41,6 +41,7 @@ interface EquipoTecnicoCsvRow {
   twitter?: string;
   instagram?: string;
   website?: string;
+  projectRole?: string;
 }
 
 function rowToMiembroTecnico(row: EquipoTecnicoCsvRow): MiembroTecnico {
@@ -60,6 +61,7 @@ function rowToMiembroTecnico(row: EquipoTecnicoCsvRow): MiembroTecnico {
     doctorado: row.doctorado || undefined,
     email: row.email || undefined,
     socials: socials.length > 0 ? socials : undefined,
+    projectRole: row.projectRole || undefined,
   };
 }
 

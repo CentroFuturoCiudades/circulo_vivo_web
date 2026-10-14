@@ -44,9 +44,9 @@ const defaultLegalLinks: FooterColumnLink[] = [
 ];
 
 export function Footer({
-  tagline = "Conociendo trayectorias para integrar y compartir aprendizajes para replantear los sistemas de alimentación en México: mejores para las personas, mejores para el planeta y más justas para quienes hacen posible cada alimento.",
+  tagline = "Trabajando para la transformación de los sistemas alimentarios.",
   columns = defaultColumns,
-  copyright = "Círculo Vivo es una iniciativa de investigación del Tecnológico de Monterrey. Colaboramos con pares académicos e institucionales para lograr Nuestro objetivo.",
+  copyright,
   legalLinks = defaultLegalLinks,
   socialLinks = {},
   className,
@@ -66,7 +66,7 @@ export function Footer({
           <Logo className="h-[53px] w-auto self-start" />
 
           <p
-            className="font-sans text-[12px] text-[#52525b] leading-[1.625] max-w-[299px]"
+            className="font-sans text-[13px] text-[#52525b] leading-[1.625] max-w-[299px]"
           >
             {tagline}
           </p>
@@ -95,14 +95,14 @@ export function Footer({
         <div className="grid grid-cols-2 md:flex md:gap-11 gap-8">
           {columns.map((col) => (
             <div key={col.heading} className="flex flex-col gap-4">
-              <span className="font-sans font-normal text-[16px] text-[#18181b] leading-[1.5] uppercase">
+              <span className="font-sans font-normal text-[18px] text-[#18181b] leading-[1.5] uppercase">
                 {col.heading}
               </span>
               {col.links.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
-                  className="font-sans font-normal text-[12px] text-[#71717a] hover:text-[#18181b] transition-colors leading-[1.333]"
+                  className="font-sans font-normal text-[13px] text-[#71717a] hover:text-[#18181b] transition-colors leading-[1.333]"
                 >
                   {link.label}
                 </a>
@@ -114,19 +114,24 @@ export function Footer({
 
       {/* ── Bottom bar ── */}
       <div
-        className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 md:px-9 bg-white border-t border-[#e4e4e7] gap-3 md:gap-0"
+        className={cn(
+          "flex flex-col md:flex-row items-start md:items-center px-6 md:px-9 bg-white border-t border-[#e4e4e7] gap-3 md:gap-0",
+          copyright ? "justify-between" : "justify-end"
+        )}
         style={{ paddingTop: 24, paddingBottom: 24 }}
       >
-        <span className="font-sans font-normal text-[12px] text-[#52525b] leading-[1.333]">
-          {copyright}
-        </span>
+        {copyright && (
+          <span className="font-sans font-normal text-[13px] text-[#52525b] leading-[1.333]">
+            {copyright}
+          </span>
+        )}
 
         <nav className="flex flex-wrap items-center gap-4 md:gap-6">
           {legalLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              className="font-sans font-normal text-[12px] text-[#71717a] hover:text-[#18181b] transition-colors leading-[1.333]"
+              className="font-sans font-normal text-[13px] text-[#71717a] hover:text-[#18181b] transition-colors leading-[1.333]"
             >
               {link.label}
             </a>

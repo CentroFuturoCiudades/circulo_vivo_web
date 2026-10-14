@@ -25,8 +25,6 @@ export const Default: Story = {
 export const CustomContent: Story = {
   args: {
     links: LINKS,
-    primaryCta: "Explorar Mapa",
-    secondaryCta: "Ver Demostración",
     subtitle:
       "Plataforma de inteligencia territorial para transformar los sistemas alimentarios de México.",
   },
